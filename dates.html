@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Our dates 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink: #ff6b9d;
+      --soft-pink: #ffc2d8;
+      --purple: #c77dff;
+      --soft-purple: #e8d5ff;
+      --bg: #fff0f5;
+      --text: #3d2c4e;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .hearts-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      bottom: -60px;
+      animation: floatUp linear infinite;
+      opacity: 0;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(-10deg); opacity: 0; }
+      10%  { opacity: 0.5; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-110vh) rotate(10deg); opacity: 0; }
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 2rem 1.2rem 4rem;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      color: var(--pink);
+      font-size: clamp(2rem, 8vw, 2.8rem);
+      text-shadow: 2px 3px 0 var(--soft-pink);
+      text-align: center;
+      margin-bottom: .3rem;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #7b5ea7;
+      margin-bottom: 1.6rem;
+    }
+
+    .progress-wrap {
+      background: white;
+      border-radius: 50px;
+      box-shadow: 0 4px 16px rgba(199,125,255,.15);
+      padding: .8rem 1.2rem;
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+    .progress-bar-bg {
+      flex: 1;
+      height: 10px;
+      background: var(--soft-purple);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      border-radius: 50px;
+      transition: width .4s ease;
+      width: 0%;
+    }
+    .progress-label {
+      font-weight: 800;
+      font-size: .95rem;
+      color: var(--purple);
+      white-space: nowrap;
+    }
+
+    /* list */
+    #date-list { display: flex; flex-direction: column; gap: .7rem; }
+
+    .date-item {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(199,125,255,.12);
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      padding: .9rem 1rem;
+      cursor: pointer;
+      transition: transform .12s, box-shadow .12s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .date-item:active { transform: scale(.97); }
+    .date-item.done {
+      background: linear-gradient(135deg, #fff0f9, #f3e8ff);
+    }
+
+    .check-box {
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
+      border-radius: 8px;
+      border: 2.5px solid var(--soft-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: transparent;
+      transition: background .2s, border-color .2s, color .2s;
+      background: white;
+    }
+    .date-item.done .check-box {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: white;
+    }
+
+    .date-text {
+      flex: 1;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      transition: color .2s;
+    }
+    .date-item.done .date-text {
+      color: #b088cc;
+      text-decoration: line-through;
+      text-decoration-color: var(--soft-pink);
+    }
+
+    .date-emoji { font-size: 1.4rem; }
+
+    .del-btn {
+      background: none;
+      border: none;
+      color: #ddc8f0;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: .2rem .3rem;
+      border-radius: 8px;
+      line-height: 1;
+      transition: color .15s, background .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .del-btn:hover, .del-btn:active { color: var(--pink); background: #fff0f5; }
+
+    /* add new */
+    .add-wrap {
+      margin-top: 1.4rem;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(199,125,255,.15);
+      padding: .9rem 1rem;
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
+    .add-wrap input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      background: transparent;
+    }
+    .add-wrap input::placeholder { color: #cbb8de; font-weight: 600; }
+    .add-btn {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform .15s;
+    }
+    .add-btn:active { transform: scale(.9); }
+
+    .all-done {
+      display: none;
+      text-align: center;
+      font-family: 'Pacifico', cursive;
+      font-size: 1.3rem;
+      color: var(--pink);
+      text-shadow: 1px 2px 0 var(--soft-pink);
+      margin-top: 1.6rem;
+    }
+
+    /* loading state */
+    .loading {
+      text-align: center;
+      color: #c0a8d8;
+      font-weight: 700;
+      padding: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<div class="wrapper">
+  <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
+  <h1>Our dates 🗓️</h1>
+  <p class="subtitle">tick them off as we go 💕</p>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <span class="progress-label" id="progressLabel">… / …</span>
+  </div>
+
+  <div id="date-list">
+    <p class="loading">loading… 💕</p>
+  </div>
+
+  <div class="add-wrap">
+    <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
+    <button class="add-btn" onclick="addDate()">+</button>
+  </div>
+
+  <div class="all-done" id="allDone">we did everything!! 🎉 time to add more 😏</div>
+</div>
+
+<!-- Firebase compat CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+  // ── Firebase init
+  const firebaseConfig = {
+    apiKey: "AIzaSyA_ObhbiCf-dtbEKiqhYER1477bgP5fp7k",
+    authDomain: "baba-14bcd.firebaseapp.com",
+    projectId: "baba-14bcd",
+    storageBucket: "baba-14bcd.firebasestorage.app",
+    messagingSenderId: "906012500837",
+    appId: "1:906012500837:web:f2556643ef88d9e0f6778c"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const col = db.collection('dates');
+
+  // ── Default dates to seed on first load
+  const defaults = [
+    { text: 'Ikea date',              emoji: '🛒',  done: false },
+    { text: 'Adult play centre date', emoji: '🎮',  done: false },
+    { text: 'Billiard date',          emoji: '🎱',  done: true  },
+    { text: 'Hike date',              emoji: '🥾',  done: false },
+    { text: 'Sushi by the river date',emoji: '🍣',  done: false },
+    { text: 'Late night drive date',  emoji: '🚗',  done: true  },
+    { text: 'Clay date',              emoji: '🏺',  done: false },
+    { text: 'Bowling date',           emoji: '🎳',  done: false },
+    { text: 'Aquarium date',          emoji: '🐠',  done: false },
+    { text: 'Cuisine date',           emoji: '🍽️', done: true  },
+    { text: 'Painting date',          emoji: '🎨',  done: false },
+    { text: 'Board game date',        emoji: '🎲',  done: false },
+    { text: 'Escape room date',       emoji: '🔐',  done: false },
+    { text: 'Lego date',              emoji: '🧱',  done: true  },
+    { text: 'Basketball match date',  emoji: '🏀',  done: true  },
+    { text: 'Minigolf date',          emoji: '⛳',  done: false },
+  ];
+
+  // ── Seed if collection is empty
+  col.limit(1).get().then(snap => {
+    if (snap.empty) {
+      const batch = db.batch();
+      defaults.forEach((d, i) => {
+        batch.set(col.doc(), { ...d, order: i });
+      });
+      batch.commit();
+    }
+  });
+
+  // ── Real-time listener — updates for both users instantly
+  col.orderBy('order').onSnapshot(snap => {
+    const list = document.getElementById('date-list');
+    list.innerHTML = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const el = document.createElement('div');
+      el.className = 'date-item' + (d.done ? ' done' : '');
+      el.innerHTML = `
+        <span class="check-box">✓</span>
+        <span class="date-text">${esc(d.text)}</span>
+        <span class="date-emoji">${d.emoji}</span>
+        <button class="del-btn" title="Remove">✕</button>
+      `;
+      el.querySelector('.del-btn').onclick = e => {
+        e.stopPropagation();
+        col.doc(doc.id).delete();
+      };
+      el.onclick = () => col.doc(doc.id).update({ done: !d.done });
+      list.appendChild(el);
+    });
+    updateProgress(snap);
+  });
+
+  function updateProgress(snap) {
+    let total = 0, done = 0;
+    snap.forEach(doc => { total++; if (doc.data().done) done++; });
+    document.getElementById('progressFill').style.width = total ? (done / total * 100) + '%' : '0%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + total;
+    document.getElementById('allDone').style.display = (total && done === total) ? 'block' : 'none';
+  }
+
+  // ── Add new date
+  function addDate() {
+    const input = document.getElementById('newDateInput');
+    const text = input.value.trim();
+    if (!text) return;
+    col.get().then(snap => {
+      col.add({ text, emoji: '💕', done: false, order: snap.size });
+    });
+    input.value = '';
+  }
+  document.getElementById('newDateInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addDate();
+  });
+
+  // ── Escape HTML
+  function esc(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+</script>
+</body>
+</html>
