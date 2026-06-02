@@ -7,6 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff6b9d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="baba 💕">
+  <link rel="apple-touch-icon" href="img/hehe2.jpg">
   <script>(function(){var t=localStorage.getItem('baba-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1105,10 +1112,15 @@
     if (docId) openPhotoPicker(docId);
   }
 
+  // ── Service worker
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+
   // ── Theme toggle
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    const m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.content = theme === 'dark' ? '#120c1e' : '#ff6b9d';
   }
   function toggleTheme() {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
