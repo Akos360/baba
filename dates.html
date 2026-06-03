@@ -614,11 +614,61 @@
     [data-theme="dark"] .tab-btn { color: #9070b8; }
     [data-theme="dark"] .modal-backdrop { background: rgba(0,0,0,.72); }
     [data-theme="dark"] .all-done { text-shadow: none; }
+
+    /* ── Notification bell */
+    .notif-btn {
+      position: fixed;
+      top: .9rem;
+      right: 3.6rem;
+      z-index: 300;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 14px rgba(199,125,255,.3);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, background .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .notif-btn:active { transform: scale(.88); }
+    .notif-btn.active { background: linear-gradient(135deg, var(--pink), var(--purple)); }
+    [data-theme="dark"] .notif-btn { background: #1e1332; }
+    [data-theme="dark"] .notif-btn.active { background: linear-gradient(135deg, var(--pink), var(--purple)); }
+
+    /* ── Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.8rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: var(--bg);
+      padding: .65rem 1.3rem;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      z-index: 500;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+      pointer-events: none;
+      max-width: 90vw;
+      white-space: pre-wrap;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
+<button class="notif-btn" id="notifBtn" onclick="setupNotifications()" title="Enable notifications">🔔</button>
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+<div class="toast" id="toast"></div>
 
 <div class="wrapper">
   <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
@@ -1113,7 +1163,82 @@
   }
 
   // ── Service worker
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('firebase-messaging-sw.js');
+  }
+
+  // ── Push notifications (standard Web Push — no Firebase Messaging SDK)
+  // Paste the PUBLIC key output from: cd functions && npx web-push generate-vapid-keys
+  const VAPID_PUBLIC_KEY = 'BJmTB2kh9NiPFFvCFf0TLoHBRjjYRb8Z7zWWod6orY5BpaY1es7wrNsriqi4eiOUz-AmIogjR_6CpwwkPQ2WtQE';
+
+  function urlB64ToUint8Array(b64) {
+    const pad = '='.repeat((4 - b64.length % 4) % 4);
+    const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+    const arr = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+    return arr;
+  }
+
+  function showToast(msg, ms = 2800) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), ms);
+  }
+
+  function updateBell() {
+    const btn = document.getElementById('notifBtn');
+    const on  = Notification.permission === 'granted';
+    btn.textContent = on ? '🔔' : '🔕';
+    btn.classList.toggle('active', on);
+    btn.title = on ? 'Notifications on' : 'Enable notifications';
+  }
+
+  async function setupNotifications() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      showToast('Notifications not supported in this browser 😢'); return;
+    }
+    if (VAPID_PUBLIC_KEY === 'YOUR_VAPID_PUBLIC_KEY') {
+      showToast('Paste your VAPID public key in the code first 🔑'); return;
+    }
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    if (isIOS && !isStandalone) {
+      showToast('On iPhone: install the app first, then enable 🔔', 4000); return;
+    }
+    if (Notification.permission === 'denied') {
+      showToast('Notifications blocked — check browser settings 😢', 3500); return;
+    }
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') { showToast('Permission denied 😢'); return; }
+
+      await navigator.serviceWorker.register('firebase-messaging-sw.js');
+      const swReg = await navigator.serviceWorker.ready;
+
+      const existing = await swReg.pushManager.getSubscription();
+      if (existing) await existing.unsubscribe();
+
+      const sub = await swReg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
+
+      await db.collection('push_subscriptions').add({
+        subscription: JSON.parse(JSON.stringify(sub)),
+        createdAt: new Date(),
+      });
+
+      updateBell();
+      showToast('Notifications on! 🎉');
+    } catch (err) {
+      console.error(err);
+      showToast(err.message || 'Something went wrong 😭', 8000);
+    }
+  }
+
+  updateBell();
 
   // ── Theme toggle
   function applyTheme(theme) {
