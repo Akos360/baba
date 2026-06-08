@@ -1,14 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Our dates 💕</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff6b9d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="baba 💕">
+  <link rel="apple-touch-icon" href="img/hehe2.jpg">
+  <script>(function () { var t = localStorage.getItem('baba-theme'); if (t) document.documentElement.setAttribute('data-theme', t); })();</script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --pink: #ff6b9d;
@@ -19,7 +35,8 @@
       --text: #3d2c4e;
     }
 
-    html, body {
+    html,
+    body {
       min-height: 100%;
       font-family: 'Nunito', sans-serif;
       background-color: var(--bg);
@@ -43,6 +60,7 @@
       text-align: center;
       margin-bottom: .3rem;
     }
+
     .subtitle {
       text-align: center;
       font-size: 1rem;
@@ -51,75 +69,54 @@
       margin-bottom: 1.4rem;
     }
 
-    /* ── MAIN TABS ── */
-    .tabs-main {
+    /* ── Tab bar */
+    .tab-bar {
       display: flex;
+      gap: .4rem;
+      margin-bottom: 1.2rem;
       background: white;
       border-radius: 18px;
-      box-shadow: 0 4px 16px rgba(199,125,255,.15);
-      padding: .3rem;
-      margin-bottom: 1.4rem;
-      gap: .3rem;
+      padding: .4rem;
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .12);
     }
-    .tab-main-btn {
+
+    .tab-btn {
       flex: 1;
-      padding: .75rem;
       border: none;
-      border-radius: 14px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: 1.05rem;
-      cursor: pointer;
       background: transparent;
-      color: #c0a8d8;
-      transition: background .2s, color .2s;
+      border-radius: 13px;
+      padding: .65rem .5rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
+      font-weight: 800;
+      color: #b088cc;
+      cursor: pointer;
+      transition: background .2s, color .2s, transform .1s;
       -webkit-tap-highlight-color: transparent;
     }
-    .tab-main-btn.active {
+
+    .tab-btn:active {
+      transform: scale(.96);
+    }
+
+    .tab-btn.active {
       background: linear-gradient(135deg, var(--pink), var(--purple));
       color: white;
+      box-shadow: 0 3px 10px rgba(255, 107, 157, .3);
     }
 
-    /* ── SUB TABS ── */
-    .tabs-sub {
-      display: flex;
-      background: var(--soft-purple);
-      border-radius: 14px;
-      padding: .25rem;
-      margin-bottom: 1.2rem;
-      gap: .25rem;
-    }
-    .tab-sub-btn {
-      flex: 1;
-      padding: .55rem;
-      border: none;
-      border-radius: 10px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: .95rem;
-      cursor: pointer;
-      background: transparent;
-      color: #9b7cc0;
-      transition: background .2s, color .2s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .tab-sub-btn.active {
-      background: white;
-      color: var(--purple);
-      box-shadow: 0 2px 8px rgba(199,125,255,.2);
-    }
-
-    /* ── PROGRESS ── */
+    /* ── Progress bar */
     .progress-wrap {
       background: white;
       border-radius: 50px;
-      box-shadow: 0 4px 16px rgba(199,125,255,.15);
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .15);
       padding: .8rem 1.2rem;
       margin-bottom: 1.4rem;
       display: flex;
       align-items: center;
       gap: .8rem;
     }
+
     .progress-bar-bg {
       flex: 1;
       height: 10px;
@@ -127,6 +124,7 @@
       border-radius: 50px;
       overflow: hidden;
     }
+
     .progress-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--pink), var(--purple));
@@ -134,6 +132,7 @@
       transition: width .4s ease;
       width: 0%;
     }
+
     .progress-label {
       font-weight: 800;
       font-size: .95rem;
@@ -141,17 +140,24 @@
       white-space: nowrap;
     }
 
-    /* ── DATE CARD (wraps row + gallery) ── */
-    .item-list { display: flex; flex-direction: column; gap: .7rem; }
+    /* list */
+    #date-list {
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+    }
 
     .date-card {
       background: white;
       border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(199,125,255,.12);
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .12);
       overflow: hidden;
       transition: box-shadow .2s;
     }
-    .date-card.done { background: linear-gradient(135deg, #fff0f9, #f3e8ff); }
+
+    .date-card.done {
+      background: linear-gradient(135deg, #fff0f9, #f3e8ff);
+    }
 
     /* ── DATE ROW ── */
     .date-row {
@@ -178,6 +184,7 @@
       transition: background .2s, border-color .2s, color .2s;
       background: white;
     }
+
     .date-card.done .check-box {
       background: linear-gradient(135deg, var(--pink), var(--purple));
       border-color: transparent;
@@ -192,6 +199,7 @@
       line-height: 1.3;
       transition: color .2s;
     }
+
     .date-card.done .date-text {
       color: #b088cc;
       text-decoration: line-through;
@@ -205,7 +213,10 @@
       padding: .1rem .2rem;
       transition: background .15s;
     }
-    .date-emoji:hover { background: var(--soft-purple); }
+
+    .date-emoji:hover {
+      background: var(--soft-purple);
+    }
 
     .emoji-input {
       width: 2.4rem;
@@ -236,8 +247,16 @@
       -webkit-tap-highlight-color: transparent;
       white-space: nowrap;
     }
-    .photo-btn:hover, .photo-btn.has-photos { color: var(--purple); }
-    .photo-btn.open { color: var(--pink); background: #fff0f5; }
+
+    .photo-btn:hover,
+    .photo-btn.has-photos {
+      color: var(--purple);
+    }
+
+    .photo-btn.open {
+      color: var(--pink);
+      background: #fff0f5;
+    }
 
     .del-btn {
       background: none;
@@ -251,7 +270,12 @@
       transition: color .15s, background .15s;
       -webkit-tap-highlight-color: transparent;
     }
-    .del-btn:hover, .del-btn:active { color: var(--pink); background: #fff0f5; }
+
+    .del-btn:hover,
+    .del-btn:active {
+      color: var(--pink);
+      background: #fff0f5;
+    }
 
     /* ── GALLERY ── */
     .gallery {
@@ -261,7 +285,10 @@
       padding: .8rem;
       gap: .6rem;
     }
-    .gallery.open { display: flex; }
+
+    .gallery.open {
+      display: flex;
+    }
 
     .gallery-track {
       display: flex;
@@ -271,7 +298,10 @@
       border-radius: 12px;
       gap: 0;
     }
-    .gallery-track::-webkit-scrollbar { display: none; }
+
+    .gallery-track::-webkit-scrollbar {
+      display: none;
+    }
 
     .gallery-slide {
       flex-shrink: 0;
@@ -283,6 +313,7 @@
       background: var(--soft-purple);
       position: relative;
     }
+
     .gallery-slide img {
       width: 100%;
       height: 100%;
@@ -296,6 +327,7 @@
       justify-content: center;
       gap: .4rem;
     }
+
     .gallery-dot {
       width: 7px;
       height: 7px;
@@ -303,6 +335,7 @@
       background: var(--soft-purple);
       transition: background .2s, transform .2s;
     }
+
     .gallery-dot.active {
       background: var(--pink);
       transform: scale(1.25);
@@ -313,6 +346,7 @@
       display: flex;
       gap: .5rem;
     }
+
     .photo-add-label {
       flex: 1;
       display: flex;
@@ -328,13 +362,20 @@
       cursor: pointer;
       transition: border-color .15s, color .15s, background .15s;
     }
-    .photo-add-label:hover { border-color: var(--purple); color: var(--purple); background: #f8f0ff; }
+
+    .photo-add-label:hover {
+      border-color: var(--purple);
+      color: var(--purple);
+      background: #f8f0ff;
+    }
+
     .gallery-uploading {
       text-align: center;
       font-size: .85rem;
       font-weight: 700;
       color: var(--purple);
     }
+
     .download-btn {
       display: flex;
       align-items: center;
@@ -352,19 +393,26 @@
       -webkit-tap-highlight-color: transparent;
       white-space: nowrap;
     }
-    .download-btn:hover, .download-btn:active { border-color: var(--pink); color: var(--pink); background: #fff0f5; }
+
+    .download-btn:hover,
+    .download-btn:active {
+      border-color: var(--pink);
+      color: var(--pink);
+      background: #fff0f5;
+    }
 
     /* ── ADD FIELD ── */
     .add-wrap {
       margin-top: 1.4rem;
       background: white;
       border-radius: 20px;
-      box-shadow: 0 4px 16px rgba(199,125,255,.15);
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .15);
       padding: .9rem 1rem;
       display: flex;
       gap: .6rem;
       align-items: center;
     }
+
     .add-wrap input {
       flex: 1;
       border: none;
@@ -375,7 +423,12 @@
       color: var(--text);
       background: transparent;
     }
-    .add-wrap input::placeholder { color: #cbb8de; font-weight: 600; }
+
+    .add-wrap input::placeholder {
+      color: #cbb8de;
+      font-weight: 600;
+    }
+
     .emoji-add-input {
       width: 2.4rem;
       font-size: 1.2rem;
@@ -386,6 +439,7 @@
       font-family: inherit;
       flex-shrink: 0;
     }
+
     .add-btn {
       background: linear-gradient(135deg, var(--pink), var(--purple));
       color: white;
@@ -399,9 +453,18 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: transform .15s;
+      transition: transform .15s, opacity .15s;
     }
-    .add-btn:active { transform: scale(.9); }
+
+    .add-btn:active {
+      transform: scale(.9);
+    }
+
+    .add-btn:disabled {
+      opacity: .55;
+      cursor: default;
+      transform: none;
+    }
 
     .all-done {
       display: none;
@@ -412,378 +475,1020 @@
       text-shadow: 1px 2px 0 var(--soft-pink);
       margin-top: 1.6rem;
     }
+
+    /* ── Loading state */
     .loading {
       text-align: center;
       color: #c0a8d8;
       font-weight: 700;
       padding: 2rem 0;
     }
-    .panel { display: none; }
-    .panel.active { display: block; }
+
+    /* ── Movie list */
+    #movie-list {
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+    }
+
+    .movie-item {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .12);
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      padding: .7rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .12s, box-shadow .12s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .movie-item:active {
+      transform: scale(.97);
+    }
+
+    .movie-item.watched {
+      background: linear-gradient(135deg, #fff0f9, #f3e8ff);
+    }
+
+    .movie-item.watched .movie-poster {
+      opacity: .6;
+    }
+
+    .movie-item.watched .movie-title {
+      color: #b088cc;
+      text-decoration: line-through;
+      text-decoration-color: var(--soft-pink);
+    }
+
+    .movie-item.watched .movie-year {
+      color: #cbb8de;
+    }
+
+    .movie-item.watched .check-box {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: white;
+    }
+
+    .movie-poster {
+      width: 55px;
+      height: 83px;
+      object-fit: cover;
+      border-radius: 10px;
+      flex-shrink: 0;
+      background: var(--soft-purple);
+      display: block;
+    }
+
+    .movie-poster-placeholder {
+      width: 55px;
+      height: 83px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--soft-pink), var(--soft-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .movie-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .movie-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.3;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .movie-year {
+      font-size: .85rem;
+      color: #b088cc;
+      font-weight: 600;
+      margin-top: .25rem;
+    }
+
+    .movie-msg {
+      text-align: center;
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--pink);
+      margin-top: .8rem;
+      min-height: 1.3rem;
+    }
+
+    /* ── Autocomplete suggestions */
+    .suggestions-box {
+      display: none;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 28px rgba(199, 125, 255, .22);
+      margin-top: .4rem;
+      overflow: hidden;
+    }
+
+    .suggestions-box.open {
+      display: block;
+    }
+
+    .suggestion-item {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      padding: .6rem .9rem;
+      cursor: pointer;
+      border-bottom: 1px solid #f5ecff;
+      transition: background .1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover,
+    .suggestion-item:active {
+      background: #fef6ff;
+    }
+
+    .suggestion-thumb {
+      width: 36px;
+      height: 54px;
+      object-fit: cover;
+      border-radius: 7px;
+      flex-shrink: 0;
+      background: var(--soft-purple);
+      display: block;
+    }
+
+    .suggestion-thumb-ph {
+      width: 36px;
+      height: 54px;
+      border-radius: 7px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--soft-pink), var(--soft-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .suggestion-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .suggestion-title {
+      font-size: .92rem;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .suggestion-meta {
+      font-size: .78rem;
+      color: #b088cc;
+      font-weight: 600;
+      margin-top: .1rem;
+    }
+
+    /* ── Confirm modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 44, 78, .4);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem 1.6rem 1.6rem;
+      max-width: 300px;
+      width: 100%;
+      box-shadow: 0 16px 48px rgba(199, 125, 255, .3);
+      text-align: center;
+      animation: modalPop .22s cubic-bezier(.34, 1.56, .64, 1) forwards;
+    }
+
+    @keyframes modalPop {
+      from {
+        transform: scale(.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.35rem;
+      color: var(--pink);
+      text-shadow: 1px 2px 0 var(--soft-pink);
+      margin-bottom: .45rem;
+    }
+
+    .modal-sub {
+      font-size: .9rem;
+      font-weight: 600;
+      color: #b088cc;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: .7rem;
+    }
+
+    .modal-btn {
+      flex: 1;
+      border: none;
+      border-radius: 14px;
+      padding: .75rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .12s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-btn:active {
+      transform: scale(.95);
+    }
+
+    .modal-cancel {
+      background: var(--soft-purple);
+      color: var(--purple);
+    }
+
+    .modal-confirm {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+    }
+
+    /* ── Dice button */
+    .dice-btn {
+      width: 100%;
+      border: none;
+      background: white;
+      border-radius: 16px;
+      padding: .7rem 1rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--purple);
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .12);
+      margin-bottom: 1.2rem;
+      transition: transform .12s, color .15s, background .15s;
+      -webkit-tap-highlight-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+    }
+
+    .dice-btn:hover {
+      background: #fef6ff;
+    }
+
+    .dice-btn:active {
+      transform: scale(.97);
+      color: var(--pink);
+    }
+
+    /* ── Random pick highlight */
+    @keyframes selectPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 157, .5);
+      }
+
+      50% {
+        box-shadow: 0 0 0 6px rgba(255, 107, 157, .2);
+      }
+    }
+
+    .selected {
+      outline: 2.5px solid var(--pink);
+      outline-offset: 2px;
+      animation: selectPulse .6s ease 2;
+    }
+
+    /* ── Date photo */
+    .photo-btn {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: .2rem .3rem;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity .15s;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .date-item:hover .photo-btn {
+      opacity: .55;
+    }
+
+    .photo-btn:hover,
+    .photo-btn:active {
+      opacity: 1 !important;
+    }
+
+    @media (hover: none) {
+      .photo-btn {
+        opacity: .4;
+      }
+    }
+
+    .date-thumb {
+      width: 38px;
+      height: 38px;
+      object-fit: cover;
+      border-radius: 9px;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: block;
+      transition: transform .12s;
+      box-shadow: 0 2px 8px rgba(199, 125, 255, .2);
+    }
+
+    .date-thumb:active {
+      transform: scale(.9);
+    }
+
+    /* Lightbox */
+    .photo-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .9);
+      z-index: 400;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+    }
+
+    .photo-lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      max-width: min(100%, 480px);
+    }
+
+    .lightbox-inner img {
+      max-width: 100%;
+      max-height: 72vh;
+      border-radius: 16px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .lightbox-actions {
+      display: flex;
+      gap: .6rem;
+    }
+
+    .lightbox-btn {
+      border: none;
+      border-radius: 50px;
+      padding: .55rem 1.1rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .88rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .12s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .lightbox-btn:active {
+      transform: scale(.94);
+    }
+
+    .lb-change {
+      background: rgba(255, 255, 255, .18);
+      color: white;
+    }
+
+    .lb-remove {
+      background: rgba(255, 107, 157, .85);
+      color: white;
+    }
+
+    .lb-close {
+      background: rgba(255, 255, 255, .1);
+      color: rgba(255, 255, 255, .65);
+    }
+
+    /* ── Theme toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: .9rem;
+      right: .9rem;
+      z-index: 300;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 14px rgba(199, 125, 255, .3);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, background .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .theme-toggle:active {
+      transform: scale(.88);
+    }
+
+    /* ── Dark mode */
+    [data-theme="dark"] {
+      --bg: #120c1e;
+      --text: #eddeff;
+      --soft-purple: #2e1f4a;
+      --soft-pink: #3a1a2e;
+    }
+
+    [data-theme="dark"] .subtitle {
+      color: #b088cc;
+    }
+
+    [data-theme="dark"] .tab-bar,
+    [data-theme="dark"] .progress-wrap,
+    [data-theme="dark"] .add-wrap,
+    [data-theme="dark"] .dice-btn,
+    [data-theme="dark"] .modal-card,
+    [data-theme="dark"] .suggestions-box,
+    [data-theme="dark"] .date-item,
+    [data-theme="dark"] .movie-item,
+    [data-theme="dark"] .check-box,
+    [data-theme="dark"] .theme-toggle {
+      background: #1e1332;
+    }
+
+    [data-theme="dark"] .date-item.done,
+    [data-theme="dark"] .movie-item.watched {
+      background: linear-gradient(135deg, #2a1428, #1f1040);
+    }
+
+    [data-theme="dark"] .suggestion-item {
+      border-bottom-color: #2e1f4a;
+    }
+
+    [data-theme="dark"] .suggestion-item:hover,
+    [data-theme="dark"] .suggestion-item:active {
+      background: #281a40;
+    }
+
+    [data-theme="dark"] .del-btn:hover,
+    [data-theme="dark"] .del-btn:active {
+      background: #281a40;
+    }
+
+    [data-theme="dark"] .tab-btn {
+      color: #9070b8;
+    }
+
+    [data-theme="dark"] .modal-backdrop {
+      background: rgba(0, 0, 0, .72);
+    }
+
+    [data-theme="dark"] .all-done {
+      text-shadow: none;
+    }
+
+    /* ── Notification bell */
+    .notif-btn {
+      position: fixed;
+      top: .9rem;
+      right: 3.6rem;
+      z-index: 300;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 14px rgba(199, 125, 255, .3);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, background .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .notif-btn:active {
+      transform: scale(.88);
+    }
+
+    .notif-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+    }
+
+    [data-theme="dark"] .notif-btn {
+      background: #1e1332;
+    }
+
+    [data-theme="dark"] .notif-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+    }
+
+    /* ── Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.8rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: var(--bg);
+      padding: .65rem 1.3rem;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      z-index: 500;
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+      pointer-events: none;
+      max-width: 90vw;
+      white-space: pre-wrap;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .15);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
   </style>
 </head>
+
 <body>
 
-<div class="wrapper">
-  <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
-  <h1>Us 💕</h1>
-  <p class="subtitle">our little world 🌸</p>
+  <button class="notif-btn" id="notifBtn" onclick="toggleNotif()" title="Notifications">🔔</button>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
-  <div class="tabs-main">
-    <button class="tab-main-btn active" id="main-tab-dates" onclick="switchMain('dates')">🗓️ Dates</button>
-    <button class="tab-main-btn" id="main-tab-movies" onclick="switchMain('movies')">🎬 Movies</button>
-  </div>
+  <div class="wrapper">
+    <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
+    <h1>Us 💕</h1>
+    <p class="subtitle">our little world 🌸</p>
 
-  <!-- DATES -->
-  <div class="panel active" id="panel-dates">
-    <div class="progress-wrap">
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="dateProgressFill"></div>
+    <!-- main tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="main-tab-dates" onclick="switchMain('dates')">🗓️ Dates</button>
+      <button class="tab-btn" id="main-tab-movies" onclick="switchMain('movies')">🎬 Movies</button>
+    </div>
+
+    <!-- DATES PANEL -->
+    <div id="panel-dates">
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-label" id="progressLabel">… / …</span>
       </div>
-      <span class="progress-label" id="dateProgressLabel">… / …</span>
+      <div id="date-list"><p class="loading">loading… 💕</p></div>
+      <div class="add-wrap">
+        <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="2" />
+        <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
+        <button class="add-btn" onclick="addDate()">+</button>
+      </div>
+      <div class="all-done" id="datesAllDone">we did everything!! 🎉 time to add more 😏</div>
     </div>
-    <div class="item-list" id="date-list"><p class="loading">loading… 💕</p></div>
-    <div class="add-wrap">
-      <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="2" />
-      <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
-      <button class="add-btn" onclick="addDate()">+</button>
+
+    <!-- MOVIES PANEL -->
+    <div id="panel-movies" style="display:none">
+      <div class="tab-bar" style="background:var(--soft-purple); box-shadow:none;">
+        <button class="tab-btn active" id="sub-tab-home" onclick="switchSub('home')">🏠 Home</button>
+        <button class="tab-btn" id="sub-tab-cinema" onclick="switchSub('cinema')">🎟️ Cinema</button>
+      </div>
+      <div id="movie-list"><p class="loading">loading… 💕</p></div>
+      <div class="add-wrap">
+        <input type="text" id="newMovieInput" placeholder="Add a movie…" maxlength="80" />
+        <button class="add-btn" onclick="addMovie()">+</button>
+      </div>
     </div>
-    <div class="all-done" id="datesAllDone">we did everything!! 🎉 time to add more 😏</div>
   </div>
 
-  <!-- MOVIES -->
-  <div class="panel" id="panel-movies">
-    <div class="tabs-sub">
-      <button class="tab-sub-btn active" id="sub-tab-home" onclick="switchSub('home')">🏠 Home</button>
-      <button class="tab-sub-btn" id="sub-tab-cinema" onclick="switchSub('cinema')">🎟️ Cinema</button>
-    </div>
-    <div class="item-list" id="movie-list"><p class="loading">loading… 💕</p></div>
-    <div class="add-wrap">
-      <input type="text" id="newMovieInput" placeholder="Add a movie…" maxlength="80" />
-      <button class="add-btn" onclick="addMovie()">+</button>
-    </div>
-  </div>
-</div>
+  <!-- hidden file input -->
+  <input type="file" id="photoFileInput" accept="image/*" style="display:none" />
 
-<!-- hidden file input -->
-<input type="file" id="photoFileInput" accept="image/*" style="display:none" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_ObhbiCf-dtbEKiqhYER1477bgP5fp7k",
+      authDomain: "baba-14bcd.firebaseapp.com",
+      projectId: "baba-14bcd",
+      storageBucket: "baba-14bcd.firebasestorage.app",
+      messagingSenderId: "906012500837",
+      appId: "1:906012500837:web:f2556643ef88d9e0f6778c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    const dateCol = db.collection('dates');
+    const galleryUnsubs = {};
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyA_ObhbiCf-dtbEKiqhYER1477bgP5fp7k",
-    authDomain: "baba-14bcd.firebaseapp.com",
-    projectId: "baba-14bcd",
-    storageBucket: "baba-14bcd.firebasestorage.app",
-    messagingSenderId: "906012500837",
-    appId: "1:906012500837:web:f2556643ef88d9e0f6778c"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const storage = firebase.storage();
+    // ── Default dates to seed on first load
+    const defaults = [
+      { text: 'Ikea date', emoji: '🛒', done: false },
+      { text: 'Adult play centre date', emoji: '🎮', done: false },
+      { text: 'Billiard date', emoji: '🎱', done: true },
+      { text: 'Hike date', emoji: '🥾', done: false },
+      { text: 'Sushi by the river date', emoji: '🍣', done: false },
+      { text: 'Late night drive date', emoji: '🚗', done: true },
+      { text: 'Clay date', emoji: '🏺', done: false },
+      { text: 'Bowling date', emoji: '🎳', done: false },
+      { text: 'Aquarium date', emoji: '🐠', done: false },
+      { text: 'Cuisine date', emoji: '🍽️', done: true },
+      { text: 'Painting date', emoji: '🎨', done: false },
+      { text: 'Board game date', emoji: '🎲', done: false },
+      { text: 'Escape room date', emoji: '🔐', done: false },
+      { text: 'Lego date', emoji: '🧱', done: true },
+      { text: 'Basketball match date', emoji: '🏀', done: true },
+      { text: 'Minigolf date', emoji: '⛳', done: false },
+    ];
 
-  // ── main tab
-  function switchMain(tab) {
-    document.getElementById('main-tab-dates').classList.toggle('active', tab === 'dates');
-    document.getElementById('main-tab-movies').classList.toggle('active', tab === 'movies');
-    document.getElementById('panel-dates').classList.toggle('active', tab === 'dates');
-    document.getElementById('panel-movies').classList.toggle('active', tab === 'movies');
-  }
-
-  // ══════════ DATES ══════════
-  const dateCol = db.collection('dates');
-  const defaults = [
-    { text: 'Ikea date',               emoji: '🛒',  done: false },
-    { text: 'Adult play centre date',  emoji: '🎮',  done: false },
-    { text: 'Billiard date',           emoji: '🎱',  done: true  },
-    { text: 'Hike date',               emoji: '🥾',  done: false },
-    { text: 'Sushi by the river date', emoji: '🍣',  done: false },
-    { text: 'Late night drive date',   emoji: '🚗',  done: true  },
-    { text: 'Clay date',               emoji: '🏺',  done: false },
-    { text: 'Bowling date',            emoji: '🎳',  done: false },
-    { text: 'Aquarium date',           emoji: '🐠',  done: false },
-    { text: 'Cuisine date',            emoji: '🍽️', done: true  },
-    { text: 'Painting date',           emoji: '🎨',  done: false },
-    { text: 'Board game date',         emoji: '🎲',  done: false },
-    { text: 'Escape room date',        emoji: '🔐',  done: false },
-    { text: 'Lego date',               emoji: '🧱',  done: true  },
-    { text: 'Basketball match date',   emoji: '🏀',  done: true  },
-    { text: 'Minigolf date',           emoji: '⛳',  done: false },
-  ];
-
-  dateCol.limit(1).get().then(snap => {
-    if (snap.empty) {
-      const batch = db.batch();
-      defaults.forEach((d, i) => batch.set(dateCol.doc(), { ...d, order: i }));
-      batch.commit();
+    // ── main tab switch
+    function switchMain(tab) {
+      document.getElementById('main-tab-dates').classList.toggle('active', tab === 'dates');
+      document.getElementById('main-tab-movies').classList.toggle('active', tab === 'movies');
+      document.getElementById('panel-dates').style.display = tab === 'dates' ? 'block' : 'none';
+      document.getElementById('panel-movies').style.display = tab === 'movies' ? 'block' : 'none';
     }
-  });
 
-  // track open gallery unsub functions
-  const galleryUnsubs = {};
-
-  dateCol.orderBy('order').onSnapshot(snap => {
-    const list = document.getElementById('date-list');
-    // remember which galleries are open
-    const openIds = new Set();
-    list.querySelectorAll('.gallery.open').forEach(g => openIds.add(g.dataset.docid));
-
-    list.innerHTML = '';
-    snap.forEach(doc => {
-      const d = doc.data();
-      const card = document.createElement('div');
-      card.className = 'date-card' + (d.done ? ' done' : '');
-      card.dataset.docid = doc.id;
-
-      // row
-      const row = document.createElement('div');
-      row.className = 'date-row';
-      row.innerHTML = `
-        <span class="check-box">✓</span>
-        <span class="date-text">${esc(d.text)}</span>
-        <span class="date-emoji">${d.emoji}</span>
-        <button class="photo-btn" title="Photos">📷</button>
-        <button class="del-btn" title="Remove">✕</button>
-      `;
-
-      // emoji edit
-      const emojiSpan = row.querySelector('.date-emoji');
-      emojiSpan.onclick = e => {
-        e.stopPropagation();
-        const inp = document.createElement('input');
-        inp.className = 'emoji-input';
-        inp.maxLength = 2;
-        inp.value = d.emoji;
-        emojiSpan.replaceWith(inp);
-        inp.focus();
-        const save = () => { dateCol.doc(doc.id).update({ emoji: inp.value.trim() || d.emoji }); };
-        inp.addEventListener('blur', save);
-        inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { save(); inp.blur(); } ev.stopPropagation(); });
-      };
-
-      // gallery section
-      const gallery = document.createElement('div');
-      gallery.className = 'gallery';
-      gallery.dataset.docid = doc.id;
-
-      // photo toggle btn
-      const photoBtn = row.querySelector('.photo-btn');
-      // load photo count for badge
-      dateCol.doc(doc.id).collection('photos').get().then(ps => {
-        if (ps.size > 0) { photoBtn.innerHTML = `📷 ${ps.size}`; photoBtn.classList.add('has-photos'); }
-      });
-      photoBtn.onclick = e => {
-        e.stopPropagation();
-        const isOpen = gallery.classList.contains('open');
-        if (isOpen) {
-          gallery.classList.remove('open');
-          photoBtn.classList.remove('open');
-          if (galleryUnsubs[doc.id]) { galleryUnsubs[doc.id](); delete galleryUnsubs[doc.id]; }
-        } else {
-          gallery.classList.add('open');
-          photoBtn.classList.add('open');
-          loadGallery(doc.id, gallery, photoBtn);
-        }
-      };
-
-      row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); dateCol.doc(doc.id).delete(); };
-      row.onclick = () => dateCol.doc(doc.id).update({ done: !d.done });
-
-      card.appendChild(row);
-      card.appendChild(gallery);
-      list.appendChild(card);
-
-      // re-open if it was open before re-render
-      if (openIds.has(doc.id)) {
-        gallery.classList.add('open');
-        photoBtn.classList.add('open');
-        loadGallery(doc.id, gallery, photoBtn);
+    // ── seed dates
+    dateCol.limit(1).get().then(snap => {
+      if (snap.empty) {
+        const batch = db.batch();
+        defaults.forEach((d, i) => batch.set(dateCol.doc(), { ...d, order: i }));
+        batch.commit();
       }
     });
 
-    let total = 0, done = 0;
-    snap.forEach(doc => { total++; if (doc.data().done) done++; });
-    document.getElementById('dateProgressFill').style.width = total ? (done / total * 100) + '%' : '0%';
-    document.getElementById('dateProgressLabel').textContent = done + ' / ' + total;
-    document.getElementById('datesAllDone').style.display = (total && done === total) ? 'block' : 'none';
-  });
-
-  function loadGallery(docId, galleryEl, photoBtn) {
-    if (galleryUnsubs[docId]) galleryUnsubs[docId]();
-    galleryUnsubs[docId] = dateCol.doc(docId).collection('photos').orderBy('ts').onSnapshot(snap => {
-      galleryEl.innerHTML = '';
-      const photos = [];
-      snap.forEach(d => photos.push(d.data().url));
-
-      // update badge
-      if (photos.length > 0) { photoBtn.innerHTML = `📷 ${photos.length}`; photoBtn.classList.add('has-photos'); }
-      else { photoBtn.innerHTML = '📷'; photoBtn.classList.remove('has-photos'); }
-
-      let currentIdx = 0;
-
-      if (photos.length > 0) {
-        // track
-        const track = document.createElement('div');
-        track.className = 'gallery-track';
-        photos.forEach(url => {
-          const slide = document.createElement('div');
-          slide.className = 'gallery-slide';
-          const img = document.createElement('img');
-          img.src = url;
-          img.loading = 'lazy';
-          slide.appendChild(img);
-          track.appendChild(slide);
-        });
-        galleryEl.appendChild(track);
-
-        // dots
-        if (photos.length > 1) {
-          const dotsEl = document.createElement('div');
-          dotsEl.className = 'gallery-dots';
-          photos.forEach((_, i) => {
-            const dot = document.createElement('span');
-            dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
-            dotsEl.appendChild(dot);
-          });
-          galleryEl.appendChild(dotsEl);
-
-          track.addEventListener('scroll', () => {
-            currentIdx = Math.round(track.scrollLeft / track.offsetWidth);
-            dotsEl.querySelectorAll('.gallery-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIdx));
-          }, { passive: true });
-        }
-      }
-
-      // action row: download + add photo
-      const actions = document.createElement('div');
-      actions.className = 'gallery-actions';
-      actions.onclick = e => e.stopPropagation();
-
-      if (photos.length > 0) {
-        const dlBtn = document.createElement('button');
-        dlBtn.className = 'download-btn';
-        dlBtn.innerHTML = '⬇ Save';
-        dlBtn.onclick = e => { e.stopPropagation(); downloadPhoto(photos[currentIdx]); };
-        actions.appendChild(dlBtn);
-      }
-
-      const label = document.createElement('label');
-      label.className = 'photo-add-label';
-      label.innerHTML = '📷 Add photo';
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = 'image/*';
-      fileInput.style.display = 'none';
-      fileInput.addEventListener('change', () => uploadPhoto(docId, fileInput, galleryEl, label));
-      label.appendChild(fileInput);
-      label.onclick = e => e.stopPropagation();
-      actions.appendChild(label);
-
-      galleryEl.appendChild(actions);
-    });
-  }
-
-  async function uploadPhoto(docId, input, galleryEl, label) {
-    const file = input.files[0];
-    if (!file) return;
-    label.innerHTML = '<span class="gallery-uploading">uploading… 💕</span>';
-    try {
-      const ref = storage.ref(`dates/${docId}/${Date.now()}_${file.name}`);
-      await ref.put(file);
-      const url = await ref.getDownloadURL();
-      await dateCol.doc(docId).collection('photos').add({ url, ts: Date.now() });
-    } catch (e) {
-      label.innerHTML = '📷 Add photo';
-    }
-    input.value = '';
-  }
-
-  function addDate() {
-    const input = document.getElementById('newDateInput');
-    const emojiInput = document.getElementById('newDateEmoji');
-    const text = input.value.trim();
-    if (!text) return;
-    const emoji = emojiInput.value.trim() || '💕';
-    dateCol.get().then(snap => dateCol.add({ text, emoji, done: false, order: snap.size }));
-    input.value = '';
-    emojiInput.value = '';
-  }
-  document.getElementById('newDateInput').addEventListener('keydown', e => { if (e.key === 'Enter') addDate(); });
-
-  // ══════════ MOVIES ══════════
-  let activeSub = 'home';
-  let movieUnsub = null;
-
-  function switchSub(sub) {
-    activeSub = sub;
-    document.getElementById('sub-tab-home').classList.toggle('active', sub === 'home');
-    document.getElementById('sub-tab-cinema').classList.toggle('active', sub === 'cinema');
-    loadMovies(sub);
-  }
-
-  function loadMovies(sub) {
-    if (movieUnsub) movieUnsub();
-    const col = db.collection('movies_' + sub);
-    const emoji = sub === 'home' ? '🍿' : '🎟️';
-    document.getElementById('movie-list').innerHTML = '<p class="loading">loading… 💕</p>';
-    movieUnsub = col.orderBy('order').onSnapshot(snap => {
-      const list = document.getElementById('movie-list');
-      if (snap.empty) { list.innerHTML = '<p class="loading">no movies yet — add one! 🍿</p>'; return; }
+    // ── dates real-time listener
+    dateCol.orderBy('order').onSnapshot(snap => {
+      const list = document.getElementById('date-list');
+      const openIds = new Set();
+      list.querySelectorAll('.gallery.open').forEach(g => openIds.add(g.dataset.docid));
       list.innerHTML = '';
+
       snap.forEach(doc => {
         const d = doc.data();
         const card = document.createElement('div');
         card.className = 'date-card' + (d.done ? ' done' : '');
+        card.dataset.docid = doc.id;
+
         const row = document.createElement('div');
         row.className = 'date-row';
         row.innerHTML = `
           <span class="check-box">✓</span>
           <span class="date-text">${esc(d.text)}</span>
-          <span class="date-emoji">${emoji}</span>
+          <span class="date-emoji">${d.emoji}</span>
+          <button class="photo-btn" title="Photos">📷</button>
           <button class="del-btn" title="Remove">✕</button>
         `;
-        row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); col.doc(doc.id).delete(); };
-        row.onclick = () => col.doc(doc.id).update({ done: !d.done });
+
+        // emoji edit on tap
+        const emojiSpan = row.querySelector('.date-emoji');
+        emojiSpan.onclick = e => {
+          e.stopPropagation();
+          const inp = document.createElement('input');
+          inp.className = 'emoji-input';
+          inp.maxLength = 2;
+          inp.value = d.emoji;
+          emojiSpan.replaceWith(inp);
+          inp.focus();
+          const save = () => dateCol.doc(doc.id).update({ emoji: inp.value.trim() || d.emoji });
+          inp.addEventListener('blur', save);
+          inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { save(); inp.blur(); } ev.stopPropagation(); });
+        };
+
+        // gallery section
+        const gallery = document.createElement('div');
+        gallery.className = 'gallery';
+        gallery.dataset.docid = doc.id;
+
+        // photo button toggle
+        const photoBtn = row.querySelector('.photo-btn');
+        dateCol.doc(doc.id).collection('photos').get().then(ps => {
+          if (ps.size > 0) { photoBtn.innerHTML = `📷 ${ps.size}`; photoBtn.classList.add('has-photos'); }
+        });
+        photoBtn.onclick = e => {
+          e.stopPropagation();
+          const isOpen = gallery.classList.contains('open');
+          if (isOpen) {
+            gallery.classList.remove('open');
+            photoBtn.classList.remove('open');
+            if (galleryUnsubs[doc.id]) { galleryUnsubs[doc.id](); delete galleryUnsubs[doc.id]; }
+          } else {
+            gallery.classList.add('open');
+            photoBtn.classList.add('open');
+            loadGallery(doc.id, gallery, photoBtn);
+          }
+        };
+
+        row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); dateCol.doc(doc.id).delete(); };
+        row.onclick = () => dateCol.doc(doc.id).update({ done: !d.done });
+
         card.appendChild(row);
+        card.appendChild(gallery);
         list.appendChild(card);
+
+        if (openIds.has(doc.id)) {
+          gallery.classList.add('open');
+          photoBtn.classList.add('open');
+          loadGallery(doc.id, gallery, photoBtn);
+        }
       });
+
+      let total = 0, done = 0;
+      snap.forEach(doc => { total++; if (doc.data().done) done++; });
+      document.getElementById('progressFill').style.width = total ? (done / total * 100) + '%' : '0%';
+      document.getElementById('progressLabel').textContent = done + ' / ' + total;
+      document.getElementById('datesAllDone').style.display = (total && done === total) ? 'block' : 'none';
     });
-  }
 
-  function addMovie() {
-    const input = document.getElementById('newMovieInput');
-    const text = input.value.trim();
-    if (!text) return;
-    const col = db.collection('movies_' + activeSub);
-    col.get().then(snap => col.add({ text, done: false, order: snap.size }));
-    input.value = '';
-  }
-  document.getElementById('newMovieInput').addEventListener('keydown', e => { if (e.key === 'Enter') addMovie(); });
-  loadMovies('home');
+    function loadGallery(docId, galleryEl, photoBtn) {
+      if (galleryUnsubs[docId]) galleryUnsubs[docId]();
+      galleryUnsubs[docId] = dateCol.doc(docId).collection('photos').orderBy('ts').onSnapshot(snap => {
+        galleryEl.innerHTML = '';
+        const photos = [];
+        snap.forEach(d => photos.push(d.data().url));
 
-  async function downloadPhoto(url) {
-    try {
-      const res = await fetch(url);
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = 'date-photo.jpg';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-    } catch {
-      window.open(url, '_blank');
+        // update badge
+        if (photos.length > 0) { photoBtn.innerHTML = `📷 ${photos.length}`; photoBtn.classList.add('has-photos'); }
+        else { photoBtn.innerHTML = '📷'; photoBtn.classList.remove('has-photos'); }
+
+        let currentIdx = 0;
+
+        if (photos.length > 0) {
+          // track
+          const track = document.createElement('div');
+          track.className = 'gallery-track';
+          photos.forEach(url => {
+            const slide = document.createElement('div');
+            slide.className = 'gallery-slide';
+            const img = document.createElement('img');
+            img.src = url;
+            img.loading = 'lazy';
+            slide.appendChild(img);
+            track.appendChild(slide);
+          });
+          galleryEl.appendChild(track);
+
+          // dots
+          if (photos.length > 1) {
+            const dotsEl = document.createElement('div');
+            dotsEl.className = 'gallery-dots';
+            photos.forEach((_, i) => {
+              const dot = document.createElement('span');
+              dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+              dotsEl.appendChild(dot);
+            });
+            galleryEl.appendChild(dotsEl);
+
+            track.addEventListener('scroll', () => {
+              currentIdx = Math.round(track.scrollLeft / track.offsetWidth);
+              dotsEl.querySelectorAll('.gallery-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIdx));
+            }, { passive: true });
+          }
+        }
+
+        // action row: download + add photo
+        const actions = document.createElement('div');
+        actions.className = 'gallery-actions';
+        actions.onclick = e => e.stopPropagation();
+
+        if (photos.length > 0) {
+          const dlBtn = document.createElement('button');
+          dlBtn.className = 'download-btn';
+          dlBtn.innerHTML = '⬇ Save';
+          dlBtn.onclick = e => { e.stopPropagation(); downloadPhoto(photos[currentIdx]); };
+          actions.appendChild(dlBtn);
+        }
+
+        const label = document.createElement('label');
+        label.className = 'photo-add-label';
+        label.innerHTML = '📷 Add photo';
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+        fileInput.addEventListener('change', () => uploadPhoto(docId, fileInput, galleryEl, label));
+        label.appendChild(fileInput);
+        label.onclick = e => e.stopPropagation();
+        actions.appendChild(label);
+
+        galleryEl.appendChild(actions);
+      });
     }
-  }
 
-  function esc(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-</script>
+    async function uploadPhoto(docId, input, galleryEl, label) {
+      const file = input.files[0];
+      if (!file) return;
+      label.innerHTML = '<span class="gallery-uploading">uploading… 💕</span>';
+      try {
+        const ref = storage.ref(`dates/${docId}/${Date.now()}_${file.name}`);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        await dateCol.doc(docId).collection('photos').add({ url, ts: Date.now() });
+      } catch (e) {
+        label.innerHTML = '📷 Add photo';
+      }
+      input.value = '';
+    }
+
+    function addDate() {
+      const input = document.getElementById('newDateInput');
+      const emojiInput = document.getElementById('newDateEmoji');
+      const text = input.value.trim();
+      if (!text) return;
+      const emoji = emojiInput.value.trim() || '💕';
+      dateCol.get().then(snap => dateCol.add({ text, emoji, done: false, order: snap.size }));
+      input.value = '';
+      emojiInput.value = '';
+    }
+    document.getElementById('newDateInput').addEventListener('keydown', e => { if (e.key === 'Enter') addDate(); });
+
+    // ── movies
+    let activeSub = 'home';
+    let movieUnsub = null;
+
+    function switchSub(sub) {
+      activeSub = sub;
+      document.getElementById('sub-tab-home').classList.toggle('active', sub === 'home');
+      document.getElementById('sub-tab-cinema').classList.toggle('active', sub === 'cinema');
+      loadMovies(sub);
+    }
+
+    function loadMovies(sub) {
+      if (movieUnsub) movieUnsub();
+      const mcol = db.collection('movies_' + sub);
+      const emoji = sub === 'home' ? '🍿' : '🎟️';
+      const list = document.getElementById('movie-list');
+      list.innerHTML = '<p class="loading">loading… 💕</p>';
+      movieUnsub = mcol.orderBy('order').onSnapshot(snap => {
+        list.innerHTML = '';
+        if (snap.empty) { list.innerHTML = '<p class="loading">no movies yet — add one! 🍿</p>'; return; }
+        snap.forEach(doc => {
+          const d = doc.data();
+          const card = document.createElement('div');
+          card.className = 'date-card' + (d.done ? ' done' : '');
+          const row = document.createElement('div');
+          row.className = 'date-row';
+          row.innerHTML = `
+            <span class="check-box">✓</span>
+            <span class="date-text">${esc(d.text)}</span>
+            <span class="date-emoji">${emoji}</span>
+            <button class="del-btn" title="Remove">✕</button>
+          `;
+          row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); mcol.doc(doc.id).delete(); };
+          row.onclick = () => mcol.doc(doc.id).update({ done: !d.done });
+          card.appendChild(row);
+          list.appendChild(card);
+        });
+      });
+    }
+
+    function addMovie() {
+      const input = document.getElementById('newMovieInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const mcol = db.collection('movies_' + activeSub);
+      mcol.get().then(snap => mcol.add({ text, done: false, order: snap.size }));
+      input.value = '';
+    }
+    document.getElementById('newMovieInput').addEventListener('keydown', e => { if (e.key === 'Enter') addMovie(); });
+    loadMovies('home');
+
+    // ── Download photo
+    async function downloadPhoto(url) {
+      try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'date-photo.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      } catch {
+        window.open(url, '_blank');
+      }
+    }
+
+    // ── Theme toggle
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const next = isDark ? null : 'dark';
+      if (next) document.documentElement.setAttribute('data-theme', next);
+      else document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('baba-theme', next || '');
+      document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+    }
+    // set correct icon on load
+    if (localStorage.getItem('baba-theme') === 'dark') {
+      document.getElementById('themeToggle').textContent = '☀️';
+    }
+
+    // ── Notification bell
+    const VAPID_PUBLIC = 'BJmTB2kh9NiPFFvCFf0TLoHBRjjYRb8Z7zWWod6orY5BpaY1es7wrNsriqi4eiOUz-AmIogjR_6CpwwkPQ2WtQE';
+
+    async function toggleNotif() {
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        alert('Notifications not supported on this browser.');
+        return;
+      }
+      const btn = document.getElementById('notifBtn');
+      const isActive = btn.classList.contains('active');
+      if (isActive) {
+        // unsubscribe
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) {
+          const key = btoa(JSON.stringify(sub.endpoint));
+          await db.collection('push_subscriptions').doc(key).delete();
+          await sub.unsubscribe();
+        }
+        btn.classList.remove('active');
+        btn.textContent = '🔔';
+      } else {
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') return;
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: VAPID_PUBLIC,
+        });
+        const key = btoa(JSON.stringify(sub.endpoint));
+        await db.collection('push_subscriptions').doc(key).set({ subscription: sub.toJSON() });
+        btn.classList.add('active');
+        btn.textContent = '🔔';
+      }
+    }
+
+    // restore bell state on load
+    (async () => {
+      if (!('serviceWorker' in navigator)) return;
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) document.getElementById('notifBtn').classList.add('active');
+      } catch {}
+    })();
+
+    // ── Escape HTML
+    function esc(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+  </script>
 </body>
+
 </html>

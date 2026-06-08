@@ -9,6 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap"
     rel="stylesheet" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff6b9d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="baba 💕">
+  <link rel="apple-touch-icon" href="img/hehe2.jpg">
+  <script>(function(){var t=localStorage.getItem('baba-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
   <style>
     *,
     *::before,
@@ -35,43 +43,6 @@
       background-color: var(--bg);
       color: var(--text);
       overflow-x: hidden;
-    }
-
-    /* ── FLOATING HEARTS BACKGROUND ── */
-    .hearts-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .heart {
-      position: absolute;
-      bottom: -60px;
-      font-size: 1.4rem;
-      animation: floatUp linear infinite;
-      opacity: 0;
-    }
-
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) rotate(-10deg);
-        opacity: 0;
-      }
-
-      10% {
-        opacity: 0.6;
-      }
-
-      90% {
-        opacity: 0.4;
-      }
-
-      100% {
-        transform: translateY(-110vh) rotate(10deg);
-        opacity: 0;
-      }
     }
 
     /* ── PAGES ── */
@@ -375,13 +346,48 @@
       padding-top: 1.5rem;
       font-weight: 600;
     }
+
+    /* ── Theme toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: .9rem;
+      right: .9rem;
+      z-index: 300;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 14px rgba(199,125,255,.3);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, background .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .theme-toggle:active { transform: scale(.88); }
+
+    /* ── Dark mode */
+    [data-theme="dark"] {
+      --bg: #120c1e;
+      --text: #eddeff;
+      --soft-purple: #2e1f4a;
+      --soft-pink: #3a1a2e;
+    }
+    [data-theme="dark"] .subtitle,
+    [data-theme="dark"] .yes-sub { color: #b088cc; }
+    [data-theme="dark"] .card,
+    [data-theme="dark"] .theme-toggle { background: #1e1332; }
+    [data-theme="dark"] .btn-no { background: #1e1332; color: #9070b8; border-color: #2e1f4a; }
+    [data-theme="dark"] #page-yes { background: linear-gradient(160deg, #120c1e 0%, #1a0d30 100%); }
   </style>
 </head>
 
 <body>
 
-  <!-- Floating hearts bg -->
-  <div class="hearts-bg" id="heartsBg"></div>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
   <!-- ═══════════════ PAGE 1 — intro ═══════════════ -->
   <div class="page active" id="page-1">
@@ -475,21 +481,22 @@
   </div>
 
   <script>
-    // ── Floating hearts
-    const emojis = ['💗', '💜', '💕', '✨', '🌸', '💫', '💖'];
-    const bg = document.getElementById('heartsBg');
-    for (let i = 0; i < 18; i++) {
-      const el = document.createElement('span');
-      el.className = 'heart';
-      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      el.style.cssText = `
-      left: ${Math.random() * 100}%;
-      font-size: ${.8 + Math.random() * 1.2}rem;
-      animation-duration: ${6 + Math.random() * 8}s;
-      animation-delay: ${Math.random() * 8}s;
-    `;
-      bg.appendChild(el);
+    // ── Service worker
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+
+    // ── Theme toggle
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+      const m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = theme === 'dark' ? '#120c1e' : '#ff6b9d';
     }
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('baba-theme', next);
+      applyTheme(next);
+    }
+    applyTheme(localStorage.getItem('baba-theme') || 'light');
 
     // ── Page navigation
     function goTo(id) {
