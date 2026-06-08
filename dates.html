@@ -27,26 +27,6 @@
       overflow-x: hidden;
     }
 
-    .hearts-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-    .heart {
-      position: absolute;
-      bottom: -60px;
-      animation: floatUp linear infinite;
-      opacity: 0;
-    }
-    @keyframes floatUp {
-      0%   { transform: translateY(0) rotate(-10deg); opacity: 0; }
-      10%  { opacity: 0.5; }
-      90%  { opacity: 0.3; }
-      100% { transform: translateY(-110vh) rotate(10deg); opacity: 0; }
-    }
-
     .wrapper {
       position: relative;
       z-index: 1;
@@ -68,9 +48,68 @@
       font-size: 1rem;
       font-weight: 600;
       color: #7b5ea7;
-      margin-bottom: 1.6rem;
+      margin-bottom: 1.4rem;
     }
 
+    /* ── MAIN TABS ── */
+    .tabs-main {
+      display: flex;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(199,125,255,.15);
+      padding: .3rem;
+      margin-bottom: 1.4rem;
+      gap: .3rem;
+    }
+    .tab-main-btn {
+      flex: 1;
+      padding: .75rem;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      cursor: pointer;
+      background: transparent;
+      color: #c0a8d8;
+      transition: background .2s, color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-main-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+    }
+
+    /* ── SUB TABS ── */
+    .tabs-sub {
+      display: flex;
+      background: var(--soft-purple);
+      border-radius: 14px;
+      padding: .25rem;
+      margin-bottom: 1.2rem;
+      gap: .25rem;
+    }
+    .tab-sub-btn {
+      flex: 1;
+      padding: .55rem;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+      background: transparent;
+      color: #9b7cc0;
+      transition: background .2s, color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab-sub-btn.active {
+      background: white;
+      color: var(--purple);
+      box-shadow: 0 2px 8px rgba(199,125,255,.2);
+    }
+
+    /* ── PROGRESS ── */
     .progress-wrap {
       background: white;
       border-radius: 50px;
@@ -102,25 +141,27 @@
       white-space: nowrap;
     }
 
-    /* list */
-    #date-list { display: flex; flex-direction: column; gap: .7rem; }
+    /* ── DATE CARD (wraps row + gallery) ── */
+    .item-list { display: flex; flex-direction: column; gap: .7rem; }
 
-    .date-item {
+    .date-card {
       background: white;
       border-radius: 16px;
       box-shadow: 0 4px 16px rgba(199,125,255,.12);
+      overflow: hidden;
+      transition: box-shadow .2s;
+    }
+    .date-card.done { background: linear-gradient(135deg, #fff0f9, #f3e8ff); }
+
+    /* ── DATE ROW ── */
+    .date-row {
       display: flex;
       align-items: center;
       gap: .9rem;
       padding: .9rem 1rem;
       cursor: pointer;
-      transition: transform .12s, box-shadow .12s;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-    }
-    .date-item:active { transform: scale(.97); }
-    .date-item.done {
-      background: linear-gradient(135deg, #fff0f9, #f3e8ff);
     }
 
     .check-box {
@@ -137,7 +178,7 @@
       transition: background .2s, border-color .2s, color .2s;
       background: white;
     }
-    .date-item.done .check-box {
+    .date-card.done .check-box {
       background: linear-gradient(135deg, var(--pink), var(--purple));
       border-color: transparent;
       color: white;
@@ -151,13 +192,52 @@
       line-height: 1.3;
       transition: color .2s;
     }
-    .date-item.done .date-text {
+    .date-card.done .date-text {
       color: #b088cc;
       text-decoration: line-through;
       text-decoration-color: var(--soft-pink);
     }
 
-    .date-emoji { font-size: 1.4rem; }
+    .date-emoji {
+      font-size: 1.3rem;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: .1rem .2rem;
+      transition: background .15s;
+    }
+    .date-emoji:hover { background: var(--soft-purple); }
+
+    .emoji-input {
+      width: 2.4rem;
+      font-size: 1.3rem;
+      text-align: center;
+      border: 2px solid var(--soft-purple);
+      border-radius: 8px;
+      outline: none;
+      background: white;
+      padding: .1rem;
+    }
+
+    /* photo toggle button */
+    .photo-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: .8rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      color: #c0a8d8;
+      padding: .2rem .4rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: .2rem;
+      transition: color .15s, background .15s;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+    }
+    .photo-btn:hover, .photo-btn.has-photos { color: var(--purple); }
+    .photo-btn.open { color: var(--pink); background: #fff0f5; }
 
     .del-btn {
       background: none;
@@ -173,7 +253,108 @@
     }
     .del-btn:hover, .del-btn:active { color: var(--pink); background: #fff0f5; }
 
-    /* add new */
+    /* ── GALLERY ── */
+    .gallery {
+      display: none;
+      flex-direction: column;
+      border-top: 1.5px solid var(--soft-purple);
+      padding: .8rem;
+      gap: .6rem;
+    }
+    .gallery.open { display: flex; }
+
+    .gallery-track {
+      display: flex;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      border-radius: 12px;
+      gap: 0;
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+
+    .gallery-slide {
+      flex-shrink: 0;
+      width: 100%;
+      scroll-snap-align: start;
+      aspect-ratio: 4 / 3;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--soft-purple);
+      position: relative;
+    }
+    .gallery-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* dots */
+    .gallery-dots {
+      display: flex;
+      justify-content: center;
+      gap: .4rem;
+    }
+    .gallery-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--soft-purple);
+      transition: background .2s, transform .2s;
+    }
+    .gallery-dot.active {
+      background: var(--pink);
+      transform: scale(1.25);
+    }
+
+    /* add photo button */
+    .gallery-actions {
+      display: flex;
+      gap: .5rem;
+    }
+    .photo-add-label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      padding: .6rem;
+      border-radius: 12px;
+      border: 2px dashed var(--soft-purple);
+      color: #c0a8d8;
+      font-weight: 800;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .photo-add-label:hover { border-color: var(--purple); color: var(--purple); background: #f8f0ff; }
+    .gallery-uploading {
+      text-align: center;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--purple);
+    }
+    .download-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .3rem;
+      padding: .6rem .9rem;
+      border-radius: 12px;
+      border: 2px solid var(--soft-purple);
+      background: white;
+      color: #c0a8d8;
+      font-weight: 800;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+    }
+    .download-btn:hover, .download-btn:active { border-color: var(--pink); color: var(--pink); background: #fff0f5; }
+
+    /* ── ADD FIELD ── */
     .add-wrap {
       margin-top: 1.4rem;
       background: white;
@@ -195,6 +376,16 @@
       background: transparent;
     }
     .add-wrap input::placeholder { color: #cbb8de; font-weight: 600; }
+    .emoji-add-input {
+      width: 2.4rem;
+      font-size: 1.2rem;
+      text-align: center;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
     .add-btn {
       background: linear-gradient(135deg, var(--pink), var(--purple));
       color: white;
@@ -221,50 +412,67 @@
       text-shadow: 1px 2px 0 var(--soft-pink);
       margin-top: 1.6rem;
     }
-
-    /* loading state */
     .loading {
       text-align: center;
       color: #c0a8d8;
       font-weight: 700;
       padding: 2rem 0;
     }
+    .panel { display: none; }
+    .panel.active { display: block; }
   </style>
 </head>
 <body>
 
-<div class="hearts-bg" id="heartsBg"></div>
-
 <div class="wrapper">
   <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
-  <h1>Our dates 🗓️</h1>
-  <p class="subtitle">tick them off as we go 💕</p>
+  <h1>Us 💕</h1>
+  <p class="subtitle">our little world 🌸</p>
 
-  <div class="progress-wrap">
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progressFill"></div>
+  <div class="tabs-main">
+    <button class="tab-main-btn active" id="main-tab-dates" onclick="switchMain('dates')">🗓️ Dates</button>
+    <button class="tab-main-btn" id="main-tab-movies" onclick="switchMain('movies')">🎬 Movies</button>
+  </div>
+
+  <!-- DATES -->
+  <div class="panel active" id="panel-dates">
+    <div class="progress-wrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="dateProgressFill"></div>
+      </div>
+      <span class="progress-label" id="dateProgressLabel">… / …</span>
     </div>
-    <span class="progress-label" id="progressLabel">… / …</span>
+    <div class="item-list" id="date-list"><p class="loading">loading… 💕</p></div>
+    <div class="add-wrap">
+      <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="2" />
+      <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
+      <button class="add-btn" onclick="addDate()">+</button>
+    </div>
+    <div class="all-done" id="datesAllDone">we did everything!! 🎉 time to add more 😏</div>
   </div>
 
-  <div id="date-list">
-    <p class="loading">loading… 💕</p>
+  <!-- MOVIES -->
+  <div class="panel" id="panel-movies">
+    <div class="tabs-sub">
+      <button class="tab-sub-btn active" id="sub-tab-home" onclick="switchSub('home')">🏠 Home</button>
+      <button class="tab-sub-btn" id="sub-tab-cinema" onclick="switchSub('cinema')">🎟️ Cinema</button>
+    </div>
+    <div class="item-list" id="movie-list"><p class="loading">loading… 💕</p></div>
+    <div class="add-wrap">
+      <input type="text" id="newMovieInput" placeholder="Add a movie…" maxlength="80" />
+      <button class="add-btn" onclick="addMovie()">+</button>
+    </div>
   </div>
-
-  <div class="add-wrap">
-    <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
-    <button class="add-btn" onclick="addDate()">+</button>
-  </div>
-
-  <div class="all-done" id="allDone">we did everything!! 🎉 time to add more 😏</div>
 </div>
 
-<!-- Firebase compat CDN -->
+<!-- hidden file input -->
+<input type="file" id="photoFileInput" accept="image/*" style="display:none" />
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <script>
-  // ── Firebase init
   const firebaseConfig = {
     apiKey: "AIzaSyA_ObhbiCf-dtbEKiqhYER1477bgP5fp7k",
     authDomain: "baba-14bcd.firebaseapp.com",
@@ -275,90 +483,307 @@
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
-  const col = db.collection('dates');
+  const storage = firebase.storage();
 
-  // ── Default dates to seed on first load
+  // ── main tab
+  function switchMain(tab) {
+    document.getElementById('main-tab-dates').classList.toggle('active', tab === 'dates');
+    document.getElementById('main-tab-movies').classList.toggle('active', tab === 'movies');
+    document.getElementById('panel-dates').classList.toggle('active', tab === 'dates');
+    document.getElementById('panel-movies').classList.toggle('active', tab === 'movies');
+  }
+
+  // ══════════ DATES ══════════
+  const dateCol = db.collection('dates');
   const defaults = [
-    { text: 'Ikea date',              emoji: '🛒',  done: false },
-    { text: 'Adult play centre date', emoji: '🎮',  done: false },
-    { text: 'Billiard date',          emoji: '🎱',  done: true  },
-    { text: 'Hike date',              emoji: '🥾',  done: false },
-    { text: 'Sushi by the river date',emoji: '🍣',  done: false },
-    { text: 'Late night drive date',  emoji: '🚗',  done: true  },
-    { text: 'Clay date',              emoji: '🏺',  done: false },
-    { text: 'Bowling date',           emoji: '🎳',  done: false },
-    { text: 'Aquarium date',          emoji: '🐠',  done: false },
-    { text: 'Cuisine date',           emoji: '🍽️', done: true  },
-    { text: 'Painting date',          emoji: '🎨',  done: false },
-    { text: 'Board game date',        emoji: '🎲',  done: false },
-    { text: 'Escape room date',       emoji: '🔐',  done: false },
-    { text: 'Lego date',              emoji: '🧱',  done: true  },
-    { text: 'Basketball match date',  emoji: '🏀',  done: true  },
-    { text: 'Minigolf date',          emoji: '⛳',  done: false },
+    { text: 'Ikea date',               emoji: '🛒',  done: false },
+    { text: 'Adult play centre date',  emoji: '🎮',  done: false },
+    { text: 'Billiard date',           emoji: '🎱',  done: true  },
+    { text: 'Hike date',               emoji: '🥾',  done: false },
+    { text: 'Sushi by the river date', emoji: '🍣',  done: false },
+    { text: 'Late night drive date',   emoji: '🚗',  done: true  },
+    { text: 'Clay date',               emoji: '🏺',  done: false },
+    { text: 'Bowling date',            emoji: '🎳',  done: false },
+    { text: 'Aquarium date',           emoji: '🐠',  done: false },
+    { text: 'Cuisine date',            emoji: '🍽️', done: true  },
+    { text: 'Painting date',           emoji: '🎨',  done: false },
+    { text: 'Board game date',         emoji: '🎲',  done: false },
+    { text: 'Escape room date',        emoji: '🔐',  done: false },
+    { text: 'Lego date',               emoji: '🧱',  done: true  },
+    { text: 'Basketball match date',   emoji: '🏀',  done: true  },
+    { text: 'Minigolf date',           emoji: '⛳',  done: false },
   ];
 
-  // ── Seed if collection is empty
-  col.limit(1).get().then(snap => {
+  dateCol.limit(1).get().then(snap => {
     if (snap.empty) {
       const batch = db.batch();
-      defaults.forEach((d, i) => {
-        batch.set(col.doc(), { ...d, order: i });
-      });
+      defaults.forEach((d, i) => batch.set(dateCol.doc(), { ...d, order: i }));
       batch.commit();
     }
   });
 
-  // ── Real-time listener — updates for both users instantly
-  col.orderBy('order').onSnapshot(snap => {
+  // track open gallery unsub functions
+  const galleryUnsubs = {};
+
+  dateCol.orderBy('order').onSnapshot(snap => {
     const list = document.getElementById('date-list');
+    // remember which galleries are open
+    const openIds = new Set();
+    list.querySelectorAll('.gallery.open').forEach(g => openIds.add(g.dataset.docid));
+
     list.innerHTML = '';
     snap.forEach(doc => {
       const d = doc.data();
-      const el = document.createElement('div');
-      el.className = 'date-item' + (d.done ? ' done' : '');
-      el.innerHTML = `
+      const card = document.createElement('div');
+      card.className = 'date-card' + (d.done ? ' done' : '');
+      card.dataset.docid = doc.id;
+
+      // row
+      const row = document.createElement('div');
+      row.className = 'date-row';
+      row.innerHTML = `
         <span class="check-box">✓</span>
         <span class="date-text">${esc(d.text)}</span>
         <span class="date-emoji">${d.emoji}</span>
+        <button class="photo-btn" title="Photos">📷</button>
         <button class="del-btn" title="Remove">✕</button>
       `;
-      el.querySelector('.del-btn').onclick = e => {
-        e.stopPropagation();
-        col.doc(doc.id).delete();
-      };
-      el.onclick = () => col.doc(doc.id).update({ done: !d.done });
-      list.appendChild(el);
-    });
-    updateProgress(snap);
-  });
 
-  function updateProgress(snap) {
+      // emoji edit
+      const emojiSpan = row.querySelector('.date-emoji');
+      emojiSpan.onclick = e => {
+        e.stopPropagation();
+        const inp = document.createElement('input');
+        inp.className = 'emoji-input';
+        inp.maxLength = 2;
+        inp.value = d.emoji;
+        emojiSpan.replaceWith(inp);
+        inp.focus();
+        const save = () => { dateCol.doc(doc.id).update({ emoji: inp.value.trim() || d.emoji }); };
+        inp.addEventListener('blur', save);
+        inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { save(); inp.blur(); } ev.stopPropagation(); });
+      };
+
+      // gallery section
+      const gallery = document.createElement('div');
+      gallery.className = 'gallery';
+      gallery.dataset.docid = doc.id;
+
+      // photo toggle btn
+      const photoBtn = row.querySelector('.photo-btn');
+      // load photo count for badge
+      dateCol.doc(doc.id).collection('photos').get().then(ps => {
+        if (ps.size > 0) { photoBtn.innerHTML = `📷 ${ps.size}`; photoBtn.classList.add('has-photos'); }
+      });
+      photoBtn.onclick = e => {
+        e.stopPropagation();
+        const isOpen = gallery.classList.contains('open');
+        if (isOpen) {
+          gallery.classList.remove('open');
+          photoBtn.classList.remove('open');
+          if (galleryUnsubs[doc.id]) { galleryUnsubs[doc.id](); delete galleryUnsubs[doc.id]; }
+        } else {
+          gallery.classList.add('open');
+          photoBtn.classList.add('open');
+          loadGallery(doc.id, gallery, photoBtn);
+        }
+      };
+
+      row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); dateCol.doc(doc.id).delete(); };
+      row.onclick = () => dateCol.doc(doc.id).update({ done: !d.done });
+
+      card.appendChild(row);
+      card.appendChild(gallery);
+      list.appendChild(card);
+
+      // re-open if it was open before re-render
+      if (openIds.has(doc.id)) {
+        gallery.classList.add('open');
+        photoBtn.classList.add('open');
+        loadGallery(doc.id, gallery, photoBtn);
+      }
+    });
+
     let total = 0, done = 0;
     snap.forEach(doc => { total++; if (doc.data().done) done++; });
-    document.getElementById('progressFill').style.width = total ? (done / total * 100) + '%' : '0%';
-    document.getElementById('progressLabel').textContent = done + ' / ' + total;
-    document.getElementById('allDone').style.display = (total && done === total) ? 'block' : 'none';
-  }
-
-  // ── Add new date
-  function addDate() {
-    const input = document.getElementById('newDateInput');
-    const text = input.value.trim();
-    if (!text) return;
-    col.get().then(snap => {
-      col.add({ text, emoji: '💕', done: false, order: snap.size });
-    });
-    input.value = '';
-  }
-  document.getElementById('newDateInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addDate();
+    document.getElementById('dateProgressFill').style.width = total ? (done / total * 100) + '%' : '0%';
+    document.getElementById('dateProgressLabel').textContent = done + ' / ' + total;
+    document.getElementById('datesAllDone').style.display = (total && done === total) ? 'block' : 'none';
   });
 
-  // ── Escape HTML
+  function loadGallery(docId, galleryEl, photoBtn) {
+    if (galleryUnsubs[docId]) galleryUnsubs[docId]();
+    galleryUnsubs[docId] = dateCol.doc(docId).collection('photos').orderBy('ts').onSnapshot(snap => {
+      galleryEl.innerHTML = '';
+      const photos = [];
+      snap.forEach(d => photos.push(d.data().url));
+
+      // update badge
+      if (photos.length > 0) { photoBtn.innerHTML = `📷 ${photos.length}`; photoBtn.classList.add('has-photos'); }
+      else { photoBtn.innerHTML = '📷'; photoBtn.classList.remove('has-photos'); }
+
+      let currentIdx = 0;
+
+      if (photos.length > 0) {
+        // track
+        const track = document.createElement('div');
+        track.className = 'gallery-track';
+        photos.forEach(url => {
+          const slide = document.createElement('div');
+          slide.className = 'gallery-slide';
+          const img = document.createElement('img');
+          img.src = url;
+          img.loading = 'lazy';
+          slide.appendChild(img);
+          track.appendChild(slide);
+        });
+        galleryEl.appendChild(track);
+
+        // dots
+        if (photos.length > 1) {
+          const dotsEl = document.createElement('div');
+          dotsEl.className = 'gallery-dots';
+          photos.forEach((_, i) => {
+            const dot = document.createElement('span');
+            dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+            dotsEl.appendChild(dot);
+          });
+          galleryEl.appendChild(dotsEl);
+
+          track.addEventListener('scroll', () => {
+            currentIdx = Math.round(track.scrollLeft / track.offsetWidth);
+            dotsEl.querySelectorAll('.gallery-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentIdx));
+          }, { passive: true });
+        }
+      }
+
+      // action row: download + add photo
+      const actions = document.createElement('div');
+      actions.className = 'gallery-actions';
+      actions.onclick = e => e.stopPropagation();
+
+      if (photos.length > 0) {
+        const dlBtn = document.createElement('button');
+        dlBtn.className = 'download-btn';
+        dlBtn.innerHTML = '⬇ Save';
+        dlBtn.onclick = e => { e.stopPropagation(); downloadPhoto(photos[currentIdx]); };
+        actions.appendChild(dlBtn);
+      }
+
+      const label = document.createElement('label');
+      label.className = 'photo-add-label';
+      label.innerHTML = '📷 Add photo';
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.style.display = 'none';
+      fileInput.addEventListener('change', () => uploadPhoto(docId, fileInput, galleryEl, label));
+      label.appendChild(fileInput);
+      label.onclick = e => e.stopPropagation();
+      actions.appendChild(label);
+
+      galleryEl.appendChild(actions);
+    });
+  }
+
+  async function uploadPhoto(docId, input, galleryEl, label) {
+    const file = input.files[0];
+    if (!file) return;
+    label.innerHTML = '<span class="gallery-uploading">uploading… 💕</span>';
+    try {
+      const ref = storage.ref(`dates/${docId}/${Date.now()}_${file.name}`);
+      await ref.put(file);
+      const url = await ref.getDownloadURL();
+      await dateCol.doc(docId).collection('photos').add({ url, ts: Date.now() });
+    } catch (e) {
+      label.innerHTML = '📷 Add photo';
+    }
+    input.value = '';
+  }
+
+  function addDate() {
+    const input = document.getElementById('newDateInput');
+    const emojiInput = document.getElementById('newDateEmoji');
+    const text = input.value.trim();
+    if (!text) return;
+    const emoji = emojiInput.value.trim() || '💕';
+    dateCol.get().then(snap => dateCol.add({ text, emoji, done: false, order: snap.size }));
+    input.value = '';
+    emojiInput.value = '';
+  }
+  document.getElementById('newDateInput').addEventListener('keydown', e => { if (e.key === 'Enter') addDate(); });
+
+  // ══════════ MOVIES ══════════
+  let activeSub = 'home';
+  let movieUnsub = null;
+
+  function switchSub(sub) {
+    activeSub = sub;
+    document.getElementById('sub-tab-home').classList.toggle('active', sub === 'home');
+    document.getElementById('sub-tab-cinema').classList.toggle('active', sub === 'cinema');
+    loadMovies(sub);
+  }
+
+  function loadMovies(sub) {
+    if (movieUnsub) movieUnsub();
+    const col = db.collection('movies_' + sub);
+    const emoji = sub === 'home' ? '🍿' : '🎟️';
+    document.getElementById('movie-list').innerHTML = '<p class="loading">loading… 💕</p>';
+    movieUnsub = col.orderBy('order').onSnapshot(snap => {
+      const list = document.getElementById('movie-list');
+      if (snap.empty) { list.innerHTML = '<p class="loading">no movies yet — add one! 🍿</p>'; return; }
+      list.innerHTML = '';
+      snap.forEach(doc => {
+        const d = doc.data();
+        const card = document.createElement('div');
+        card.className = 'date-card' + (d.done ? ' done' : '');
+        const row = document.createElement('div');
+        row.className = 'date-row';
+        row.innerHTML = `
+          <span class="check-box">✓</span>
+          <span class="date-text">${esc(d.text)}</span>
+          <span class="date-emoji">${emoji}</span>
+          <button class="del-btn" title="Remove">✕</button>
+        `;
+        row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); col.doc(doc.id).delete(); };
+        row.onclick = () => col.doc(doc.id).update({ done: !d.done });
+        card.appendChild(row);
+        list.appendChild(card);
+      });
+    });
+  }
+
+  function addMovie() {
+    const input = document.getElementById('newMovieInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const col = db.collection('movies_' + activeSub);
+    col.get().then(snap => col.add({ text, done: false, order: snap.size }));
+    input.value = '';
+  }
+  document.getElementById('newMovieInput').addEventListener('keydown', e => { if (e.key === 'Enter') addMovie(); });
+  loadMovies('home');
+
+  async function downloadPhoto(url) {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = 'date-photo.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+    } catch {
+      window.open(url, '_blank');
+    }
+  }
+
   function esc(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
-
 </script>
 </body>
 </html>
