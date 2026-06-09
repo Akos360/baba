@@ -1,4 +1,4 @@
-const { onDocumentCreated } = require('firebase-functions/v2/firestore');
+const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const { initializeApp }    = require('firebase-admin/app');
 const { getFirestore }     = require('firebase-admin/firestore');
 const webpush              = require('web-push');
@@ -38,4 +38,28 @@ exports.onMovieHomeAdded = onDocumentCreated('movies_home/{id}', event => {
 exports.onMovieCinemaAdded = onDocumentCreated('movies_cinema/{id}', event => {
   const m = event.data.data();
   return notify('New movie added! 🎬', m.text);
+});
+
+exports.onDateDone = onDocumentUpdated('dates/{id}', event => {
+  const before = event.data.before.data();
+  const after  = event.data.after.data();
+  if (!before.done && after.done)
+    return notify(after.text, 'done Hehe 💕');
+  return null;
+});
+
+exports.onMovieHomeDone = onDocumentUpdated('movies_home/{id}', event => {
+  const before = event.data.before.data();
+  const after  = event.data.after.data();
+  if (!before.done && after.done)
+    return notify(after.text || after.title || 'A movie', 'done Hehe 💕');
+  return null;
+});
+
+exports.onMovieCinemaDone = onDocumentUpdated('movies_cinema/{id}', event => {
+  const before = event.data.before.data();
+  const after  = event.data.after.data();
+  if (!before.done && after.done)
+    return notify(after.text || after.title || 'A movie', 'done Hehe 💕');
+  return null;
 });

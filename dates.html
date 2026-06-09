@@ -849,73 +849,410 @@
       transform: scale(.9);
     }
 
-    /* Lightbox */
+    /* ── Lightbox (swipeable multi-image) */
     .photo-lightbox {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, .9);
+      background: rgba(0, 0, 0, .93);
       z-index: 400;
       display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1.2rem;
-    }
-
-    .photo-lightbox.open {
-      display: flex;
-    }
-
-    .lightbox-inner {
-      display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
-      max-width: min(100%, 480px);
+      justify-content: center;
     }
+    .photo-lightbox.open { display: flex; }
 
-    .lightbox-inner img {
+    .lightbox-track {
+      display: flex;
+      width: 100%;
+      max-height: 80vh;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .lightbox-track::-webkit-scrollbar { display: none; }
+
+    .lightbox-slide {
+      flex-shrink: 0;
+      width: 100%;
+      max-height: 80vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .lightbox-slide img {
       max-width: 100%;
-      max-height: 72vh;
-      border-radius: 16px;
+      max-height: 78vh;
       object-fit: contain;
+      border-radius: 12px;
       display: block;
     }
 
-    .lightbox-actions {
+    .lightbox-dots {
       display: flex;
-      gap: .6rem;
+      gap: .5rem;
+      margin-top: .9rem;
+      min-height: 1.2rem;
+      align-items: center;
+    }
+    .lightbox-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .3);
+      transition: background .2s, transform .2s;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .lightbox-dot.active {
+      background: white;
+      transform: scale(1.3);
     }
 
-    .lightbox-btn {
+    .lightbox-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, .15);
       border: none;
+      color: white;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .15s;
+    }
+    .lightbox-close:active { background: rgba(255, 255, 255, .3); }
+
+    .lightbox-dl-btn {
+      margin-top: .6rem;
+      border: none;
+      background: rgba(255, 255, 255, .15);
+      color: white;
       border-radius: 50px;
-      padding: .55rem 1.1rem;
+      padding: .55rem 1.4rem;
       font-family: 'Nunito', sans-serif;
-      font-size: .88rem;
+      font-size: .9rem;
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .15s;
+    }
+    .lightbox-dl-btn:active { background: rgba(255, 255, 255, .28); }
+
+    .gallery-slide img { cursor: pointer; }
+
+    /* ── Confirm modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 44, 78, .45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 600;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem 1.6rem 1.6rem;
+      max-width: 300px;
+      width: 100%;
+      box-shadow: 0 16px 48px rgba(199, 125, 255, .3);
+      text-align: center;
+      animation: modalPop .22s cubic-bezier(.34, 1.56, .64, 1) forwards;
+    }
+    @keyframes modalPop {
+      from { transform: scale(.8); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    .modal-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.35rem;
+      color: var(--pink);
+      text-shadow: 1px 2px 0 var(--soft-pink);
+      margin-bottom: .45rem;
+    }
+    .modal-sub { font-size: .9rem; font-weight: 600; color: #b088cc; margin-bottom: 1.5rem; }
+    .modal-btns { display: flex; gap: .7rem; }
+    .modal-btn {
+      flex: 1;
+      border: none;
+      border-radius: 14px;
+      padding: .75rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
       font-weight: 800;
       cursor: pointer;
       transition: transform .12s;
       -webkit-tap-highlight-color: transparent;
     }
+    .modal-btn:active { transform: scale(.95); }
+    .modal-cancel  { background: var(--soft-purple); color: var(--purple); }
+    .modal-confirm { background: linear-gradient(135deg, var(--pink), var(--purple)); color: white; }
+    [data-theme="dark"] .modal-card { background: #1e1332; }
+    [data-theme="dark"] .modal-cancel { background: #2e1f4a; }
 
-    .lightbox-btn:active {
-      transform: scale(.94);
+    /* ── Picker bottom sheet */
+    .picker-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 44, 78, .5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 600;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
     }
-
-    .lb-change {
-      background: rgba(255, 255, 255, .18);
+    .picker-backdrop.open { display: flex; }
+    .picker-card {
+      background: var(--bg);
+      border-radius: 28px 28px 0 0;
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      animation: pickerUp .28s cubic-bezier(.34, 1.1, .64, 1) forwards;
+      box-shadow: 0 -8px 32px rgba(199, 125, 255, .2);
+    }
+    @keyframes pickerUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .picker-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 1.2rem .6rem;
+      flex-shrink: 0;
+    }
+    .picker-title {
+      font-family: 'Pacifico', cursive;
+      color: var(--pink);
+      font-size: 1.3rem;
+      text-shadow: 1px 2px 0 var(--soft-pink);
+    }
+    .picker-close {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      color: #b088cc;
+      cursor: pointer;
+      padding: .3rem;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .picker-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: .4rem .8rem;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+    .picker-item {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      padding: .75rem 1rem;
+      border-radius: 14px;
+      background: white;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      box-shadow: 0 2px 8px rgba(199, 125, 255, .08);
+    }
+    .picker-item:active { transform: scale(.98); }
+    .picker-item.selected { background: linear-gradient(135deg, #fff0f9, #f3e8ff); }
+    [data-theme="dark"] .picker-item { background: #1e1332; }
+    [data-theme="dark"] .picker-item.selected { background: linear-gradient(135deg, #2a1428, #1f1040); }
+    .picker-item-emoji { font-size: 1.2rem; flex-shrink: 0; }
+    .picker-item-text { flex: 1; font-size: .95rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .picker-item-check {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 50%;
+      border: 2.5px solid var(--soft-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      color: transparent;
+      background: white;
+      transition: background .2s, border-color .2s, color .2s;
+      flex-shrink: 0;
+    }
+    .picker-item.selected .picker-item-check {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-color: transparent;
       color: white;
     }
-
-    .lb-remove {
-      background: rgba(255, 107, 157, .85);
+    [data-theme="dark"] .picker-item-check { background: #1e1332; }
+    .picker-go-wrap { padding: .8rem 1.2rem 1.4rem; flex-shrink: 0; }
+    .picker-go-btn {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
       color: white;
+      border-radius: 18px;
+      padding: 1rem;
+      font-family: 'Pacifico', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 107, 157, .4);
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .15s;
     }
+    .picker-go-btn:active { transform: scale(.97); }
+    .picker-result {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      gap: 1rem;
+    }
+    .picker-result.show { display: flex; }
+    .picker-winner-emoji { font-size: 3.5rem; }
+    .picker-winner-text {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.4rem;
+      color: var(--pink);
+      text-shadow: 1px 2px 0 var(--soft-pink);
+      line-height: 1.4;
+      max-width: 320px;
+    }
+    .picker-result-btns { display: flex; gap: .7rem; flex-wrap: wrap; justify-content: center; }
+    .picker-result-btn {
+      border: none;
+      border-radius: 50px;
+      padding: .6rem 1.3rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .9rem;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s;
+    }
+    .picker-result-btn:active { transform: scale(.95); }
+    .picker-btn-again { background: linear-gradient(135deg, var(--pink), var(--purple)); color: white; }
+    .picker-btn-back  { background: var(--soft-purple); color: var(--purple); }
+    [data-theme="dark"] .picker-btn-back { background: #2e1f4a; }
 
-    .lb-close {
-      background: rgba(255, 255, 255, .1);
-      color: rgba(255, 255, 255, .65);
+    /* lightbox remove photo button */
+    .lightbox-rm-btn {
+      margin-top: .35rem;
+      border: none;
+      background: rgba(255, 107, 157, .22);
+      color: #ff6b9d;
+      border-radius: 50px;
+      padding: .45rem 1.2rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .85rem;
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .15s;
     }
+    .lightbox-rm-btn:active { background: rgba(255, 107, 157, .4); }
+
+    /* ── Movie poster in row */
+    .movie-poster-thumb {
+      width: 42px;
+      height: 63px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: block;
+      background: var(--soft-purple);
+    }
+    .movie-poster-ph {
+      width: 42px;
+      height: 63px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--soft-pink), var(--soft-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    [data-theme="dark"] .movie-poster-ph { background: linear-gradient(135deg, #3a1a2e, #2e1f4a); }
+
+    /* ── Movie search suggestions */
+    .suggestions-box {
+      display: none;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 28px rgba(199,125,255,.22);
+      margin-top: .4rem;
+      overflow: hidden;
+    }
+    .suggestions-box.open { display: block; }
+    [data-theme="dark"] .suggestions-box { background: #1e1332; }
+
+    .suggestion-item {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      padding: .6rem .9rem;
+      cursor: pointer;
+      border-bottom: 1px solid #f5ecff;
+      transition: background .1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover, .suggestion-item:active { background: #fef6ff; }
+    [data-theme="dark"] .suggestion-item { border-bottom-color: #2e1f4a; }
+    [data-theme="dark"] .suggestion-item:hover { background: #281a40; }
+
+    .suggestion-thumb {
+      width: 36px;
+      height: 54px;
+      object-fit: cover;
+      border-radius: 7px;
+      flex-shrink: 0;
+      background: var(--soft-purple);
+      display: block;
+    }
+    .suggestion-thumb-ph {
+      width: 36px;
+      height: 54px;
+      border-radius: 7px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--soft-pink), var(--soft-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .suggestion-info { flex: 1; min-width: 0; }
+    .suggestion-title {
+      font-size: .92rem;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .suggestion-meta { font-size: .78rem; color: #b088cc; font-weight: 600; margin-top: .1rem; }
 
     /* ── Theme toggle button */
     .theme-toggle {
@@ -1068,8 +1405,6 @@
 
   <div class="wrapper">
     <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
-    <h1>Us 💕</h1>
-    <p class="subtitle">our little world 🌸</p>
 
     <!-- main tabs -->
     <div class="tab-bar">
@@ -1101,17 +1436,71 @@
         <button class="tab-btn active" id="sub-tab-home" onclick="switchSub('home')">🏠 Home</button>
         <button class="tab-btn" id="sub-tab-cinema" onclick="switchSub('cinema')">🎟️ Cinema</button>
       </div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="movieProgressFill"></div>
+        </div>
+        <span class="progress-label" id="movieProgressLabel">… / …</span>
+      </div>
       <button class="dice-btn" id="movieDiceBtn" onclick="rollMovieDice()">🎲 fuck it we ball</button>
       <div id="movie-list"><p class="loading">loading… 💕</p></div>
-      <div class="add-wrap">
-        <input type="text" id="newMovieInput" placeholder="Add a movie…" maxlength="80" />
-        <button class="add-btn" onclick="addMovie()">+</button>
+      <div class="add-wrap" id="movieAddWrap">
+        <input type="text" id="newMovieInput" placeholder="Search a movie to add…" maxlength="80" autocomplete="off" />
+        <button class="add-btn" id="movieAddBtn" onclick="addMovie()">+</button>
       </div>
+      <div class="suggestions-box" id="movieSuggestions"></div>
+      <div class="all-done" id="movieAllDone">all watched!! 🎉 time to add more 😏</div>
     </div>
   </div>
 
   <!-- hidden file input -->
   <input type="file" id="photoFileInput" accept="image/*" style="display:none" />
+
+  <!-- Photo lightbox -->
+  <div class="photo-lightbox" id="photoLightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <div class="lightbox-track" id="lightboxTrack" onclick="event.stopPropagation()"></div>
+    <div class="lightbox-dots" id="lightboxDots" onclick="event.stopPropagation()"></div>
+    <button class="lightbox-dl-btn" onclick="event.stopPropagation(); downloadCurrentPhoto()">⬇ Save photo</button>
+    <button class="lightbox-rm-btn" onclick="event.stopPropagation(); deleteCurrentPhoto()">✕ Remove photo</button>
+  </div>
+
+  <!-- Confirm modal -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <p class="modal-title">Remove this? 🥺</p>
+      <p class="modal-sub">This can't be undone!</p>
+      <div class="modal-btns">
+        <button class="modal-btn modal-cancel" onclick="closeModal()">Keep it 💕</button>
+        <button class="modal-btn modal-confirm" onclick="confirmDelete()">Remove ✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Picker modal -->
+  <div class="picker-backdrop" id="pickerBackdrop" onclick="closePickerModal()">
+    <div class="picker-card" onclick="event.stopPropagation()">
+      <div class="picker-header">
+        <span class="picker-title">Pick your vibe 🎲</span>
+        <button class="picker-close" onclick="closePickerModal()">✕</button>
+      </div>
+      <div class="picker-list" id="pickerList"></div>
+      <div class="picker-result" id="pickerResult">
+        <div class="picker-winner-emoji" id="pickerWinnerEmoji">💕</div>
+        <div class="picker-winner-text" id="pickerWinnerText"></div>
+        <div class="picker-result-btns">
+          <button class="picker-result-btn picker-btn-again" onclick="pickerGo(true)">🎲 Pick again</button>
+          <button class="picker-result-btn picker-btn-back" onclick="showPickerList()">← Change</button>
+        </div>
+      </div>
+      <div class="picker-go-wrap" id="pickerGoWrap">
+        <button class="picker-go-btn" onclick="pickerGo(false)">LLLETSSS GOOO 🎲</button>
+      </div>
+    </div>
+  </div>
+
+    </div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -1231,8 +1620,8 @@
           }
         };
 
-        row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); dateCol.doc(doc.id).delete(); };
-        row.onclick = () => dateCol.doc(doc.id).update({ done: !d.done });
+        row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); askRemove(() => dateCol.doc(doc.id).delete()); };
+        row.querySelector('.check-box').onclick = e => { e.stopPropagation(); dateCol.doc(doc.id).update({ done: !d.done }); };
 
         card.appendChild(row);
         card.appendChild(gallery);
@@ -1256,8 +1645,8 @@
       if (galleryUnsubs[docId]) galleryUnsubs[docId]();
       galleryUnsubs[docId] = dateCol.doc(docId).collection('photos').orderBy('ts').onSnapshot(snap => {
         galleryEl.innerHTML = '';
-        const photos = [];
-        snap.forEach(d => photos.push(d.data().url));
+        const photos = []; // { id, url }
+        snap.forEach(d => photos.push({ id: d.id, url: d.data().url }));
 
         // update badge
         if (photos.length > 0) { photoBtn.innerHTML = `📷 ${photos.length}`; photoBtn.classList.add('has-photos'); }
@@ -1269,12 +1658,13 @@
           // track
           const track = document.createElement('div');
           track.className = 'gallery-track';
-          photos.forEach(url => {
+          photos.forEach((photo, i) => {
             const slide = document.createElement('div');
             slide.className = 'gallery-slide';
             const img = document.createElement('img');
-            img.src = url;
+            img.src = photo.url;
             img.loading = 'lazy';
+            img.onclick = e => { e.stopPropagation(); openLightbox(photos, i, docId); };
             slide.appendChild(img);
             track.appendChild(slide);
           });
@@ -1307,7 +1697,7 @@
           const dlBtn = document.createElement('button');
           dlBtn.className = 'download-btn';
           dlBtn.innerHTML = '⬇ Save';
-          dlBtn.onclick = e => { e.stopPropagation(); downloadPhoto(photos[currentIdx]); };
+          dlBtn.onclick = e => { e.stopPropagation(); downloadPhoto(photos[currentIdx].url); };
           actions.appendChild(dlBtn);
         }
 
@@ -1325,6 +1715,80 @@
 
         galleryEl.appendChild(actions);
       });
+    }
+
+    let _lbPhotos  = [];
+    let _lbIdx     = 0;
+    let _lbDateId  = null;
+
+    function openLightbox(photos, startIdx, dateDocId) {
+      _lbPhotos = photos;
+      _lbIdx    = startIdx;
+      _lbDateId = dateDocId || null;
+
+      const track  = document.getElementById('lightboxTrack');
+      const dotsEl = document.getElementById('lightboxDots');
+      track.innerHTML  = '';
+      dotsEl.innerHTML = '';
+
+      photos.forEach(photo => {
+        const slide = document.createElement('div');
+        slide.className = 'lightbox-slide';
+        const img = document.createElement('img');
+        img.src = photo.url || photo;
+        img.alt = 'memory';
+        slide.appendChild(img);
+        track.appendChild(slide);
+      });
+
+      if (photos.length > 1) {
+        photos.forEach((_, i) => {
+          const dot = document.createElement('span');
+          dot.className = 'lightbox-dot' + (i === startIdx ? ' active' : '');
+          dot.onclick = e => { e.stopPropagation(); track.scrollLeft = i * track.offsetWidth; };
+          dotsEl.appendChild(dot);
+        });
+        track.addEventListener('scroll', () => {
+          _lbIdx = Math.round(track.scrollLeft / track.offsetWidth);
+          dotsEl.querySelectorAll('.lightbox-dot').forEach((d, i) => d.classList.toggle('active', i === _lbIdx));
+        }, { passive: true });
+      }
+
+      document.getElementById('photoLightbox').classList.add('open');
+      requestAnimationFrame(() => { track.scrollLeft = startIdx * track.offsetWidth; });
+    }
+
+    function closeLightbox() {
+      document.getElementById('photoLightbox').classList.remove('open');
+    }
+
+    function downloadCurrentPhoto() {
+      const p = _lbPhotos[_lbIdx];
+      if (p) downloadPhoto(p.url || p);
+    }
+
+    function deleteCurrentPhoto() {
+      const p = _lbPhotos[_lbIdx];
+      if (!p || !_lbDateId) return;
+      askRemove(() => {
+        dateCol.doc(_lbDateId).collection('photos').doc(p.id).delete();
+        closeLightbox();
+      });
+    }
+
+    // ── Confirm modal
+    let _pendingDelete = null;
+    function askRemove(fn) {
+      _pendingDelete = fn;
+      document.getElementById('modalBackdrop').classList.add('open');
+    }
+    function confirmDelete() {
+      if (_pendingDelete) _pendingDelete();
+      closeModal();
+    }
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('open');
+      _pendingDelete = null;
     }
 
     async function uploadPhoto(docId, input, galleryEl, label) {
@@ -1371,14 +1835,13 @@
       loadMovies(sub);
     }
 
-    function rollMovieDice() {
-      const cards = [...document.querySelectorAll('#movie-list .date-card:not(.done)')];
-      if (!cards.length) { showToast('All movies watched! 🎬'); return; }
-      const pick = cards[Math.floor(Math.random() * cards.length)];
-      document.querySelectorAll('#movie-list .date-card').forEach(c => c.classList.remove('selected'));
-      pick.classList.add('selected');
-      pick.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      setTimeout(() => pick.classList.remove('selected'), 1800);
+
+    function updateMovieProgress(docs) {
+      const total = docs.length;
+      const done  = docs.filter(d => d.done).length;
+      document.getElementById('movieProgressFill').style.width = total ? (done / total * 100) + '%' : '0%';
+      document.getElementById('movieProgressLabel').textContent = done + ' / ' + total;
+      document.getElementById('movieAllDone').style.display = (total && done === total) ? 'block' : 'none';
     }
 
     function loadMovies(sub) {
@@ -1389,7 +1852,11 @@
       list.innerHTML = '<p class="loading">loading… 💕</p>';
       movieUnsub = mcol.onSnapshot(snap => {
         list.innerHTML = '';
-        if (snap.empty) { list.innerHTML = '<p class="loading">no movies yet — add one! 🍿</p>'; return; }
+        if (snap.empty) {
+          list.innerHTML = '<p class="loading">no movies yet — add one! 🍿</p>';
+          updateMovieProgress([]);
+          return;
+        }
         const docs = [];
         snap.forEach(doc => docs.push({ _id: doc.id, ...doc.data() }));
         docs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -1399,29 +1866,161 @@
           card.className = 'date-card' + (d.done ? ' done' : '');
           const row = document.createElement('div');
           row.className = 'date-row';
-          row.innerHTML = `
-            <span class="check-box">✓</span>
-            <span class="date-text">${esc(txt)}</span>
-            <span class="date-emoji">${emoji}</span>
-            <button class="del-btn" title="Remove">✕</button>
-          `;
-          row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); mcol.doc(d._id).delete(); };
-          row.onclick = () => mcol.doc(d._id).update({ done: !d.done });
+
+          const cb = document.createElement('span');
+          cb.className = 'check-box';
+          cb.textContent = '✓';
+          cb.onclick = e => { e.stopPropagation(); mcol.doc(d._id).update({ done: !d.done }); };
+          row.appendChild(cb);
+
+          if (d.poster) {
+            const img = document.createElement('img');
+            img.className = 'movie-poster-thumb';
+            img.src = d.poster;
+            img.alt = txt;
+            img.onerror = () => img.replaceWith(makeMoviePosterPh());
+            row.appendChild(img);
+          } else {
+            row.appendChild(makeMoviePosterPh());
+          }
+
+          const titleEl = document.createElement('span');
+          titleEl.className = 'date-text';
+          titleEl.textContent = txt;
+          row.appendChild(titleEl);
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'del-btn';
+          delBtn.title = 'Remove';
+          delBtn.textContent = '✕';
+          delBtn.onclick = e => { e.stopPropagation(); askRemove(() => mcol.doc(d._id).delete()); };
+          row.appendChild(delBtn);
+
           card.appendChild(row);
           list.appendChild(card);
         });
+        updateMovieProgress(docs);
+      });
+    }
+
+    // ── TMDB movie search
+    // Get a free key at themoviedb.org → Settings → API → Request API key
+    const TMDB_KEY = '6de7af8f08c0e73df50e8cc75643d95a';
+
+    let _movieSuggestTimer = null;
+    let _movieSuggestResults = [];
+
+    document.getElementById('newMovieInput').addEventListener('input', e => {
+      clearTimeout(_movieSuggestTimer);
+      const q = e.target.value.trim();
+      if (q.length < 2) { hideMovieSuggestions(); return; }
+      _movieSuggestTimer = setTimeout(() => fetchMovieSuggestions(q), 350);
+    });
+
+    document.getElementById('newMovieInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (_movieSuggestResults.length) pickMovieSuggestion(_movieSuggestResults[0]);
+        else addMovie();
+      } else if (e.key === 'Escape') {
+        hideMovieSuggestions();
+      }
+    });
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#movieAddWrap') && !e.target.closest('#movieSuggestions'))
+        hideMovieSuggestions();
+    });
+
+    async function fetchMovieSuggestions(q) {
+      if (TMDB_KEY === 'YOUR_TMDB_KEY') return;
+      try {
+        const res  = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
+        const data = await res.json();
+        if (data.results && data.results.length) {
+          _movieSuggestResults = data.results.slice(0, 6);
+          renderMovieSuggestions(_movieSuggestResults);
+        } else { hideMovieSuggestions(); }
+      } catch { hideMovieSuggestions(); }
+    }
+
+    function renderMovieSuggestions(results) {
+      const box = document.getElementById('movieSuggestions');
+      box.innerHTML = '';
+      results.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        if (r.poster_path) {
+          const img = document.createElement('img');
+          img.className = 'suggestion-thumb';
+          img.src = `https://image.tmdb.org/t/p/w92${r.poster_path}`;
+          img.alt = r.title;
+          img.onerror = () => img.replaceWith(makeMovieSuggPh());
+          item.appendChild(img);
+        } else { item.appendChild(makeMovieSuggPh()); }
+        const info = document.createElement('div');
+        info.className = 'suggestion-info';
+        const t = document.createElement('div');
+        t.className = 'suggestion-title';
+        t.textContent = r.title;
+        const y = document.createElement('div');
+        y.className = 'suggestion-meta';
+        y.textContent = r.release_date ? r.release_date.slice(0, 4) : '';
+        info.appendChild(t);
+        info.appendChild(y);
+        item.appendChild(info);
+        item.onclick = () => pickMovieSuggestion(r);
+        box.appendChild(item);
+      });
+      box.classList.add('open');
+    }
+
+    function hideMovieSuggestions() {
+      const box = document.getElementById('movieSuggestions');
+      if (box) box.classList.remove('open');
+      _movieSuggestResults = [];
+    }
+
+    function makeMovieSuggPh() {
+      const ph = document.createElement('div');
+      ph.className = 'suggestion-thumb-ph';
+      ph.textContent = '🎬';
+      return ph;
+    }
+
+    function makeMoviePosterPh() {
+      const ph = document.createElement('div');
+      ph.className = 'movie-poster-ph';
+      ph.textContent = '🎬';
+      return ph;
+    }
+
+    async function pickMovieSuggestion(r) {
+      hideMovieSuggestions();
+      document.getElementById('newMovieInput').value = '';
+      const mcol   = db.collection('movies_' + activeSub);
+      const snap   = await mcol.get();
+      const poster = r.poster_path ? `https://image.tmdb.org/t/p/w500${r.poster_path}` : '';
+      await mcol.add({
+        text:   r.title,
+        title:  r.title,
+        year:   r.release_date ? r.release_date.slice(0, 4) : '',
+        poster,
+        tmdbId: r.id,
+        done:   false,
+        order:  snap.size,
       });
     }
 
     function addMovie() {
+      if (_movieSuggestResults.length) { pickMovieSuggestion(_movieSuggestResults[0]); return; }
       const input = document.getElementById('newMovieInput');
-      const text = input.value.trim();
+      const text  = input.value.trim();
       if (!text) return;
       const mcol = db.collection('movies_' + activeSub);
       mcol.get().then(snap => mcol.add({ text, done: false, order: snap.size }));
       input.value = '';
     }
-    document.getElementById('newMovieInput').addEventListener('keydown', e => { if (e.key === 'Enter') addMovie(); });
+
     loadMovies('home');
 
     // ── Download photo
@@ -1516,15 +2115,73 @@
       t._tid = setTimeout(() => t.classList.remove('show'), 3500);
     }
 
-    // ── Randomizer
-    function rollDice() {
-      const cards = [...document.querySelectorAll('#date-list .date-card:not(.done)')];
-      if (!cards.length) { showToast('All dates done!! 🎉'); return; }
-      const pick = cards[Math.floor(Math.random() * cards.length)];
-      document.querySelectorAll('#date-list .date-card').forEach(c => c.classList.remove('selected'));
-      pick.classList.add('selected');
-      pick.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      setTimeout(() => pick.classList.remove('selected'), 1800);
+    // ── Randomizer / picker
+    function rollDice()      { openPickerModal('dates');  }
+    function rollMovieDice() { openPickerModal('movies'); }
+
+    let _pickerItems = [];
+
+    function openPickerModal(type) {
+      const sel = type === 'dates'
+        ? '#date-list .date-card:not(.done)'
+        : '#movie-list .date-card:not(.done)';
+      const cards = [...document.querySelectorAll(sel)];
+      if (!cards.length) {
+        showToast(type === 'dates' ? 'All dates done!! 🎉' : 'All movies watched! 🎬');
+        return;
+      }
+      _pickerItems = cards.map(card => ({
+        text:     card.querySelector('.date-text')?.textContent  || '',
+        emoji:    card.querySelector('.date-emoji')?.textContent || (type === 'dates' ? '💕' : '🎬'),
+        selected: true,
+      }));
+      renderPickerList();
+      document.getElementById('pickerResult').classList.remove('show');
+      document.getElementById('pickerList').style.display   = '';
+      document.getElementById('pickerGoWrap').style.display = '';
+      document.getElementById('pickerBackdrop').classList.add('open');
+    }
+
+    function renderPickerList() {
+      const list = document.getElementById('pickerList');
+      list.innerHTML = '';
+      _pickerItems.forEach((item, i) => {
+        const el = document.createElement('div');
+        el.className = 'picker-item' + (item.selected ? ' selected' : '');
+        el.innerHTML = `
+          <span class="picker-item-emoji">${item.emoji}</span>
+          <span class="picker-item-text">${esc(item.text)}</span>
+          <span class="picker-item-check">✓</span>
+        `;
+        el.onclick = () => {
+          item.selected = !item.selected;
+          el.classList.toggle('selected', item.selected);
+        };
+        list.appendChild(el);
+      });
+    }
+
+    function pickerGo(fromResult) {
+      const pool = _pickerItems.filter(i => i.selected);
+      if (!pool.length) { showToast('Select at least one! 🥺'); return; }
+      const winner = pool[Math.floor(Math.random() * pool.length)];
+      document.getElementById('pickerWinnerEmoji').textContent = winner.emoji;
+      document.getElementById('pickerWinnerText').textContent  = winner.text;
+      if (!fromResult) {
+        document.getElementById('pickerList').style.display   = 'none';
+        document.getElementById('pickerGoWrap').style.display = 'none';
+      }
+      document.getElementById('pickerResult').classList.add('show');
+    }
+
+    function showPickerList() {
+      document.getElementById('pickerResult').classList.remove('show');
+      document.getElementById('pickerList').style.display   = '';
+      document.getElementById('pickerGoWrap').style.display = '';
+    }
+
+    function closePickerModal() {
+      document.getElementById('pickerBackdrop').classList.remove('open');
     }
 
     // ── One-time migration: move old 'movies' collection → movies_home
