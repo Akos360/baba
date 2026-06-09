@@ -818,7 +818,7 @@
       line-height: 1;
     }
 
-    .date-item:hover .photo-btn {
+    .date-card:hover .photo-btn {
       opacity: .55;
     }
 
@@ -960,15 +960,13 @@
     [data-theme="dark"] .dice-btn,
     [data-theme="dark"] .modal-card,
     [data-theme="dark"] .suggestions-box,
-    [data-theme="dark"] .date-item,
-    [data-theme="dark"] .movie-item,
+    [data-theme="dark"] .date-card,
     [data-theme="dark"] .check-box,
     [data-theme="dark"] .theme-toggle {
       background: #1e1332;
     }
 
-    [data-theme="dark"] .date-item.done,
-    [data-theme="dark"] .movie-item.watched {
+    [data-theme="dark"] .date-card.done {
       background: linear-gradient(135deg, #2a1428, #1f1040);
     }
 
@@ -1087,6 +1085,7 @@
         </div>
         <span class="progress-label" id="progressLabel">… / …</span>
       </div>
+      <button class="dice-btn" onclick="rollDice()">🎲 fuck it we ball</button>
       <div id="date-list"><p class="loading">loading… 💕</p></div>
       <div class="add-wrap">
         <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="2" />
@@ -1102,6 +1101,7 @@
         <button class="tab-btn active" id="sub-tab-home" onclick="switchSub('home')">🏠 Home</button>
         <button class="tab-btn" id="sub-tab-cinema" onclick="switchSub('cinema')">🎟️ Cinema</button>
       </div>
+      <button class="dice-btn" id="movieDiceBtn" onclick="rollMovieDice()">🎲 fuck it we ball</button>
       <div id="movie-list"><p class="loading">loading… 💕</p></div>
       <div class="add-wrap">
         <input type="text" id="newMovieInput" placeholder="Add a movie…" maxlength="80" />
@@ -1337,7 +1337,12 @@
         const url = await ref.getDownloadURL();
         await dateCol.doc(docId).collection('photos').add({ url, ts: Date.now() });
       } catch (e) {
+        console.error('Upload error:', e);
         label.innerHTML = '📷 Add photo';
+        label.appendChild(input);
+        showToast('Upload failed: ' + (e?.code || e?.message || 'check Storage rules'));
+        input.value = '';
+        return;
       }
       input.value = '';
     }
@@ -1362,7 +1367,18 @@
       activeSub = sub;
       document.getElementById('sub-tab-home').classList.toggle('active', sub === 'home');
       document.getElementById('sub-tab-cinema').classList.toggle('active', sub === 'cinema');
+      document.getElementById('movieDiceBtn').style.display = sub === 'home' ? '' : 'none';
       loadMovies(sub);
+    }
+
+    function rollMovieDice() {
+      const cards = [...document.querySelectorAll('#movie-list .date-card:not(.done)')];
+      if (!cards.length) { showToast('All movies watched! 🎬'); return; }
+      const pick = cards[Math.floor(Math.random() * cards.length)];
+      document.querySelectorAll('#movie-list .date-card').forEach(c => c.classList.remove('selected'));
+      pick.classList.add('selected');
+      pick.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => pick.classList.remove('selected'), 1800);
     }
 
     function loadMovies(sub) {
@@ -1371,23 +1387,26 @@
       const emoji = sub === 'home' ? '🍿' : '🎟️';
       const list = document.getElementById('movie-list');
       list.innerHTML = '<p class="loading">loading… 💕</p>';
-      movieUnsub = mcol.orderBy('order').onSnapshot(snap => {
+      movieUnsub = mcol.onSnapshot(snap => {
         list.innerHTML = '';
         if (snap.empty) { list.innerHTML = '<p class="loading">no movies yet — add one! 🍿</p>'; return; }
-        snap.forEach(doc => {
-          const d = doc.data();
+        const docs = [];
+        snap.forEach(doc => docs.push({ _id: doc.id, ...doc.data() }));
+        docs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        docs.forEach(d => {
+          const txt = d.text || d.title || '';
           const card = document.createElement('div');
           card.className = 'date-card' + (d.done ? ' done' : '');
           const row = document.createElement('div');
           row.className = 'date-row';
           row.innerHTML = `
             <span class="check-box">✓</span>
-            <span class="date-text">${esc(d.text)}</span>
+            <span class="date-text">${esc(txt)}</span>
             <span class="date-emoji">${emoji}</span>
             <button class="del-btn" title="Remove">✕</button>
           `;
-          row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); mcol.doc(doc.id).delete(); };
-          row.onclick = () => mcol.doc(doc.id).update({ done: !d.done });
+          row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); mcol.doc(d._id).delete(); };
+          row.onclick = () => mcol.doc(d._id).update({ done: !d.done });
           card.appendChild(row);
           list.appendChild(card);
         });
@@ -1488,7 +1507,42 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    // ── Toast
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._tid);
+      t._tid = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // ── Randomizer
+    function rollDice() {
+      const cards = [...document.querySelectorAll('#date-list .date-card:not(.done)')];
+      if (!cards.length) { showToast('All dates done!! 🎉'); return; }
+      const pick = cards[Math.floor(Math.random() * cards.length)];
+      document.querySelectorAll('#date-list .date-card').forEach(c => c.classList.remove('selected'));
+      pick.classList.add('selected');
+      pick.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => pick.classList.remove('selected'), 1800);
+    }
+
+    // ── One-time migration: move old 'movies' collection → movies_home
+    db.collection('movies').limit(1).get().then(snap => {
+      if (snap.empty) return;
+      return db.collection('movies').get().then(all => {
+        const batch = db.batch();
+        all.forEach(doc => {
+          batch.set(db.collection('movies_home').doc(), doc.data());
+          batch.delete(doc.ref);
+        });
+        return batch.commit();
+      }).then(() => { loadMovies('home'); showToast('Moved movies to Home tab 🎬'); });
+    });
+
   </script>
+
+  <div class="toast" id="toast"></div>
 </body>
 
 </html>
