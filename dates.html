@@ -1397,6 +1397,7 @@
     }
 
     /* ── Anniversary banner */
+    /*
     .anniversary-banner {
       background: white;
       border-radius: 16px;
@@ -1443,6 +1444,7 @@
       outline: none;
     }
     [data-theme="dark"] .anniversary-date-input { color: var(--text); }
+    */
 
     /* ── Food feature */
     .food-start-btn {
@@ -1586,6 +1588,20 @@
       padding: 0 .6rem;
     }
     .food-no-match { text-align: center; font-weight: 700; color: #b088cc; padding: 2rem 0; }
+    .food-reset-btn {
+      border: none;
+      background: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #b088cc;
+      cursor: pointer;
+      padding: .4rem .8rem;
+      border-radius: 50px;
+      -webkit-tap-highlight-color: transparent;
+      transition: color .15s;
+    }
+    .food-reset-btn:active { color: var(--pink); }
   </style>
 </head>
 
@@ -1598,6 +1614,7 @@
     <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
 
     <!-- Anniversary banner -->
+    <!--
     <div class="anniversary-banner">
       <div id="anniversary-display" onclick="editAnniversary()">
         <span class="anniversary-days" id="anniversaryDays">💕</span>
@@ -1608,6 +1625,7 @@
         <input type="date" id="anniversaryInput" class="anniversary-date-input" />
       </div>
     </div>
+    -->
 
     <!-- main tabs -->
     <div class="tab-bar">
@@ -1661,6 +1679,7 @@
 
       <!-- State: Lobby -->
       <div id="food-state-lobby" style="display:flex;flex-direction:column;gap:.8rem">
+        <img src="img/nom_nom_patrik.gif" alt="" style="width:100%;border-radius:16px;display:block" />
         <div style="display:flex;flex-direction:column;gap:.5rem;align-items:center">
           <button class="food-start-btn" onclick="startFoodSession()">Start round 🍽️</button>
           <p class="food-start-hint">Both phones see the cards at the same time</p>
@@ -1682,6 +1701,7 @@
           <button class="food-nope-btn" onclick="swipeFood('left')">✕</button>
           <button class="food-yes-btn" onclick="swipeFood('right')">❤️</button>
         </div>
+        <button class="food-reset-btn" onclick="resetFoodSession()">↩ Reset</button>
       </div>
 
       <!-- State: Waiting -->
@@ -1689,6 +1709,7 @@
         <div style="font-size:4rem">🥺</div>
         <div class="food-waiting-text">Waiting for the other one to finish…</div>
         <p class="food-start-hint">Results appear automatically when they're done</p>
+        <button class="food-reset-btn" onclick="resetFoodSession()">↩ Reset</button>
       </div>
 
       <!-- State: Results -->
@@ -1696,6 +1717,13 @@
         <div class="food-results-title" id="foodResultsTitle">It's a match! 💕</div>
         <div class="food-matches-grid" id="foodMatchesGrid"></div>
         <button class="food-start-btn" onclick="startFoodSession()">New round 🍽️</button>
+        <div class="food-list-label" style="margin-top:.4rem">Add more foods</div>
+        <div class="add-wrap">
+          <input type="text" id="newFoodEmojiResults" class="emoji-input" placeholder="🍕" maxlength="2" style="width:2.4rem;flex-shrink:0" />
+          <input type="text" id="newFoodInputResults" placeholder="Add a food…" maxlength="40" />
+          <button class="add-btn" onclick="addFoodFromResults()">+</button>
+        </div>
+        <button class="food-reset-btn" style="text-align:center" onclick="resetFoodSession()">↩ Back to lobby</button>
       </div>
 
     </div>
@@ -1770,6 +1798,7 @@
     const galleryUnsubs = {};
 
     // ── Anniversary counter
+    /*
     let _anniversaryDate = null;
     const anniversaryDoc = db.collection('config').doc('anniversary');
 
@@ -1818,6 +1847,7 @@
       document.getElementById('anniversary-edit').style.display    = 'none';
       document.getElementById('anniversary-display').style.display = '';
     }
+    */
 
     // ── Default dates to seed on first load
     const defaults = [
@@ -2595,7 +2625,10 @@
       const data = doc.data();
       _sessionId = doc.id;
 
-      if (data.status === 'done') {
+      if (data.status === 'cancelled') {
+        if (_swipesUnsub2) { _swipesUnsub2(); _swipesUnsub2 = null; }
+        setFoodState('lobby');
+      } else if (data.status === 'done') {
         setFoodState('results');
         renderFoodResults(data.matches || []);
       } else if (data.status === 'active') {
@@ -2620,6 +2653,25 @@
         matches:   [],
       });
     }
+
+    function resetFoodSession() {
+      if (_swipesUnsub2) { _swipesUnsub2(); _swipesUnsub2 = null; }
+      if (!_sessionId) { setFoodState('lobby'); return; }
+      sessionsCol.doc(_sessionId).update({ status: 'cancelled' });
+    }
+
+    function addFoodFromResults() {
+      const emojiEl = document.getElementById('newFoodEmojiResults');
+      const nameEl  = document.getElementById('newFoodInputResults');
+      const name    = nameEl.value.trim();
+      if (!name) return;
+      const emoji    = emojiEl.value.trim() || '🍽️';
+      const colorIdx = _foodsList.length % FOOD_COLORS.length;
+      foodsCol.get().then(snap => foodsCol.add({ name, emoji, colorIdx, order: snap.size }));
+      nameEl.value  = '';
+      emojiEl.value = '';
+    }
+    document.getElementById('newFoodInputResults').addEventListener('keydown', e => { if (e.key === 'Enter') addFoodFromResults(); });
 
     // ── Swiping
     function beginSwiping(sessionId) {
