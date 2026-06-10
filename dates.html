@@ -2192,6 +2192,8 @@
           const txt = d.text || d.title || '';
           const card = document.createElement('div');
           card.className = 'date-card' + (d.done ? ' done' : '');
+          card.dataset.poster = d.poster || '';
+          card.dataset.title  = txt;
           const row = document.createElement('div');
           row.className = 'date-row';
 
@@ -2262,11 +2264,14 @@
     async function fetchMovieSuggestions(q) {
       if (TMDB_KEY === 'YOUR_TMDB_KEY') return;
       try {
-        const res  = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
+        const res  = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
         const data = await res.json();
         if (data.results && data.results.length) {
-          _movieSuggestResults = data.results.slice(0, 6);
-          renderMovieSuggestions(_movieSuggestResults);
+          _movieSuggestResults = data.results
+            .filter(r => r.media_type === 'movie' || r.media_type === 'tv')
+            .slice(0, 6);
+          if (_movieSuggestResults.length) renderMovieSuggestions(_movieSuggestResults);
+          else hideMovieSuggestions();
         } else { hideMovieSuggestions(); }
       } catch { hideMovieSuggestions(); }
     }
@@ -2275,13 +2280,16 @@
       const box = document.getElementById('movieSuggestions');
       box.innerHTML = '';
       results.forEach(r => {
+        const title = r.title || r.name;
+        const year  = (r.release_date || r.first_air_date || '').slice(0, 4);
+        const isTV  = r.media_type === 'tv';
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         if (r.poster_path) {
           const img = document.createElement('img');
           img.className = 'suggestion-thumb';
           img.src = `https://image.tmdb.org/t/p/w92${r.poster_path}`;
-          img.alt = r.title;
+          img.alt = title;
           img.onerror = () => img.replaceWith(makeMovieSuggPh());
           item.appendChild(img);
         } else { item.appendChild(makeMovieSuggPh()); }
@@ -2289,10 +2297,10 @@
         info.className = 'suggestion-info';
         const t = document.createElement('div');
         t.className = 'suggestion-title';
-        t.textContent = r.title;
+        t.textContent = title;
         const y = document.createElement('div');
         y.className = 'suggestion-meta';
-        y.textContent = r.release_date ? r.release_date.slice(0, 4) : '';
+        y.textContent = (isTV ? '📺 Series' : '🎬 Movie') + (year ? ' · ' + year : '');
         info.appendChild(t);
         info.appendChild(y);
         item.appendChild(info);
@@ -2327,15 +2335,18 @@
       document.getElementById('newMovieInput').value = '';
       const mcol   = db.collection('movies_' + activeSub);
       const snap   = await mcol.get();
+      const title  = r.title || r.name;
+      const year   = (r.release_date || r.first_air_date || '').slice(0, 4);
       const poster = r.poster_path ? `https://image.tmdb.org/t/p/w500${r.poster_path}` : '';
       await mcol.add({
-        text:   r.title,
-        title:  r.title,
-        year:   r.release_date ? r.release_date.slice(0, 4) : '',
+        text:      title,
+        title,
+        year,
         poster,
-        tmdbId: r.id,
-        done:   false,
-        order:  snap.size,
+        tmdbId:    r.id,
+        mediaType: r.media_type,
+        done:      false,
+        order:     snap.size,
       });
     }
 
@@ -2461,6 +2472,7 @@
       _pickerItems = cards.map(card => ({
         text:     card.querySelector('.date-text')?.textContent  || '',
         emoji:    card.querySelector('.date-emoji')?.textContent || (type === 'dates' ? '💕' : '🎬'),
+        poster:   card.dataset.poster || '',
         selected: true,
       }));
       renderPickerList();
@@ -2493,7 +2505,18 @@
       const pool = _pickerItems.filter(i => i.selected);
       if (!pool.length) { showToast('Select at least one! 🥺'); return; }
       const winner = pool[Math.floor(Math.random() * pool.length)];
-      document.getElementById('pickerWinnerEmoji').textContent = winner.emoji;
+      const emojiEl = document.getElementById('pickerWinnerEmoji');
+      if (winner.poster) {
+        const img = document.createElement('img');
+        img.src = winner.poster;
+        img.alt = winner.text;
+        img.style.cssText = 'width:130px;height:195px;object-fit:cover;border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.35);display:block';
+        img.onerror = () => { emojiEl.textContent = winner.emoji; };
+        emojiEl.innerHTML = '';
+        emojiEl.appendChild(img);
+      } else {
+        emojiEl.textContent = winner.emoji;
+      }
       document.getElementById('pickerWinnerText').textContent  = winner.text;
       if (!fromResult) {
         document.getElementById('pickerList').style.display   = 'none';
