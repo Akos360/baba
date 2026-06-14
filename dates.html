@@ -1397,7 +1397,6 @@
     }
 
     /* ── Anniversary banner */
-    /*
     .anniversary-banner {
       background: white;
       border-radius: 16px;
@@ -1410,7 +1409,7 @@
       text-align: center;
       -webkit-tap-highlight-color: transparent;
     }
-    [data-theme="dark"] .anniversary-banner { background: #1e1332; }
+    [data-theme="dark"] .anniversary-banner { background: #2e1f50; border: 1px solid #3d2a6a; }
     #anniversary-display {
       display: flex;
       align-items: center;
@@ -1444,7 +1443,6 @@
       outline: none;
     }
     [data-theme="dark"] .anniversary-date-input { color: var(--text); }
-    */
 
     /* ── Food feature */
     .food-start-btn {
@@ -1614,7 +1612,6 @@
     <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
 
     <!-- Anniversary banner -->
-    <!--
     <div class="anniversary-banner">
       <div id="anniversary-display" onclick="editAnniversary()">
         <span class="anniversary-days" id="anniversaryDays">💕</span>
@@ -1625,7 +1622,6 @@
         <input type="date" id="anniversaryInput" class="anniversary-date-input" />
       </div>
     </div>
-    -->
 
     <!-- main tabs -->
     <div class="tab-bar">
@@ -1716,7 +1712,8 @@
       <div id="food-state-results" style="display:none;flex-direction:column;gap:1rem">
         <div class="food-results-title" id="foodResultsTitle">It's a match! 💕</div>
         <div class="food-matches-grid" id="foodMatchesGrid"></div>
-        <button class="food-start-btn" onclick="startFoodSession()">New round 🍽️</button>
+        <button class="food-start-btn" id="foodContinueBtn" onclick="continueFoodSession()" style="background:linear-gradient(135deg,var(--pink),var(--purple));color:white">Narrow it down ➡️</button>
+        <button class="food-start-btn" id="foodNewRoundBtn" onclick="startFoodSession()">New round 🍽️</button>
         <div class="food-list-label" style="margin-top:.4rem">Add more foods</div>
         <div class="add-wrap">
           <input type="text" id="newFoodEmojiResults" class="emoji-input" placeholder="🍕" maxlength="2" style="width:2.4rem;flex-shrink:0" />
@@ -1798,7 +1795,6 @@
     const galleryUnsubs = {};
 
     // ── Anniversary counter
-    /*
     let _anniversaryDate = null;
     const anniversaryDoc = db.collection('config').doc('anniversary');
 
@@ -1847,7 +1843,6 @@
       document.getElementById('anniversary-edit').style.display    = 'none';
       document.getElementById('anniversary-display').style.display = '';
     }
-    */
 
     // ── Default dates to seed on first load
     const defaults = [
@@ -2579,6 +2574,7 @@
     let _swipeIdx        = 0;
     let _mySwipes        = {};
     let _swipesUnsub2    = null;
+    let _lastMatches     = [];
 
     // ── Food list (real-time)
     foodsCol.orderBy('order').onSnapshot(snap => {
@@ -2661,7 +2657,7 @@
               setFoodState('waiting');
               listenForFoodCompletion(doc.id);
             } else {
-              beginSwiping(doc.id);
+              beginSwiping(doc.id, data.foodFilter || null);
             }
           });
       }
@@ -2697,11 +2693,14 @@
     document.getElementById('newFoodInputResults').addEventListener('keydown', e => { if (e.key === 'Enter') addFoodFromResults(); });
 
     // ── Swiping
-    function beginSwiping(sessionId) {
+    function beginSwiping(sessionId, foodFilter) {
       _sessionId  = sessionId;
       _mySwipes   = {};
       _swipeIdx   = 0;
-      _swipeQueue = [..._foodsList].sort(() => Math.random() - 0.5);
+      const pool  = (foodFilter && foodFilter.length)
+        ? _foodsList.filter(f => foodFilter.includes(f.id))
+        : _foodsList;
+      _swipeQueue = [...pool].sort(() => Math.random() - 0.5);
       document.getElementById('foodTotal').textContent = _swipeQueue.length;
       setFoodState('swiping');
       buildStack();
@@ -2828,15 +2827,37 @@
     }
 
     function renderFoodResults(matchIds) {
-      const grid = document.getElementById('foodMatchesGrid');
+      _lastMatches = matchIds;
+      const grid        = document.getElementById('foodMatchesGrid');
+      const continueBtn = document.getElementById('foodContinueBtn');
+      const newRoundBtn = document.getElementById('foodNewRoundBtn');
       grid.innerHTML = '';
+
       if (!matchIds.length) {
         document.getElementById('foodResultsTitle').textContent = 'No matches 😢';
         grid.innerHTML = '<p class="food-no-match" style="grid-column:1/-1">Try again! 🍽️</p>';
+        continueBtn.style.display = 'none';
+        newRoundBtn.style.display = '';
         return;
       }
-      document.getElementById('foodResultsTitle').textContent =
-        matchIds.length === 1 ? "It's a match! 💕" : `${matchIds.length} matches! 💕`;
+
+      if (matchIds.length === 1) {
+        document.getElementById('foodResultsTitle').textContent = "Tonight we're eating… 🏆";
+        const food = _foodsList.find(f => f.id === matchIds[0]);
+        if (food) {
+          const [c1, c2] = FOOD_COLORS[food.colorIdx ?? 0];
+          const card = document.createElement('div');
+          card.className = 'food-match-card';
+          card.style.cssText = `background:linear-gradient(135deg,${c1},${c2});grid-column:1/-1;max-width:220px;margin:0 auto;aspect-ratio:1/1`;
+          card.innerHTML = `<span class="food-match-emoji" style="font-size:5rem">${food.emoji||'🍽️'}</span><span class="food-match-name" style="font-size:1.1rem">${esc(food.name)}</span>`;
+          grid.appendChild(card);
+        }
+        continueBtn.style.display = 'none';
+        newRoundBtn.style.display = '';
+        return;
+      }
+
+      document.getElementById('foodResultsTitle').textContent = `${matchIds.length} matches! 💕`;
       matchIds.forEach(fid => {
         const food = _foodsList.find(f => f.id === fid);
         if (!food) return;
@@ -2846,6 +2867,19 @@
         card.style.background = `linear-gradient(135deg,${c1},${c2})`;
         card.innerHTML = `<span class="food-match-emoji">${food.emoji||'🍽️'}</span><span class="food-match-name">${esc(food.name)}</span>`;
         grid.appendChild(card);
+      });
+      continueBtn.style.display = '';
+      newRoundBtn.style.display = 'none';
+    }
+
+    function continueFoodSession() {
+      if (!_lastMatches.length) return;
+      sessionsCol.add({
+        startedBy:  myDeviceId,
+        startedAt:  firebase.firestore.FieldValue.serverTimestamp(),
+        status:     'active',
+        foodFilter: _lastMatches,
+        matches:    [],
       });
     }
 
