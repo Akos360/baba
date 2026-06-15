@@ -1333,43 +1333,6 @@
       text-shadow: none;
     }
 
-    /* ── Notification bell */
-    .notif-btn {
-      position: fixed;
-      top: .9rem;
-      right: 3.6rem;
-      z-index: 300;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      background: white;
-      box-shadow: 0 2px 14px rgba(199, 125, 255, .3);
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform .15s, background .2s;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .notif-btn:active {
-      transform: scale(.88);
-    }
-
-    .notif-btn.active {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-    }
-
-    [data-theme="dark"] .notif-btn {
-      background: #1e1332;
-    }
-
-    [data-theme="dark"] .notif-btn.active {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-    }
-
     /* ── Toast */
     .toast {
       position: fixed;
@@ -1605,7 +1568,6 @@
 
 <body>
 
-  <button class="notif-btn" id="notifBtn" onclick="toggleNotif()" title="Notifications">🔔</button>
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
   <div class="wrapper">
@@ -2389,49 +2351,24 @@
       document.getElementById('themeToggle').textContent = '☀️';
     }
 
-    // ── Notification bell
+    // ── Auto-subscribe to push notifications on load
     const VAPID_PUBLIC = 'BJmTB2kh9NiPFFvCFf0TLoHBRjjYRb8Z7zWWod6orY5BpaY1es7wrNsriqi4eiOUz-AmIogjR_6CpwwkPQ2WtQE';
 
-    async function toggleNotif() {
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-        alert('Notifications not supported on this browser.');
-        return;
-      }
-      const btn = document.getElementById('notifBtn');
-      const isActive = btn.classList.contains('active');
-      if (isActive) {
-        // unsubscribe
-        const reg = await navigator.serviceWorker.ready;
-        const sub = await reg.pushManager.getSubscription();
-        if (sub) {
-          const key = btoa(JSON.stringify(sub.endpoint));
-          await db.collection('push_subscriptions').doc(key).delete();
-          await sub.unsubscribe();
-        }
-        btn.classList.remove('active');
-        btn.textContent = '🔔';
-      } else {
+    (async () => {
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+      try {
         const perm = await Notification.requestPermission();
         if (perm !== 'granted') return;
         const reg = await navigator.serviceWorker.ready;
-        const sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: VAPID_PUBLIC,
-        });
+        let sub = await reg.pushManager.getSubscription();
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: VAPID_PUBLIC,
+          });
+        }
         const key = btoa(JSON.stringify(sub.endpoint));
         await db.collection('push_subscriptions').doc(key).set({ subscription: sub.toJSON() });
-        btn.classList.add('active');
-        btn.textContent = '🔔';
-      }
-    }
-
-    // restore bell state on load
-    (async () => {
-      if (!('serviceWorker' in navigator)) return;
-      try {
-        const reg = await navigator.serviceWorker.ready;
-        const sub = await reg.pushManager.getSubscription();
-        if (sub) document.getElementById('notifBtn').classList.add('active');
       } catch {}
     })();
 

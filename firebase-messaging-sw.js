@@ -1,5 +1,5 @@
 // ── Caching
-const CACHE = 'baba-v2';
+const CACHE = 'baba-v3';
 const ASSETS = ['dates.html', 'index.html', 'manifest.json',
   'img/hehe2.jpg', 'img/yippe.jpg', 'img/cic.jpg', 'img/cic2.jpg', 'img/gym.jpg'];
 
