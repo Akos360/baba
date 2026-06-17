@@ -1563,6 +1563,365 @@
       transition: color .15s;
     }
     .food-reset-btn:active { color: var(--pink); }
+
+    /* ── Main tab bar 2×2 grid */
+    #mainTabBar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    #mainTabBar .tab-btn { flex: none; }
+
+    /* ── Color Walk */
+    .cw-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+      margin-bottom: 1rem;
+    }
+
+    .cw-card {
+      aspect-ratio: 2/3;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cw-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .cw-card-plus {
+      font-size: 2.8rem;
+      color: rgba(255,255,255,.85);
+      font-weight: 800;
+      z-index: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .cw-add-card {
+      background: var(--soft-purple) !important;
+      border: 2px dashed var(--purple);
+    }
+    [data-theme="dark"] .cw-add-card { background: #1e1332 !important; }
+
+    .cw-color-dot {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.9);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+      z-index: 3;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cw-del-btn {
+      position: absolute;
+      top: .45rem;
+      left: .45rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,.45);
+      color: white;
+      font-size: .65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 3;
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+    }
+
+    .cw-wheel-open-btn {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border-radius: 16px;
+      padding: .85rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: .4rem;
+      transition: transform .12s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cw-wheel-open-btn:active { transform: scale(.97); }
+
+    .cw-wheel-result-bar {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      margin-top: .8rem;
+      background: white;
+      border-radius: 16px;
+      padding: .7rem 1rem;
+      box-shadow: 0 4px 16px rgba(199,125,255,.12);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+      color: var(--text);
+    }
+    [data-theme="dark"] .cw-wheel-result-bar { background: #1e1332; }
+
+    .cw-wheel-result-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,.1);
+      flex-shrink: 0;
+      display: inline-block;
+    }
+
+    /* ── Color Wheel modal */
+    .cw-wheel-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 400;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .cw-wheel-backdrop.open { display: flex; }
+
+    .cw-wheel-modal {
+      background: white;
+      border-radius: 28px 28px 0 0;
+      padding: 1.8rem 1.4rem 2.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 480px;
+    }
+    [data-theme="dark"] .cw-wheel-modal { background: #1a0f2e; }
+
+    .cw-wheel-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 1.4rem;
+    }
+
+    .cw-wheel-pointer {
+      position: absolute;
+      top: -2px;
+      font-size: 1.6rem;
+      z-index: 2;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+    }
+
+    .cw-wheel {
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      will-change: transform;
+      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+    }
+
+    .cw-spin-result {
+      display: none;
+      align-items: center;
+      gap: .8rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+    .cw-spin-result.visible { display: flex; }
+
+    .cw-spin-result-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,.9);
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+      flex-shrink: 0;
+    }
+
+    .cw-spin-btn {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border-radius: 16px;
+      padding: .85rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .12s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cw-spin-btn:active { transform: scale(.97); }
+    .cw-spin-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .cw-wheel-close {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      opacity: .55;
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── CW Lightbox */
+    .cw-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.92);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+    }
+    .cw-lightbox.open { display: flex; }
+
+    .cw-lb-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,.18);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 2;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cw-lb-counter {
+      position: absolute;
+      top: 1.15rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.65);
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .cw-lb-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .cw-lb-track::-webkit-scrollbar { display: none; }
+
+    .cw-lb-slide {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 3.5rem 1rem 1.5rem;
+    }
+
+    .cw-lb-card {
+      height: min(68vh, 520px);
+      width: auto;
+      aspect-ratio: 2/3;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,.55);
+    }
+
+    .cw-lb-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      pointer-events: none;
+    }
+
+    .cw-lb-actions {
+      display: flex;
+      gap: .9rem;
+      align-items: center;
+    }
+
+    .cw-lb-upload-btn {
+      border: none;
+      background: rgba(255,255,255,.16);
+      color: white;
+      border-radius: 50px;
+      padding: .6rem 1.2rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem;
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .cw-lb-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,.75);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+      flex-shrink: 0;
+      display: block;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cw-lb-del-btn {
+      border: none;
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.7);
+      border-radius: 50px;
+      padding: .6rem 1rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
   </style>
 </head>
 
@@ -1586,9 +1945,10 @@
     </div>
 
     <!-- main tabs -->
-    <div class="tab-bar">
+    <div class="tab-bar" id="mainTabBar">
       <button class="tab-btn active" id="main-tab-dates" onclick="switchMain('dates')">🗓️ Dates</button>
       <button class="tab-btn" id="main-tab-movies" onclick="switchMain('movies')">🎬 Movies</button>
+      <button class="tab-btn" id="main-tab-colorwalk" onclick="switchMain('colorwalk')">🎨 Color Walk</button>
       <button class="tab-btn" id="main-tab-food" onclick="switchMain('food')">🍽️ Food</button>
     </div>
 
@@ -1630,6 +1990,35 @@
       </div>
       <div class="suggestions-box" id="movieSuggestions"></div>
       <div class="all-done" id="movieAllDone">all watched!! 🎉 time to add more 😏</div>
+    </div>
+
+    <!-- COLOR WALK PANEL -->
+    <div id="panel-colorwalk" style="display:none">
+      <div class="cw-grid" id="cwGrid"></div>
+      <button class="cw-wheel-open-btn" onclick="openColorWheel()">🎡 Spin for a color</button>
+    </div>
+
+    <!-- COLOR WHEEL MODAL -->
+    <div class="cw-wheel-backdrop" id="cwWheelBackdrop" onclick="closeColorWheel()">
+      <div class="cw-wheel-modal" onclick="event.stopPropagation()">
+        <div class="cw-wheel-wrap">
+          <div class="cw-wheel-pointer">▼</div>
+          <div class="cw-wheel" id="cwWheel"></div>
+        </div>
+        <div class="cw-spin-result" id="cwSpinResult">
+          <div class="cw-spin-result-dot" id="cwSpinResultDot"></div>
+          <span id="cwSpinResultHex"></span>
+        </div>
+        <button class="cw-spin-btn" id="cwSpinBtn" onclick="spinColorWheel()">🎡 Spin!</button>
+        <button class="cw-wheel-close" onclick="closeColorWheel()">Close</button>
+      </div>
+    </div>
+
+    <!-- CW LIGHTBOX -->
+    <div class="cw-lightbox" id="cwLightbox">
+      <button class="cw-lb-close" onclick="closeCwLightbox()">✕</button>
+      <div class="cw-lb-counter" id="cwLbCounter"></div>
+      <div class="cw-lb-track" id="cwLbTrack"></div>
     </div>
 
     <!-- FOOD PANEL -->
@@ -1828,7 +2217,7 @@
 
     // ── main tab switch
     function switchMain(tab) {
-      ['dates','movies','food'].forEach(t => {
+      ['dates','movies','colorwalk','food'].forEach(t => {
         document.getElementById('main-tab-' + t).classList.toggle('active', t === tab);
         document.getElementById('panel-' + t).style.display = t === tab ? 'block' : 'none';
       });
@@ -2826,6 +3215,270 @@
       );
       document.getElementById('food-state-' + state).style.display = 'flex';
     }
+
+    // ── COLOR WALK
+    const CW_COLORS = [
+      '#ff4757', // red
+      '#ff9f43', // orange
+      '#ffd32a', // yellow
+      '#2ecc71', // green
+      '#00cec9', // teal
+      '#0984e3', // blue
+      '#6c5ce7', // purple
+      '#fd79a8', // pink
+    ];
+    const CW_SEG = 360 / CW_COLORS.length; // 45° each
+
+    const cwCol = db.collection('color_walk');
+    const cwConfigDoc = db.collection('color_walk_config').doc('wheel');
+    let _cwDocs = [];
+    let _cwWheelRotation = 0;
+    let _cwSpinning = false;
+
+    cwCol.onSnapshot(snap => {
+      _cwDocs = [];
+      snap.forEach(d => _cwDocs.push({ _id: d.id, ...d.data() }));
+      _cwDocs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      renderCwCards(_cwDocs);
+    });
+
+    function makeCwColorDot(d, card) {
+      const dot = document.createElement('label');
+      dot.className = 'cw-color-dot';
+      dot.style.background = d.color || '#c77dff';
+      dot.onclick = e => e.stopPropagation();
+      const colorInput = document.createElement('input');
+      colorInput.type = 'color';
+      colorInput.value = d.color || '#c77dff';
+      colorInput.style.cssText = 'opacity:0;position:absolute;width:0;height:0;border:none;padding:0;';
+      colorInput.addEventListener('input', () => {
+        dot.style.background = colorInput.value;
+        if (!d.imageUrl) card.style.background = colorInput.value;
+      });
+      colorInput.addEventListener('change', () => {
+        cwCol.doc(d._id).update({ color: colorInput.value });
+      });
+      dot.appendChild(colorInput);
+      return dot;
+    }
+
+    function renderCwCards(docs) {
+      const grid = document.getElementById('cwGrid');
+      grid.innerHTML = '';
+
+      docs.forEach((d, i) => {
+        const card = document.createElement('div');
+        card.className = 'cw-card';
+        card.style.background = d.color || '#c77dff';
+        card.onclick = () => openCwLightbox(i);
+
+        if (d.imageUrl) {
+          const img = document.createElement('img');
+          img.className = 'cw-card-img';
+          img.src = d.imageUrl;
+          img.alt = '';
+          card.appendChild(img);
+        } else {
+          const plus = document.createElement('div');
+          plus.className = 'cw-card-plus';
+          plus.textContent = '+';
+          card.appendChild(plus);
+        }
+
+        card.appendChild(makeCwColorDot(d, card));
+        grid.appendChild(card);
+      });
+
+      const addCard = document.createElement('div');
+      addCard.className = 'cw-card cw-add-card';
+      const addPlus = document.createElement('div');
+      addPlus.className = 'cw-card-plus';
+      addPlus.textContent = '+';
+      addCard.appendChild(addPlus);
+      addCard.onclick = addCwCard;
+      grid.appendChild(addCard);
+    }
+
+    function addCwCard() {
+      const color = CW_COLORS[Math.floor(Math.random() * CW_COLORS.length)];
+      cwCol.get().then(snap => cwCol.add({ color, imageUrl: '', order: snap.size }));
+    }
+
+    // ── CW Lightbox
+    function openCwLightbox(startIndex) {
+      const track = document.getElementById('cwLbTrack');
+      track.innerHTML = '';
+
+      _cwDocs.forEach(d => {
+        const slide = document.createElement('div');
+        slide.className = 'cw-lb-slide';
+        slide.onclick = () => closeCwLightbox();
+
+        // Big card
+        const card = document.createElement('div');
+        card.className = 'cw-lb-card';
+        card.style.background = d.color || '#c77dff';
+
+        if (d.imageUrl) {
+          const img = document.createElement('img');
+          img.className = 'cw-lb-card-img';
+          img.src = d.imageUrl;
+          img.alt = '';
+          card.appendChild(img);
+        } else {
+          const plus = document.createElement('div');
+          plus.className = 'cw-card-plus';
+          plus.style.pointerEvents = 'none';
+          plus.textContent = '+';
+          card.appendChild(plus);
+        }
+
+        // Small color dot in corner (purely visual — editing is via actions below)
+        const dotBadge = document.createElement('div');
+        dotBadge.className = 'cw-color-dot';
+        dotBadge.style.background = d.color || '#c77dff';
+        dotBadge.style.pointerEvents = 'none';
+        card.appendChild(dotBadge);
+
+        card.onclick = e => e.stopPropagation();
+        slide.appendChild(card);
+
+        // Action row below the card
+        const actions = document.createElement('div');
+        actions.className = 'cw-lb-actions';
+        actions.onclick = e => e.stopPropagation();
+
+        // Upload label
+        const uploadLabel = document.createElement('label');
+        uploadLabel.className = 'cw-lb-upload-btn';
+        uploadLabel.textContent = d.imageUrl ? '📷 Replace photo' : '📷 Add photo';
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+        fileInput.addEventListener('change', async () => {
+          const file = fileInput.files[0];
+          if (!file) return;
+          uploadLabel.textContent = '⏳ Uploading…';
+          try {
+            const ref = storage.ref(`color_walk/${d._id}/${Date.now()}_${file.name}`);
+            await ref.put(file);
+            const url = await ref.getDownloadURL();
+            await cwCol.doc(d._id).update({ imageUrl: url });
+            closeCwLightbox();
+          } catch(err) {
+            showToast('Upload failed: ' + (err?.code || err?.message || 'check Storage rules'));
+            uploadLabel.textContent = d.imageUrl ? '📷 Replace photo' : '📷 Add photo';
+          }
+        });
+        uploadLabel.appendChild(fileInput);
+        actions.appendChild(uploadLabel);
+
+        // Color label (opens picker)
+        const colorLabel = document.createElement('label');
+        colorLabel.className = 'cw-lb-dot';
+        colorLabel.style.background = d.color || '#c77dff';
+        const colorInput = document.createElement('input');
+        colorInput.type = 'color';
+        colorInput.value = d.color || '#c77dff';
+        colorInput.style.cssText = 'opacity:0;position:absolute;width:0;height:0;border:none;padding:0;';
+        colorInput.addEventListener('input', () => {
+          colorLabel.style.background = colorInput.value;
+          dotBadge.style.background = colorInput.value;
+          if (!d.imageUrl) card.style.background = colorInput.value;
+        });
+        colorInput.addEventListener('change', () => {
+          cwCol.doc(d._id).update({ color: colorInput.value });
+        });
+        colorLabel.appendChild(colorInput);
+        actions.appendChild(colorLabel);
+
+        // Delete button
+        const delBtn = document.createElement('button');
+        delBtn.className = 'cw-lb-del-btn';
+        delBtn.textContent = '✕';
+        delBtn.onclick = () => askRemove(() => {
+          cwCol.doc(d._id).delete();
+          closeCwLightbox();
+        });
+        actions.appendChild(delBtn);
+
+        slide.appendChild(actions);
+        track.appendChild(slide);
+      });
+
+      document.getElementById('cwLightbox').classList.add('open');
+
+      requestAnimationFrame(() => {
+        track.scrollLeft = startIndex * track.offsetWidth;
+        updateCwLbCounter();
+      });
+
+      track.onscroll = updateCwLbCounter;
+    }
+
+    function updateCwLbCounter() {
+      const track = document.getElementById('cwLbTrack');
+      const idx = Math.round(track.scrollLeft / (track.offsetWidth || 1));
+      document.getElementById('cwLbCounter').textContent = `${idx + 1} / ${_cwDocs.length}`;
+    }
+
+    function closeCwLightbox() {
+      document.getElementById('cwLightbox').classList.remove('open');
+    }
+
+    // ── Color Wheel
+    function openColorWheel() {
+      const wheel = document.getElementById('cwWheel');
+      if (!wheel.style.background) {
+        const segs = CW_COLORS.map((c, i) => `${c} ${i * CW_SEG}deg ${(i + 1) * CW_SEG}deg`).join(', ');
+        wheel.style.background = `conic-gradient(${segs})`;
+        wheel.style.transform = `rotate(${_cwWheelRotation}deg)`;
+        wheel.style.transition = 'none';
+      }
+      document.getElementById('cwWheelBackdrop').classList.add('open');
+    }
+
+    function closeColorWheel() {
+      document.getElementById('cwWheelBackdrop').classList.remove('open');
+    }
+
+    function spinColorWheel() {
+      if (_cwSpinning) return;
+      _cwSpinning = true;
+      const btn = document.getElementById('cwSpinBtn');
+      btn.disabled = true;
+      document.getElementById('cwSpinResult').classList.remove('visible');
+
+      const winIdx = Math.floor(Math.random() * CW_COLORS.length);
+      // After rotating CW by X°, pointer sees what was originally at (360 - X°)
+      // So to show segment winIdx (center at winIdx*SEG + SEG/2), need:
+      // totalRotation % 360 = 360 - (winIdx*SEG + SEG/2)
+      const targetPos = (360 - (winIdx * CW_SEG + CW_SEG / 2) + 360) % 360;
+      const currentPos = _cwWheelRotation % 360;
+      let extra = (targetPos - currentPos + 360) % 360;
+      if (extra < CW_SEG) extra += 360;
+      const totalRotation = _cwWheelRotation + 5 * 360 + extra;
+
+      const wheel = document.getElementById('cwWheel');
+      wheel.style.transition = 'transform 3.5s cubic-bezier(0.17, 0.67, 0.12, 1)';
+      wheel.style.transform = `rotate(${totalRotation}deg)`;
+      _cwWheelRotation = totalRotation;
+
+      setTimeout(() => {
+        _cwSpinning = false;
+        btn.disabled = false;
+        const winColor = CW_COLORS[winIdx];
+
+        document.getElementById('cwSpinResultDot').style.background = winColor;
+        document.getElementById('cwSpinResultHex').textContent = winColor;
+        document.getElementById('cwSpinResult').classList.add('visible');
+
+        // Sync to both devices via Firestore
+        cwConfigDoc.set({ color: winColor });
+      }, 3600);
+    }
+
 
   </script>
 
