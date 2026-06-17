@@ -860,7 +860,10 @@
       align-items: center;
       justify-content: center;
     }
-    .photo-lightbox.open { display: flex; }
+
+    .photo-lightbox.open {
+      display: flex;
+    }
 
     .lightbox-track {
       display: flex;
@@ -870,7 +873,10 @@
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
     }
-    .lightbox-track::-webkit-scrollbar { display: none; }
+
+    .lightbox-track::-webkit-scrollbar {
+      display: none;
+    }
 
     .lightbox-slide {
       flex-shrink: 0;
@@ -882,6 +888,7 @@
       justify-content: center;
       padding: 1rem;
     }
+
     .lightbox-slide img {
       max-width: 100%;
       max-height: 78vh;
@@ -897,6 +904,7 @@
       min-height: 1.2rem;
       align-items: center;
     }
+
     .lightbox-dot {
       width: 8px;
       height: 8px;
@@ -906,6 +914,7 @@
       cursor: pointer;
       flex-shrink: 0;
     }
+
     .lightbox-dot.active {
       background: white;
       transform: scale(1.3);
@@ -930,7 +939,10 @@
       -webkit-tap-highlight-color: transparent;
       transition: background .15s;
     }
-    .lightbox-close:active { background: rgba(255, 255, 255, .3); }
+
+    .lightbox-close:active {
+      background: rgba(255, 255, 255, .3);
+    }
 
     .lightbox-dl-btn {
       margin-top: .6rem;
@@ -946,9 +958,14 @@
       -webkit-tap-highlight-color: transparent;
       transition: background .15s;
     }
-    .lightbox-dl-btn:active { background: rgba(255, 255, 255, .28); }
 
-    .gallery-slide img { cursor: pointer; }
+    .lightbox-dl-btn:active {
+      background: rgba(255, 255, 255, .28);
+    }
+
+    .gallery-slide img {
+      cursor: pointer;
+    }
 
     /* ── Confirm modal */
     .modal-backdrop {
@@ -963,7 +980,11 @@
       justify-content: center;
       padding: 1.5rem;
     }
-    .modal-backdrop.open { display: flex; }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
     .modal-card {
       background: white;
       border-radius: 24px;
@@ -974,10 +995,19 @@
       text-align: center;
       animation: modalPop .22s cubic-bezier(.34, 1.56, .64, 1) forwards;
     }
+
     @keyframes modalPop {
-      from { transform: scale(.8); opacity: 0; }
-      to   { transform: scale(1);  opacity: 1; }
+      from {
+        transform: scale(.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
+
     .modal-title {
       font-family: 'Pacifico', cursive;
       font-size: 1.35rem;
@@ -985,8 +1015,19 @@
       text-shadow: 1px 2px 0 var(--soft-pink);
       margin-bottom: .45rem;
     }
-    .modal-sub { font-size: .9rem; font-weight: 600; color: #b088cc; margin-bottom: 1.5rem; }
-    .modal-btns { display: flex; gap: .7rem; }
+
+    .modal-sub {
+      font-size: .9rem;
+      font-weight: 600;
+      color: #b088cc;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: .7rem;
+    }
+
     .modal-btn {
       flex: 1;
       border: none;
@@ -999,11 +1040,28 @@
       transition: transform .12s;
       -webkit-tap-highlight-color: transparent;
     }
-    .modal-btn:active { transform: scale(.95); }
-    .modal-cancel  { background: var(--soft-purple); color: var(--purple); }
-    .modal-confirm { background: linear-gradient(135deg, var(--pink), var(--purple)); color: white; }
-    [data-theme="dark"] .modal-card { background: #1e1332; }
-    [data-theme="dark"] .modal-cancel { background: #2e1f4a; }
+
+    .modal-btn:active {
+      transform: scale(.95);
+    }
+
+    .modal-cancel {
+      background: var(--soft-purple);
+      color: var(--purple);
+    }
+
+    .modal-confirm {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+    }
+
+    [data-theme="dark"] .modal-card {
+      background: #1e1332;
+    }
+
+    [data-theme="dark"] .modal-cancel {
+      background: #2e1f4a;
+    }
 
     /* ── Picker bottom sheet */
     .picker-backdrop {
@@ -1017,7 +1075,11 @@
       align-items: flex-end;
       justify-content: center;
     }
-    .picker-backdrop.open { display: flex; }
+
+    .picker-backdrop.open {
+      display: flex;
+    }
+
     .picker-card {
       background: var(--bg);
       border-radius: 28px 28px 0 0;
@@ -1029,10 +1091,17 @@
       animation: pickerUp .28s cubic-bezier(.34, 1.1, .64, 1) forwards;
       box-shadow: 0 -8px 32px rgba(199, 125, 255, .2);
     }
+
     @keyframes pickerUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
     }
+
     .picker-header {
       display: flex;
       align-items: center;
@@ -1040,12 +1109,14 @@
       padding: 1.2rem 1.2rem .6rem;
       flex-shrink: 0;
     }
+
     .picker-title {
       font-family: 'Pacifico', cursive;
       color: var(--pink);
       font-size: 1.3rem;
       text-shadow: 1px 2px 0 var(--soft-pink);
     }
+
     .picker-close {
       background: none;
       border: none;
@@ -1055,6 +1126,7 @@
       padding: .3rem;
       -webkit-tap-highlight-color: transparent;
     }
+
     .picker-list {
       flex: 1;
       overflow-y: auto;
@@ -1063,6 +1135,7 @@
       flex-direction: column;
       gap: .5rem;
     }
+
     .picker-item {
       display: flex;
       align-items: center;
@@ -1076,12 +1149,36 @@
       user-select: none;
       box-shadow: 0 2px 8px rgba(199, 125, 255, .08);
     }
-    .picker-item:active { transform: scale(.98); }
-    .picker-item.selected { background: linear-gradient(135deg, #fff0f9, #f3e8ff); }
-    [data-theme="dark"] .picker-item { background: #1e1332; }
-    [data-theme="dark"] .picker-item.selected { background: linear-gradient(135deg, #2a1428, #1f1040); }
-    .picker-item-emoji { font-size: 1.2rem; flex-shrink: 0; }
-    .picker-item-text { flex: 1; font-size: .95rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+
+    .picker-item:active {
+      transform: scale(.98);
+    }
+
+    .picker-item.selected {
+      background: linear-gradient(135deg, #fff0f9, #f3e8ff);
+    }
+
+    [data-theme="dark"] .picker-item {
+      background: #1e1332;
+    }
+
+    [data-theme="dark"] .picker-item.selected {
+      background: linear-gradient(135deg, #2a1428, #1f1040);
+    }
+
+    .picker-item-emoji {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .picker-item-text {
+      flex: 1;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
     .picker-item-check {
       width: 24px;
       height: 24px;
@@ -1097,13 +1194,22 @@
       transition: background .2s, border-color .2s, color .2s;
       flex-shrink: 0;
     }
+
     .picker-item.selected .picker-item-check {
       background: linear-gradient(135deg, var(--pink), var(--purple));
       border-color: transparent;
       color: white;
     }
-    [data-theme="dark"] .picker-item-check { background: #1e1332; }
-    .picker-go-wrap { padding: .8rem 1.2rem 1.4rem; flex-shrink: 0; }
+
+    [data-theme="dark"] .picker-item-check {
+      background: #1e1332;
+    }
+
+    .picker-go-wrap {
+      padding: .8rem 1.2rem 1.4rem;
+      flex-shrink: 0;
+    }
+
     .picker-go-btn {
       width: 100%;
       border: none;
@@ -1118,7 +1224,11 @@
       -webkit-tap-highlight-color: transparent;
       transition: transform .15s;
     }
-    .picker-go-btn:active { transform: scale(.97); }
+
+    .picker-go-btn:active {
+      transform: scale(.97);
+    }
+
     .picker-result {
       display: none;
       flex: 1;
@@ -1129,8 +1239,15 @@
       text-align: center;
       gap: 1rem;
     }
-    .picker-result.show { display: flex; }
-    .picker-winner-emoji { font-size: 3.5rem; }
+
+    .picker-result.show {
+      display: flex;
+    }
+
+    .picker-winner-emoji {
+      font-size: 3.5rem;
+    }
+
     .picker-winner-text {
       font-family: 'Pacifico', cursive;
       font-size: 1.4rem;
@@ -1139,7 +1256,14 @@
       line-height: 1.4;
       max-width: 320px;
     }
-    .picker-result-btns { display: flex; gap: .7rem; flex-wrap: wrap; justify-content: center; }
+
+    .picker-result-btns {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     .picker-result-btn {
       border: none;
       border-radius: 50px;
@@ -1151,10 +1275,24 @@
       -webkit-tap-highlight-color: transparent;
       transition: transform .12s;
     }
-    .picker-result-btn:active { transform: scale(.95); }
-    .picker-btn-again { background: linear-gradient(135deg, var(--pink), var(--purple)); color: white; }
-    .picker-btn-back  { background: var(--soft-purple); color: var(--purple); }
-    [data-theme="dark"] .picker-btn-back { background: #2e1f4a; }
+
+    .picker-result-btn:active {
+      transform: scale(.95);
+    }
+
+    .picker-btn-again {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+    }
+
+    .picker-btn-back {
+      background: var(--soft-purple);
+      color: var(--purple);
+    }
+
+    [data-theme="dark"] .picker-btn-back {
+      background: #2e1f4a;
+    }
 
     /* lightbox remove photo button */
     .lightbox-rm-btn {
@@ -1171,7 +1309,10 @@
       -webkit-tap-highlight-color: transparent;
       transition: background .15s;
     }
-    .lightbox-rm-btn:active { background: rgba(255, 107, 157, .4); }
+
+    .lightbox-rm-btn:active {
+      background: rgba(255, 107, 157, .4);
+    }
 
     /* ── Movie poster in row */
     .movie-poster-thumb {
@@ -1183,6 +1324,7 @@
       display: block;
       background: var(--soft-purple);
     }
+
     .movie-poster-ph {
       width: 42px;
       height: 63px;
@@ -1194,19 +1336,28 @@
       justify-content: center;
       font-size: 1.5rem;
     }
-    [data-theme="dark"] .movie-poster-ph { background: linear-gradient(135deg, #3a1a2e, #2e1f4a); }
+
+    [data-theme="dark"] .movie-poster-ph {
+      background: linear-gradient(135deg, #3a1a2e, #2e1f4a);
+    }
 
     /* ── Movie search suggestions */
     .suggestions-box {
       display: none;
       background: white;
       border-radius: 16px;
-      box-shadow: 0 8px 28px rgba(199,125,255,.22);
+      box-shadow: 0 8px 28px rgba(199, 125, 255, .22);
       margin-top: .4rem;
       overflow: hidden;
     }
-    .suggestions-box.open { display: block; }
-    [data-theme="dark"] .suggestions-box { background: #1e1332; }
+
+    .suggestions-box.open {
+      display: block;
+    }
+
+    [data-theme="dark"] .suggestions-box {
+      background: #1e1332;
+    }
 
     .suggestion-item {
       display: flex;
@@ -1218,10 +1369,23 @@
       transition: background .1s;
       -webkit-tap-highlight-color: transparent;
     }
-    .suggestion-item:last-child { border-bottom: none; }
-    .suggestion-item:hover, .suggestion-item:active { background: #fef6ff; }
-    [data-theme="dark"] .suggestion-item { border-bottom-color: #2e1f4a; }
-    [data-theme="dark"] .suggestion-item:hover { background: #281a40; }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover,
+    .suggestion-item:active {
+      background: #fef6ff;
+    }
+
+    [data-theme="dark"] .suggestion-item {
+      border-bottom-color: #2e1f4a;
+    }
+
+    [data-theme="dark"] .suggestion-item:hover {
+      background: #281a40;
+    }
 
     .suggestion-thumb {
       width: 36px;
@@ -1232,6 +1396,7 @@
       background: var(--soft-purple);
       display: block;
     }
+
     .suggestion-thumb-ph {
       width: 36px;
       height: 54px;
@@ -1243,7 +1408,12 @@
       justify-content: center;
       font-size: 1.1rem;
     }
-    .suggestion-info { flex: 1; min-width: 0; }
+
+    .suggestion-info {
+      flex: 1;
+      min-width: 0;
+    }
+
     .suggestion-title {
       font-size: .92rem;
       font-weight: 800;
@@ -1252,7 +1422,13 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .suggestion-meta { font-size: .78rem; color: #b088cc; font-weight: 600; margin-top: .1rem; }
+
+    .suggestion-meta {
+      font-size: .78rem;
+      color: #b088cc;
+      font-weight: 600;
+      margin-top: .1rem;
+    }
 
     /* ── Theme toggle button */
     .theme-toggle {
@@ -1363,7 +1539,7 @@
     .anniversary-banner {
       background: white;
       border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(199,125,255,.12);
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .12);
       padding: .85rem 1.2rem;
       margin-bottom: 1.2rem;
       display: flex;
@@ -1372,7 +1548,12 @@
       text-align: center;
       -webkit-tap-highlight-color: transparent;
     }
-    [data-theme="dark"] .anniversary-banner { background: #2e1f50; border: 1px solid #3d2a6a; }
+
+    [data-theme="dark"] .anniversary-banner {
+      background: #2e1f50;
+      border: 1px solid #3d2a6a;
+    }
+
     #anniversary-display {
       display: flex;
       align-items: center;
@@ -1380,20 +1561,31 @@
       cursor: pointer;
       transition: transform .12s;
     }
-    #anniversary-display:active { transform: scale(.97); }
+
+    #anniversary-display:active {
+      transform: scale(.97);
+    }
+
     .anniversary-days {
       font-family: 'Pacifico', cursive;
       font-size: 1.3rem;
       color: var(--pink);
       text-shadow: 1px 2px 0 var(--soft-pink);
     }
-    .anniversary-label { font-size: .85rem; font-weight: 700; color: #b088cc; }
+
+    .anniversary-label {
+      font-size: .85rem;
+      font-weight: 700;
+      color: #b088cc;
+    }
+
     #anniversary-edit {
       display: none;
       flex-direction: column;
       align-items: center;
       gap: .4rem;
     }
+
     .anniversary-date-input {
       border: 2px solid var(--soft-purple);
       border-radius: 10px;
@@ -1405,7 +1597,10 @@
       background: transparent;
       outline: none;
     }
-    [data-theme="dark"] .anniversary-date-input { color: var(--text); }
+
+    [data-theme="dark"] .anniversary-date-input {
+      color: var(--text);
+    }
 
     /* ── Food feature */
     .food-start-btn {
@@ -1418,12 +1613,22 @@
       font-family: 'Pacifico', cursive;
       font-size: 1.1rem;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(255,107,157,.4);
+      box-shadow: 0 6px 20px rgba(255, 107, 157, .4);
       -webkit-tap-highlight-color: transparent;
       transition: transform .15s;
     }
-    .food-start-btn:active { transform: scale(.97); }
-    .food-start-hint { font-size: .82rem; color: #b088cc; font-weight: 600; text-align: center; }
+
+    .food-start-btn:active {
+      transform: scale(.97);
+    }
+
+    .food-start-hint {
+      font-size: .82rem;
+      color: #b088cc;
+      font-weight: 600;
+      text-align: center;
+    }
+
     .food-list-label {
       font-size: .82rem;
       font-weight: 800;
@@ -1431,7 +1636,12 @@
       text-transform: uppercase;
       letter-spacing: .05em;
     }
-    #food-items { display: flex; flex-direction: column; gap: .5rem; }
+
+    #food-items {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
 
     /* card stack */
     .food-stack-area {
@@ -1441,6 +1651,7 @@
       height: 420px;
       margin: 0 auto;
     }
+
     .food-card {
       position: absolute;
       inset: 0;
@@ -1453,25 +1664,46 @@
       cursor: grab;
       transform-origin: center bottom;
       transition: transform .3s ease;
-      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .2);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       overflow: hidden;
     }
-    .food-card.top    { z-index: 3; }
-    .food-card.back1  { z-index: 2; transform: translateY(12px) scale(.95); }
-    .food-card.back2  { z-index: 1; transform: translateY(24px) scale(.90); }
-    .food-card.dragging { transition: none; cursor: grabbing; }
-    .food-card-emoji  { font-size: 7rem; pointer-events: none; }
-    .food-card-name   {
+
+    .food-card.top {
+      z-index: 3;
+    }
+
+    .food-card.back1 {
+      z-index: 2;
+      transform: translateY(12px) scale(.95);
+    }
+
+    .food-card.back2 {
+      z-index: 1;
+      transform: translateY(24px) scale(.90);
+    }
+
+    .food-card.dragging {
+      transition: none;
+      cursor: grabbing;
+    }
+
+    .food-card-emoji {
+      font-size: 7rem;
+      pointer-events: none;
+    }
+
+    .food-card-name {
       font-family: 'Pacifico', cursive;
       font-size: 1.35rem;
       color: white;
-      text-shadow: 0 2px 8px rgba(0,0,0,.35);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, .35);
       text-align: center;
       padding: 0 1.5rem;
       pointer-events: none;
     }
+
     .food-overlay {
       position: absolute;
       inset: 0;
@@ -1483,12 +1715,24 @@
       opacity: 0;
       pointer-events: none;
     }
-    .food-overlay-yes { background: rgba(67,233,123,.25); }
-    .food-overlay-no  { background: rgba(255,107,107,.25); }
+
+    .food-overlay-yes {
+      background: rgba(67, 233, 123, .25);
+    }
+
+    .food-overlay-no {
+      background: rgba(255, 107, 107, .25);
+    }
 
     /* action buttons */
-    .food-action-btns { display: flex; gap: 2.5rem; align-items: center; }
-    .food-nope-btn, .food-yes-btn {
+    .food-action-btns {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .food-nope-btn,
+    .food-yes-btn {
       width: 64px;
       height: 64px;
       border-radius: 50%;
@@ -1498,15 +1742,33 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .15);
       -webkit-tap-highlight-color: transparent;
       transition: transform .15s;
     }
-    .food-nope-btn:active, .food-yes-btn:active { transform: scale(.88); }
-    .food-nope-btn { background: white; }
-    .food-yes-btn  { background: linear-gradient(135deg, var(--pink), var(--purple)); }
-    [data-theme="dark"] .food-nope-btn { background: #1e1332; }
-    .food-counter { font-size: .9rem; font-weight: 800; color: #b088cc; }
+
+    .food-nope-btn:active,
+    .food-yes-btn:active {
+      transform: scale(.88);
+    }
+
+    .food-nope-btn {
+      background: white;
+    }
+
+    .food-yes-btn {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+    }
+
+    [data-theme="dark"] .food-nope-btn {
+      background: #1e1332;
+    }
+
+    .food-counter {
+      font-size: .9rem;
+      font-weight: 800;
+      color: #b088cc;
+    }
 
     /* waiting */
     .food-waiting-text {
@@ -1524,11 +1786,13 @@
       text-shadow: 1px 2px 0 var(--soft-pink);
       text-align: center;
     }
+
     .food-matches-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: .8rem;
     }
+
     .food-match-card {
       border-radius: 18px;
       aspect-ratio: 2/3;
@@ -1537,18 +1801,29 @@
       align-items: center;
       justify-content: center;
       gap: .6rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
     }
-    .food-match-emoji { font-size: 3rem; }
+
+    .food-match-emoji {
+      font-size: 3rem;
+    }
+
     .food-match-name {
       font-family: 'Pacifico', cursive;
       font-size: .85rem;
       color: white;
-      text-shadow: 0 1px 4px rgba(0,0,0,.3);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, .3);
       text-align: center;
       padding: 0 .6rem;
     }
-    .food-no-match { text-align: center; font-weight: 700; color: #b088cc; padding: 2rem 0; }
+
+    .food-no-match {
+      text-align: center;
+      font-weight: 700;
+      color: #b088cc;
+      padding: 2rem 0;
+    }
+
     .food-reset-btn {
       border: none;
       background: none;
@@ -1562,14 +1837,20 @@
       -webkit-tap-highlight-color: transparent;
       transition: color .15s;
     }
-    .food-reset-btn:active { color: var(--pink); }
+
+    .food-reset-btn:active {
+      color: var(--pink);
+    }
 
     /* ── Main tab bar 2×2 grid */
     #mainTabBar {
       display: grid;
       grid-template-columns: 1fr 1fr;
     }
-    #mainTabBar .tab-btn { flex: none; }
+
+    #mainTabBar .tab-btn {
+      flex: none;
+    }
 
     /* ── Color Walk */
     .cw-grid {
@@ -1587,7 +1868,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
@@ -1604,7 +1885,7 @@
 
     .cw-card-plus {
       font-size: 2.8rem;
-      color: rgba(255,255,255,.85);
+      color: rgba(255, 255, 255, .85);
       font-weight: 800;
       z-index: 1;
       pointer-events: none;
@@ -1615,7 +1896,10 @@
       background: var(--soft-purple) !important;
       border: 2px dashed var(--purple);
     }
-    [data-theme="dark"] .cw-add-card { background: #1e1332 !important; }
+
+    [data-theme="dark"] .cw-add-card {
+      background: #1e1332 !important;
+    }
 
     .cw-color-dot {
       position: absolute;
@@ -1624,9 +1908,9 @@
       width: 22px;
       height: 22px;
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,.9);
+      border: 2px solid rgba(255, 255, 255, .9);
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
       z-index: 3;
       -webkit-tap-highlight-color: transparent;
     }
@@ -1639,7 +1923,7 @@
       height: 22px;
       border-radius: 50%;
       border: none;
-      background: rgba(0,0,0,.45);
+      background: rgba(0, 0, 0, .45);
       color: white;
       font-size: .65rem;
       display: flex;
@@ -1666,7 +1950,10 @@
       transition: transform .12s;
       -webkit-tap-highlight-color: transparent;
     }
-    .cw-wheel-open-btn:active { transform: scale(.97); }
+
+    .cw-wheel-open-btn:active {
+      transform: scale(.97);
+    }
 
     .cw-wheel-result-bar {
       display: flex;
@@ -1676,19 +1963,22 @@
       background: white;
       border-radius: 16px;
       padding: .7rem 1rem;
-      box-shadow: 0 4px 16px rgba(199,125,255,.12);
+      box-shadow: 0 4px 16px rgba(199, 125, 255, .12);
       font-family: 'Nunito', sans-serif;
       font-weight: 700;
       font-size: .95rem;
       color: var(--text);
     }
-    [data-theme="dark"] .cw-wheel-result-bar { background: #1e1332; }
+
+    [data-theme="dark"] .cw-wheel-result-bar {
+      background: #1e1332;
+    }
 
     .cw-wheel-result-swatch {
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      border: 2px solid rgba(0,0,0,.1);
+      border: 2px solid rgba(0, 0, 0, .1);
       flex-shrink: 0;
       display: inline-block;
     }
@@ -1697,13 +1987,16 @@
     .cw-wheel-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.55);
+      background: rgba(0, 0, 0, .55);
       z-index: 400;
       display: none;
       align-items: flex-end;
       justify-content: center;
     }
-    .cw-wheel-backdrop.open { display: flex; }
+
+    .cw-wheel-backdrop.open {
+      display: flex;
+    }
 
     .cw-wheel-modal {
       background: white;
@@ -1716,7 +2009,10 @@
       width: 100%;
       max-width: 480px;
     }
-    [data-theme="dark"] .cw-wheel-modal { background: #1a0f2e; }
+
+    [data-theme="dark"] .cw-wheel-modal {
+      background: #1a0f2e;
+    }
 
     .cw-wheel-wrap {
       position: relative;
@@ -1731,7 +2027,7 @@
       top: -2px;
       font-size: 1.6rem;
       z-index: 2;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .4));
     }
 
     .cw-wheel {
@@ -1739,7 +2035,7 @@
       height: 240px;
       border-radius: 50%;
       will-change: transform;
-      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
     }
 
     .cw-spin-result {
@@ -1751,14 +2047,17 @@
       font-size: 1.1rem;
       color: var(--text);
     }
-    .cw-spin-result.visible { display: flex; }
+
+    .cw-spin-result.visible {
+      display: flex;
+    }
 
     .cw-spin-result-dot {
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      border: 3px solid rgba(255,255,255,.9);
-      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+      border: 3px solid rgba(255, 255, 255, .9);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
       flex-shrink: 0;
     }
 
@@ -1776,8 +2075,15 @@
       transition: transform .12s;
       -webkit-tap-highlight-color: transparent;
     }
-    .cw-spin-btn:active { transform: scale(.97); }
-    .cw-spin-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .cw-spin-btn:active {
+      transform: scale(.97);
+    }
+
+    .cw-spin-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
 
     .cw-wheel-close {
       border: none;
@@ -1795,12 +2101,15 @@
     .cw-lightbox {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.92);
+      background: rgba(0, 0, 0, .92);
       z-index: 500;
       display: none;
       flex-direction: column;
     }
-    .cw-lightbox.open { display: flex; }
+
+    .cw-lightbox.open {
+      display: flex;
+    }
 
     .cw-lb-close {
       position: absolute;
@@ -1810,7 +2119,7 @@
       height: 36px;
       border-radius: 50%;
       border: none;
-      background: rgba(255,255,255,.18);
+      background: rgba(255, 255, 255, .18);
       color: white;
       font-size: 1rem;
       cursor: pointer;
@@ -1823,7 +2132,7 @@
       top: 1.15rem;
       left: 50%;
       transform: translateX(-50%);
-      color: rgba(255,255,255,.65);
+      color: rgba(255, 255, 255, .65);
       font-family: 'Nunito', sans-serif;
       font-size: .9rem;
       font-weight: 700;
@@ -1840,7 +2149,10 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
-    .cw-lb-track::-webkit-scrollbar { display: none; }
+
+    .cw-lb-track::-webkit-scrollbar {
+      display: none;
+    }
 
     .cw-lb-slide {
       flex: 0 0 100%;
@@ -1863,7 +2175,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 16px 48px rgba(0,0,0,.55);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .55);
     }
 
     .cw-lb-card-img {
@@ -1884,7 +2196,7 @@
 
     .cw-lb-upload-btn {
       border: none;
-      background: rgba(255,255,255,.16);
+      background: rgba(255, 255, 255, .16);
       color: white;
       border-radius: 50px;
       padding: .6rem 1.2rem;
@@ -1902,9 +2214,9 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: 2.5px solid rgba(255,255,255,.75);
+      border: 2.5px solid rgba(255, 255, 255, .75);
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
       flex-shrink: 0;
       display: block;
       -webkit-tap-highlight-color: transparent;
@@ -1912,8 +2224,8 @@
 
     .cw-lb-del-btn {
       border: none;
-      background: rgba(255,255,255,.1);
-      color: rgba(255,255,255,.7);
+      background: rgba(255, 255, 255, .1);
+      color: rgba(255, 255, 255, .7);
       border-radius: 50px;
       padding: .6rem 1rem;
       font-family: 'Nunito', sans-serif;
@@ -1939,7 +2251,7 @@
         <span class="anniversary-label" id="anniversaryLabel">Tap to set your start date</span>
       </div>
       <div id="anniversary-edit">
-        <span class="anniversary-label">When did you start? 💕</span>
+        <span class="anniversary-label">When did we start? 💕</span>
         <input type="date" id="anniversaryInput" class="anniversary-date-input" />
       </div>
     </div>
@@ -1961,7 +2273,9 @@
         <span class="progress-label" id="progressLabel">… / …</span>
       </div>
       <button class="dice-btn" onclick="rollDice()">🎲 fuck it we ball</button>
-      <div id="date-list"><p class="loading">loading… 💕</p></div>
+      <div id="date-list">
+        <p class="loading">loading… 💕</p>
+      </div>
       <div class="add-wrap">
         <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="2" />
         <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
@@ -1983,7 +2297,9 @@
         <span class="progress-label" id="movieProgressLabel">… / …</span>
       </div>
       <button class="dice-btn" id="movieDiceBtn" onclick="rollMovieDice()">🎲 fuck it we ball</button>
-      <div id="movie-list"><p class="loading">loading… 💕</p></div>
+      <div id="movie-list">
+        <p class="loading">loading… 💕</p>
+      </div>
       <div class="add-wrap" id="movieAddWrap">
         <input type="text" id="newMovieInput" placeholder="Search a movie to add…" maxlength="80" autocomplete="off" />
         <button class="add-btn" id="movieAddBtn" onclick="addMovie()">+</button>
@@ -2032,9 +2348,12 @@
           <p class="food-start-hint">Both phones see the cards at the same time</p>
         </div>
         <div class="food-list-label">Your food options</div>
-        <div id="food-items"><p class="loading">loading… 🍕</p></div>
+        <div id="food-items">
+          <p class="loading">loading… 🍕</p>
+        </div>
         <div class="add-wrap">
-          <input type="text" id="newFoodEmoji" class="emoji-input" placeholder="🍕" maxlength="2" style="width:2.4rem;flex-shrink:0" />
+          <input type="text" id="newFoodEmoji" class="emoji-input" placeholder="🍕" maxlength="2"
+            style="width:2.4rem;flex-shrink:0" />
           <input type="text" id="newFoodInput" placeholder="Add a food…" maxlength="40" />
           <button class="add-btn" onclick="addFood()">+</button>
         </div>
@@ -2052,7 +2371,8 @@
       </div>
 
       <!-- State: Waiting -->
-      <div id="food-state-waiting" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:3rem 1rem;text-align:center">
+      <div id="food-state-waiting"
+        style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:3rem 1rem;text-align:center">
         <div style="font-size:4rem">🥺</div>
         <div class="food-waiting-text">Waiting for the other one to finish…</div>
         <p class="food-start-hint">Results appear automatically when they're done</p>
@@ -2063,11 +2383,13 @@
       <div id="food-state-results" style="display:none;flex-direction:column;gap:1rem">
         <div class="food-results-title" id="foodResultsTitle">It's a match! 💕</div>
         <div class="food-matches-grid" id="foodMatchesGrid"></div>
-        <button class="food-start-btn" id="foodContinueBtn" onclick="continueFoodSession()" style="background:linear-gradient(135deg,var(--pink),var(--purple));color:white">Narrow it down ➡️</button>
+        <button class="food-start-btn" id="foodContinueBtn" onclick="continueFoodSession()"
+          style="background:linear-gradient(135deg,var(--pink),var(--purple));color:white">Narrow it down ➡️</button>
         <button class="food-start-btn" id="foodNewRoundBtn" onclick="startFoodSession()">New round 🍽️</button>
         <div class="food-list-label" style="margin-top:.4rem">Add more foods</div>
         <div class="add-wrap">
-          <input type="text" id="newFoodEmojiResults" class="emoji-input" placeholder="🍕" maxlength="2" style="width:2.4rem;flex-shrink:0" />
+          <input type="text" id="newFoodEmojiResults" class="emoji-input" placeholder="🍕" maxlength="2"
+            style="width:2.4rem;flex-shrink:0" />
           <input type="text" id="newFoodInputResults" placeholder="Add a food…" maxlength="40" />
           <button class="add-btn" onclick="addFoodFromResults()">+</button>
         </div>
@@ -2123,7 +2445,7 @@
     </div>
   </div>
 
-    </div>
+  </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -2155,19 +2477,19 @@
     });
 
     function renderAnniversary() {
-      const daysEl  = document.getElementById('anniversaryDays');
+      const daysEl = document.getElementById('anniversaryDays');
       const labelEl = document.getElementById('anniversaryLabel');
       if (!_anniversaryDate) {
-        daysEl.textContent  = '💕';
+        daysEl.textContent = '💕';
         labelEl.textContent = 'Tap to set your start date';
         return;
       }
       const days = Math.floor((Date.now() - new Date(_anniversaryDate)) / 86400000);
-      if (days < 0)        { daysEl.textContent = '💕'; labelEl.textContent = 'Soon 💕'; return; }
-      if (days < 365)      { daysEl.textContent = days + ' days'; }
+      if (days < 0) { daysEl.textContent = '💕'; labelEl.textContent = 'Soon 💕'; return; }
+      if (days < 365) { daysEl.textContent = days + ' days'; }
       else {
         const years = Math.floor(days / 365);
-        const rem   = days % 365;
+        const rem = days % 365;
         daysEl.textContent = years + ' year' + (years > 1 ? 's' : '') + ', ' + rem + ' day' + (rem !== 1 ? 's' : '');
       }
       labelEl.textContent = 'together 💕';
@@ -2191,7 +2513,7 @@
     });
 
     function closeAnniversaryEdit() {
-      document.getElementById('anniversary-edit').style.display    = 'none';
+      document.getElementById('anniversary-edit').style.display = 'none';
       document.getElementById('anniversary-display').style.display = '';
     }
 
@@ -2217,7 +2539,7 @@
 
     // ── main tab switch
     function switchMain(tab) {
-      ['dates','movies','colorwalk','food'].forEach(t => {
+      ['dates', 'movies', 'colorwalk', 'food'].forEach(t => {
         document.getElementById('main-tab-' + t).classList.toggle('active', t === tab);
         document.getElementById('panel-' + t).style.display = t === tab ? 'block' : 'none';
       });
@@ -2391,18 +2713,18 @@
       });
     }
 
-    let _lbPhotos  = [];
-    let _lbIdx     = 0;
-    let _lbDateId  = null;
+    let _lbPhotos = [];
+    let _lbIdx = 0;
+    let _lbDateId = null;
 
     function openLightbox(photos, startIdx, dateDocId) {
       _lbPhotos = photos;
-      _lbIdx    = startIdx;
+      _lbIdx = startIdx;
       _lbDateId = dateDocId || null;
 
-      const track  = document.getElementById('lightboxTrack');
+      const track = document.getElementById('lightboxTrack');
       const dotsEl = document.getElementById('lightboxDots');
-      track.innerHTML  = '';
+      track.innerHTML = '';
       dotsEl.innerHTML = '';
 
       photos.forEach(photo => {
@@ -2512,7 +2834,7 @@
 
     function updateMovieProgress(docs) {
       const total = docs.length;
-      const done  = docs.filter(d => d.done).length;
+      const done = docs.filter(d => d.done).length;
       document.getElementById('movieProgressFill').style.width = total ? (done / total * 100) + '%' : '0%';
       document.getElementById('movieProgressLabel').textContent = done + ' / ' + total;
       document.getElementById('movieAllDone').style.display = (total && done === total) ? 'block' : 'none';
@@ -2539,7 +2861,7 @@
           const card = document.createElement('div');
           card.className = 'date-card' + (d.done ? ' done' : '');
           card.dataset.poster = d.poster || '';
-          card.dataset.title  = txt;
+          card.dataset.title = txt;
           const row = document.createElement('div');
           row.className = 'date-row';
 
@@ -2610,7 +2932,7 @@
     async function fetchMovieSuggestions(q) {
       if (TMDB_KEY === 'YOUR_TMDB_KEY') return;
       try {
-        const res  = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
+        const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
         const data = await res.json();
         if (data.results && data.results.length) {
           _movieSuggestResults = data.results
@@ -2627,8 +2949,8 @@
       box.innerHTML = '';
       results.forEach(r => {
         const title = r.title || r.name;
-        const year  = (r.release_date || r.first_air_date || '').slice(0, 4);
-        const isTV  = r.media_type === 'tv';
+        const year = (r.release_date || r.first_air_date || '').slice(0, 4);
+        const isTV = r.media_type === 'tv';
         const item = document.createElement('div');
         item.className = 'suggestion-item';
         if (r.poster_path) {
@@ -2679,27 +3001,27 @@
     async function pickMovieSuggestion(r) {
       hideMovieSuggestions();
       document.getElementById('newMovieInput').value = '';
-      const mcol   = db.collection('movies_' + activeSub);
-      const snap   = await mcol.get();
-      const title  = r.title || r.name;
-      const year   = (r.release_date || r.first_air_date || '').slice(0, 4);
+      const mcol = db.collection('movies_' + activeSub);
+      const snap = await mcol.get();
+      const title = r.title || r.name;
+      const year = (r.release_date || r.first_air_date || '').slice(0, 4);
       const poster = r.poster_path ? `https://image.tmdb.org/t/p/w500${r.poster_path}` : '';
       await mcol.add({
-        text:      title,
+        text: title,
         title,
         year,
         poster,
-        tmdbId:    r.id,
+        tmdbId: r.id,
         mediaType: r.media_type,
-        done:      false,
-        order:     snap.size,
+        done: false,
+        order: snap.size,
       });
     }
 
     function addMovie() {
       if (_movieSuggestResults.length) { pickMovieSuggestion(_movieSuggestResults[0]); return; }
       const input = document.getElementById('newMovieInput');
-      const text  = input.value.trim();
+      const text = input.value.trim();
       if (!text) return;
       const mcol = db.collection('movies_' + activeSub);
       mcol.get().then(snap => mcol.add({ text, done: false, order: snap.size }));
@@ -2758,7 +3080,7 @@
         }
         const key = btoa(JSON.stringify(sub.endpoint));
         await db.collection('push_subscriptions').doc(key).set({ subscription: sub.toJSON() });
-      } catch {}
+      } catch { }
     })();
 
     // ── Escape HTML
@@ -2776,7 +3098,7 @@
     }
 
     // ── Randomizer / picker
-    function rollDice()      { openPickerModal('dates');  }
+    function rollDice() { openPickerModal('dates'); }
     function rollMovieDice() { openPickerModal('movies'); }
 
     let _pickerItems = [];
@@ -2791,14 +3113,14 @@
         return;
       }
       _pickerItems = cards.map(card => ({
-        text:     card.querySelector('.date-text')?.textContent  || '',
-        emoji:    card.querySelector('.date-emoji')?.textContent || (type === 'dates' ? '💕' : '🎬'),
-        poster:   card.dataset.poster || '',
+        text: card.querySelector('.date-text')?.textContent || '',
+        emoji: card.querySelector('.date-emoji')?.textContent || (type === 'dates' ? '💕' : '🎬'),
+        poster: card.dataset.poster || '',
         selected: true,
       }));
       renderPickerList();
       document.getElementById('pickerResult').classList.remove('show');
-      document.getElementById('pickerList').style.display   = '';
+      document.getElementById('pickerList').style.display = '';
       document.getElementById('pickerGoWrap').style.display = '';
       document.getElementById('pickerBackdrop').classList.add('open');
     }
@@ -2838,9 +3160,9 @@
       } else {
         emojiEl.textContent = winner.emoji;
       }
-      document.getElementById('pickerWinnerText').textContent  = winner.text;
+      document.getElementById('pickerWinnerText').textContent = winner.text;
       if (!fromResult) {
-        document.getElementById('pickerList').style.display   = 'none';
+        document.getElementById('pickerList').style.display = 'none';
         document.getElementById('pickerGoWrap').style.display = 'none';
       }
       document.getElementById('pickerResult').classList.add('show');
@@ -2848,7 +3170,7 @@
 
     function showPickerList() {
       document.getElementById('pickerResult').classList.remove('show');
-      document.getElementById('pickerList').style.display   = '';
+      document.getElementById('pickerList').style.display = '';
       document.getElementById('pickerGoWrap').style.display = '';
     }
 
@@ -2874,33 +3196,33 @@
     // ══════════════════════════════════════════
 
     const FOOD_COLORS = [
-      ['#ff6b9d','#c77dff'],
-      ['#ff9a3c','#ff6b6b'],
-      ['#43e97b','#38f9d7'],
-      ['#667eea','#764ba2'],
-      ['#f7971e','#ffd200'],
-      ['#f953c6','#b91d73'],
-      ['#00b4db','#0083b0'],
-      ['#11998e','#38ef7d'],
+      ['#ff6b9d', '#c77dff'],
+      ['#ff9a3c', '#ff6b6b'],
+      ['#43e97b', '#38f9d7'],
+      ['#667eea', '#764ba2'],
+      ['#f7971e', '#ffd200'],
+      ['#f953c6', '#b91d73'],
+      ['#00b4db', '#0083b0'],
+      ['#11998e', '#38ef7d'],
     ];
 
     // Device identity (persists in localStorage)
     const myDeviceId = (() => {
       let id = localStorage.getItem('baba-uid');
-      if (!id) { id = 'dev_' + Math.random().toString(36).slice(2,12); localStorage.setItem('baba-uid', id); }
+      if (!id) { id = 'dev_' + Math.random().toString(36).slice(2, 12); localStorage.setItem('baba-uid', id); }
       return id;
     })();
 
-    const foodsCol    = db.collection('foods');
+    const foodsCol = db.collection('foods');
     const sessionsCol = db.collection('food_sessions');
 
-    let _foodsList       = [];
-    let _sessionId       = null;
-    let _swipeQueue      = [];
-    let _swipeIdx        = 0;
-    let _mySwipes        = {};
-    let _swipesUnsub2    = null;
-    let _lastMatches     = [];
+    let _foodsList = [];
+    let _sessionId = null;
+    let _swipeQueue = [];
+    let _swipeIdx = 0;
+    let _mySwipes = {};
+    let _swipesUnsub2 = null;
+    let _lastMatches = [];
 
     // ── Food list (real-time)
     foodsCol.orderBy('order').onSnapshot(snap => {
@@ -2952,21 +3274,21 @@
 
     function addFood() {
       const emojiEl = document.getElementById('newFoodEmoji');
-      const nameEl  = document.getElementById('newFoodInput');
-      const name    = nameEl.value.trim();
+      const nameEl = document.getElementById('newFoodInput');
+      const name = nameEl.value.trim();
       if (!name) return;
-      const emoji    = emojiEl.value.trim() || '🍽️';
+      const emoji = emojiEl.value.trim() || '🍽️';
       const colorIdx = _foodsList.length % FOOD_COLORS.length;
       foodsCol.get().then(snap => foodsCol.add({ name, emoji, colorIdx, order: snap.size }));
-      nameEl.value  = '';
+      nameEl.value = '';
       emojiEl.value = '';
     }
     document.getElementById('newFoodInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFood(); });
 
     // ── Session listener
-    sessionsCol.orderBy('startedAt','desc').limit(1).onSnapshot(snap => {
+    sessionsCol.orderBy('startedAt', 'desc').limit(1).onSnapshot(snap => {
       if (snap.empty) { setFoodState('lobby'); return; }
-      const doc  = snap.docs[0];
+      const doc = snap.docs[0];
       const data = doc.data();
       _sessionId = doc.id;
 
@@ -2994,8 +3316,8 @@
       sessionsCol.add({
         startedBy: myDeviceId,
         startedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        status:    'active',
-        matches:   [],
+        status: 'active',
+        matches: [],
       });
     }
 
@@ -3007,23 +3329,23 @@
 
     function addFoodFromResults() {
       const emojiEl = document.getElementById('newFoodEmojiResults');
-      const nameEl  = document.getElementById('newFoodInputResults');
-      const name    = nameEl.value.trim();
+      const nameEl = document.getElementById('newFoodInputResults');
+      const name = nameEl.value.trim();
       if (!name) return;
-      const emoji    = emojiEl.value.trim() || '🍽️';
+      const emoji = emojiEl.value.trim() || '🍽️';
       const colorIdx = _foodsList.length % FOOD_COLORS.length;
       foodsCol.get().then(snap => foodsCol.add({ name, emoji, colorIdx, order: snap.size }));
-      nameEl.value  = '';
+      nameEl.value = '';
       emojiEl.value = '';
     }
     document.getElementById('newFoodInputResults').addEventListener('keydown', e => { if (e.key === 'Enter') addFoodFromResults(); });
 
     // ── Swiping
     function beginSwiping(sessionId, foodFilter) {
-      _sessionId  = sessionId;
-      _mySwipes   = {};
-      _swipeIdx   = 0;
-      const pool  = (foodFilter && foodFilter.length)
+      _sessionId = sessionId;
+      _mySwipes = {};
+      _swipeIdx = 0;
+      const pool = (foodFilter && foodFilter.length)
         ? _foodsList.filter(f => foodFilter.includes(f.id))
         : _foodsList;
       _swipeQueue = [...pool].sort(() => Math.random() - 0.5);
@@ -3049,7 +3371,7 @@
     function makeFoodCard(food, depth) {
       const [c1, c2] = FOOD_COLORS[food.colorIdx ?? 0];
       const card = document.createElement('div');
-      card.className = 'food-card ' + ['top','back1','back2'][depth];
+      card.className = 'food-card ' + ['top', 'back1', 'back2'][depth];
       card.style.background = `linear-gradient(135deg,${c1},${c2})`;
       card.innerHTML = `
         <span class="food-card-emoji">${food.emoji || '🍽️'}</span>
@@ -3063,12 +3385,12 @@
     function attachFoodDrag(card) {
       let sx = 0, dragging = false;
       const onStart = e => { sx = (e.touches?.[0] ?? e).clientX; dragging = true; card.classList.add('dragging'); };
-      const onMove  = e => {
+      const onMove = e => {
         if (!dragging) return;
         const dx = (e.touches?.[0] ?? e).clientX - sx;
         card.style.transform = `translateX(${dx}px) rotate(${dx * 0.07}deg)`;
         card.querySelector('.food-overlay-yes').style.opacity = Math.max(0, Math.min(dx / 80, 1));
-        card.querySelector('.food-overlay-no').style.opacity  = Math.max(0, Math.min(-dx / 80, 1));
+        card.querySelector('.food-overlay-no').style.opacity = Math.max(0, Math.min(-dx / 80, 1));
       };
       const onEnd = e => {
         if (!dragging) return;
@@ -3079,17 +3401,17 @@
           swipeFood(dx > 0 ? 'right' : 'left', card);
         } else {
           card.style.transition = 'transform .3s';
-          card.style.transform  = '';
+          card.style.transform = '';
           card.querySelector('.food-overlay-yes').style.opacity = 0;
-          card.querySelector('.food-overlay-no').style.opacity  = 0;
+          card.querySelector('.food-overlay-no').style.opacity = 0;
         }
       };
-      card.addEventListener('touchstart', onStart, { passive:true });
-      card.addEventListener('touchmove',  onMove,  { passive:true });
-      card.addEventListener('touchend',   onEnd);
-      card.addEventListener('mousedown',  onStart);
-      card.addEventListener('mousemove',  onMove);
-      card.addEventListener('mouseup',    onEnd);
+      card.addEventListener('touchstart', onStart, { passive: true });
+      card.addEventListener('touchmove', onMove, { passive: true });
+      card.addEventListener('touchend', onEnd);
+      card.addEventListener('mousedown', onStart);
+      card.addEventListener('mousemove', onMove);
+      card.addEventListener('mouseup', onEnd);
     }
 
     function swipeFood(direction, cardEl) {
@@ -3098,17 +3420,17 @@
       _mySwipes[food.id] = direction;
 
       const stack = document.getElementById('foodStack');
-      const top   = cardEl || stack.querySelector('.food-card.top');
-      const b1    = stack.querySelector('.food-card.back1');
-      const b2    = stack.querySelector('.food-card.back2');
+      const top = cardEl || stack.querySelector('.food-card.top');
+      const b1 = stack.querySelector('.food-card.back1');
+      const b2 = stack.querySelector('.food-card.back2');
 
       if (top) {
         top.style.transition = 'transform .35s ease, opacity .35s';
-        top.style.transform  = direction === 'right' ? 'translateX(150%) rotate(20deg)' : 'translateX(-150%) rotate(-20deg)';
-        top.style.opacity    = '0';
+        top.style.transform = direction === 'right' ? 'translateX(150%) rotate(20deg)' : 'translateX(-150%) rotate(-20deg)';
+        top.style.opacity = '0';
       }
       if (b1) { b1.className = 'food-card top'; attachFoodDrag(b1); }
-      if (b2)   b2.className = 'food-card back1';
+      if (b2) b2.className = 'food-card back1';
 
       _swipeIdx++;
       document.getElementById('foodCurrent').textContent = Math.min(_swipeIdx + 1, _swipeQueue.length);
@@ -3154,7 +3476,7 @@
 
     function renderFoodResults(matchIds) {
       _lastMatches = matchIds;
-      const grid        = document.getElementById('foodMatchesGrid');
+      const grid = document.getElementById('foodMatchesGrid');
       const continueBtn = document.getElementById('foodContinueBtn');
       const newRoundBtn = document.getElementById('foodNewRoundBtn');
       grid.innerHTML = '';
@@ -3175,7 +3497,7 @@
           const card = document.createElement('div');
           card.className = 'food-match-card';
           card.style.cssText = `background:linear-gradient(135deg,${c1},${c2});grid-column:1/-1;max-width:220px;margin:0 auto;aspect-ratio:1/1`;
-          card.innerHTML = `<span class="food-match-emoji" style="font-size:5rem">${food.emoji||'🍽️'}</span><span class="food-match-name" style="font-size:1.1rem">${esc(food.name)}</span>`;
+          card.innerHTML = `<span class="food-match-emoji" style="font-size:5rem">${food.emoji || '🍽️'}</span><span class="food-match-name" style="font-size:1.1rem">${esc(food.name)}</span>`;
           grid.appendChild(card);
         }
         continueBtn.style.display = 'none';
@@ -3191,7 +3513,7 @@
         const card = document.createElement('div');
         card.className = 'food-match-card';
         card.style.background = `linear-gradient(135deg,${c1},${c2})`;
-        card.innerHTML = `<span class="food-match-emoji">${food.emoji||'🍽️'}</span><span class="food-match-name">${esc(food.name)}</span>`;
+        card.innerHTML = `<span class="food-match-emoji">${food.emoji || '🍽️'}</span><span class="food-match-name">${esc(food.name)}</span>`;
         grid.appendChild(card);
       });
       continueBtn.style.display = '';
@@ -3201,16 +3523,16 @@
     function continueFoodSession() {
       if (!_lastMatches.length) return;
       sessionsCol.add({
-        startedBy:  myDeviceId,
-        startedAt:  firebase.firestore.FieldValue.serverTimestamp(),
-        status:     'active',
+        startedBy: myDeviceId,
+        startedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'active',
         foodFilter: _lastMatches,
-        matches:    [],
+        matches: [],
       });
     }
 
     function setFoodState(state) {
-      ['lobby','swiping','waiting','results'].forEach(s =>
+      ['lobby', 'swiping', 'waiting', 'results'].forEach(s =>
         document.getElementById('food-state-' + s).style.display = 'none'
       );
       document.getElementById('food-state-' + state).style.display = 'flex';
@@ -3366,7 +3688,7 @@
             const url = await ref.getDownloadURL();
             await cwCol.doc(d._id).update({ imageUrl: url });
             closeCwLightbox();
-          } catch(err) {
+          } catch (err) {
             showToast('Upload failed: ' + (err?.code || err?.message || 'check Storage rules'));
             uploadLabel.textContent = d.imageUrl ? '📷 Replace photo' : '📷 Add photo';
           }
