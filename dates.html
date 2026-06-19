@@ -588,19 +588,6 @@
       min-height: 1.3rem;
     }
 
-    /* ── Autocomplete suggestions */
-    .suggestions-box {
-      display: none;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 8px 28px rgba(199, 125, 255, .22);
-      margin-top: .4rem;
-      overflow: hidden;
-    }
-
-    .suggestions-box.open {
-      display: block;
-    }
 
     .suggestion-item {
       display: flex;
@@ -665,23 +652,6 @@
       margin-top: .1rem;
     }
 
-    /* ── Confirm modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(61, 44, 78, .4);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
 
     .modal-card {
       background: white;
@@ -2744,10 +2714,10 @@
           dot.onclick = e => { e.stopPropagation(); track.scrollLeft = i * track.offsetWidth; };
           dotsEl.appendChild(dot);
         });
-        track.addEventListener('scroll', () => {
+        track.onscroll = () => {
           _lbIdx = Math.round(track.scrollLeft / track.offsetWidth);
           dotsEl.querySelectorAll('.lightbox-dot').forEach((d, i) => d.classList.toggle('active', i === _lbIdx));
-        }, { passive: true });
+        };
       }
 
       document.getElementById('photoLightbox').classList.add('open');
@@ -2767,6 +2737,7 @@
       const p = _lbPhotos[_lbIdx];
       if (!p || !_lbDateId) return;
       askRemove(() => {
+        if (p.url) storage.refFromURL(p.url).delete().catch(() => {});
         dateCol.doc(_lbDateId).collection('photos').doc(p.id).delete();
         closeLightbox();
       });
@@ -2933,6 +2904,7 @@
       if (TMDB_KEY === 'YOUR_TMDB_KEY') return;
       try {
         const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&page=1`);
+        if (!res.ok) { hideMovieSuggestions(); return; }
         const data = await res.json();
         if (data.results && data.results.length) {
           _movieSuggestResults = data.results
@@ -3078,7 +3050,7 @@
             applicationServerKey: VAPID_PUBLIC,
           });
         }
-        const key = btoa(JSON.stringify(sub.endpoint));
+        const key = btoa(sub.endpoint).replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
         await db.collection('push_subscriptions').doc(key).set({ subscription: sub.toJSON() });
       } catch { }
     })();
@@ -3272,9 +3244,9 @@
       });
     }
 
-    function addFood() {
-      const emojiEl = document.getElementById('newFoodEmoji');
-      const nameEl = document.getElementById('newFoodInput');
+    function addFoodItem(emojiId, nameId) {
+      const emojiEl = document.getElementById(emojiId);
+      const nameEl  = document.getElementById(nameId);
       const name = nameEl.value.trim();
       if (!name) return;
       const emoji = emojiEl.value.trim() || '🍽️';
@@ -3283,6 +3255,7 @@
       nameEl.value = '';
       emojiEl.value = '';
     }
+    function addFood() { addFoodItem('newFoodEmoji', 'newFoodInput'); }
     document.getElementById('newFoodInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFood(); });
 
     // ── Session listener
@@ -3327,17 +3300,7 @@
       sessionsCol.doc(_sessionId).update({ status: 'cancelled' });
     }
 
-    function addFoodFromResults() {
-      const emojiEl = document.getElementById('newFoodEmojiResults');
-      const nameEl = document.getElementById('newFoodInputResults');
-      const name = nameEl.value.trim();
-      if (!name) return;
-      const emoji = emojiEl.value.trim() || '🍽️';
-      const colorIdx = _foodsList.length % FOOD_COLORS.length;
-      foodsCol.get().then(snap => foodsCol.add({ name, emoji, colorIdx, order: snap.size }));
-      nameEl.value = '';
-      emojiEl.value = '';
-    }
+    function addFoodFromResults() { addFoodItem('newFoodEmojiResults', 'newFoodInputResults'); }
     document.getElementById('newFoodInputResults').addEventListener('keydown', e => { if (e.key === 'Enter') addFoodFromResults(); });
 
     // ── Swiping
@@ -3564,23 +3527,26 @@
       renderCwCards(_cwDocs);
     });
 
+    // Shared color-input factory; dotEls get their background updated live
+    function makeCwColorInput(d, cardEl, ...dotEls) {
+      const inp = document.createElement('input');
+      inp.type = 'color';
+      inp.value = d.color || '#c77dff';
+      inp.style.cssText = 'opacity:0;position:absolute;width:0;height:0;border:none;padding:0;';
+      inp.addEventListener('input', () => {
+        dotEls.forEach(el => { el.style.background = inp.value; });
+        if (!d.imageUrl && cardEl) cardEl.style.background = inp.value;
+      });
+      inp.addEventListener('change', () => cwCol.doc(d._id).update({ color: inp.value }));
+      return inp;
+    }
+
     function makeCwColorDot(d, card) {
       const dot = document.createElement('label');
       dot.className = 'cw-color-dot';
       dot.style.background = d.color || '#c77dff';
       dot.onclick = e => e.stopPropagation();
-      const colorInput = document.createElement('input');
-      colorInput.type = 'color';
-      colorInput.value = d.color || '#c77dff';
-      colorInput.style.cssText = 'opacity:0;position:absolute;width:0;height:0;border:none;padding:0;';
-      colorInput.addEventListener('input', () => {
-        dot.style.background = colorInput.value;
-        if (!d.imageUrl) card.style.background = colorInput.value;
-      });
-      colorInput.addEventListener('change', () => {
-        cwCol.doc(d._id).update({ color: colorInput.value });
-      });
-      dot.appendChild(colorInput);
+      dot.appendChild(makeCwColorInput(d, card, dot));
       return dot;
     }
 
@@ -3696,23 +3662,12 @@
         uploadLabel.appendChild(fileInput);
         actions.appendChild(uploadLabel);
 
-        // Color label (opens picker)
+        // Color label (opens picker) — reuses makeCwColorInput
         const colorLabel = document.createElement('label');
         colorLabel.className = 'cw-lb-dot';
         colorLabel.style.background = d.color || '#c77dff';
-        const colorInput = document.createElement('input');
-        colorInput.type = 'color';
-        colorInput.value = d.color || '#c77dff';
-        colorInput.style.cssText = 'opacity:0;position:absolute;width:0;height:0;border:none;padding:0;';
-        colorInput.addEventListener('input', () => {
-          colorLabel.style.background = colorInput.value;
-          dotBadge.style.background = colorInput.value;
-          if (!d.imageUrl) card.style.background = colorInput.value;
-        });
-        colorInput.addEventListener('change', () => {
-          cwCol.doc(d._id).update({ color: colorInput.value });
-        });
-        colorLabel.appendChild(colorInput);
+        colorLabel.onclick = e => e.stopPropagation();
+        colorLabel.appendChild(makeCwColorInput(d, card, colorLabel, dotBadge));
         actions.appendChild(colorLabel);
 
         // Delete button
