@@ -14,7 +14,16 @@ async function notify(title, body) {
   const snap    = await getFirestore().collection('push_subscriptions').get();
   const payload = JSON.stringify({ title, body });
 
-  await Promise.all(snap.docs.map(async doc => {
+  // Deduplicate by endpoint so stale/duplicate docs don't fire twice
+  const seen = new Set();
+  const unique = snap.docs.filter(doc => {
+    const endpoint = doc.data().subscription?.endpoint;
+    if (!endpoint || seen.has(endpoint)) return false;
+    seen.add(endpoint);
+    return true;
+  });
+
+  await Promise.all(unique.map(async doc => {
     try {
       await webpush.sendNotification(doc.data().subscription, payload);
     } catch (err) {
@@ -32,6 +41,8 @@ exports.onDateAdded = onDocumentCreated('dates/{id}', event => {
 
 exports.onMovieHomeAdded = onDocumentCreated('movies_home/{id}', event => {
   const m = event.data.data();
+  // Skip notifications for migrated docs (they carry a migrated flag)
+  if (m.migrated) return null;
   return notify('New movie added! 🎬', m.text);
 });
 

@@ -1812,6 +1812,27 @@
       color: var(--pink);
     }
 
+    /* ── iOS notification nudge */
+    .notif-nudge {
+      display: none;
+      align-items: center;
+      gap: .7rem;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border-radius: 16px;
+      padding: .75rem 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .notif-nudge.visible { display: flex; }
+    .notif-nudge-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .notif-nudge-text { flex: 1; }
+    .notif-nudge-dismiss { opacity: .7; font-size: .85rem; }
+
     /* ── Main tab bar 2×2 grid */
     #mainTabBar {
       display: grid;
@@ -2213,6 +2234,13 @@
 
   <div class="wrapper">
     <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
+
+    <!-- iOS notification nudge (only shown when needed) -->
+    <div class="notif-nudge" id="notifNudge" onclick="enableNotifications()">
+      <span class="notif-nudge-icon">🔔</span>
+      <span class="notif-nudge-text">Tap to enable notifications</span>
+      <span class="notif-nudge-dismiss">→</span>
+    </div>
 
     <!-- Anniversary banner -->
     <div class="anniversary-banner">
@@ -3034,25 +3062,67 @@
       document.getElementById('themeToggle').textContent = '☀️';
     }
 
-    // ── Auto-subscribe to push notifications on load
+    // ── Push notifications
     const VAPID_PUBLIC = 'BJmTB2kh9NiPFFvCFf0TLoHBRjjYRb8Z7zWWod6orY5BpaY1es7wrNsriqi4eiOUz-AmIogjR_6CpwwkPQ2WtQE';
+
+    async function savePushSubscription() {
+      const reg = await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: VAPID_PUBLIC,
+        });
+      }
+      const key = btoa(sub.endpoint).replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
+      const col = db.collection('push_subscriptions');
+      const existing = await col.get();
+      const stale = existing.docs.filter(d => {
+        const ep = d.data().subscription?.endpoint;
+        return ep === sub.endpoint && d.id !== key;
+      });
+      await Promise.all(stale.map(d => d.ref.delete()));
+      await col.doc(key).set({ subscription: sub.toJSON() });
+    }
+
+    // Called from the nudge banner tap (required by iOS)
+    async function enableNotifications() {
+      document.getElementById('notifNudge').classList.remove('visible');
+      try {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') await savePushSubscription();
+      } catch { }
+    }
 
     (async () => {
       if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
       try {
-        const perm = await Notification.requestPermission();
-        if (perm !== 'granted') return;
-        const reg = await navigator.serviceWorker.ready;
-        let sub = await reg.pushManager.getSubscription();
-        if (!sub) {
-          sub = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: VAPID_PUBLIC,
-          });
-        }
-        const key = btoa(sub.endpoint).replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
-        await db.collection('push_subscriptions').doc(key).set({ subscription: sub.toJSON() });
+        // Always register the SW explicitly so it works on fresh devices and iOS
+        await navigator.serviceWorker.register('/firebase-messaging-sw.js');
       } catch { }
+
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                        || window.navigator.standalone === true;
+      const perm = Notification.permission;
+
+      if (isIOS) {
+        // iOS requires a user gesture to call requestPermission()
+        // Show nudge only if: running as installed PWA and permission not yet decided
+        if (isStandalone && perm === 'default') {
+          document.getElementById('notifNudge').classList.add('visible');
+        } else if (perm === 'granted') {
+          // Already granted — just ensure subscription is saved
+          savePushSubscription().catch(() => {});
+        }
+        // If not standalone: can't request permission at all on iOS (not installed as PWA)
+      } else {
+        // Android / desktop: requestPermission works without a gesture
+        try {
+          const granted = await Notification.requestPermission();
+          if (granted === 'granted') await savePushSubscription();
+        } catch { }
+      }
     })();
 
     // ── Escape HTML
@@ -3156,7 +3226,7 @@
       return db.collection('movies').get().then(all => {
         const batch = db.batch();
         all.forEach(doc => {
-          batch.set(db.collection('movies_home').doc(), doc.data());
+          batch.set(db.collection('movies_home').doc(), { ...doc.data(), migrated: true });
           batch.delete(doc.ref);
         });
         return batch.commit();
