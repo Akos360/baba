@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>I have a question for you 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff6b9d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="baba 💕">
+  <link rel="apple-touch-icon" href="img/hehe2.jpg">
+  <script>(function(){var t=localStorage.getItem('baba-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --pink: #ff6b9d;
+      --soft-pink: #ffc2d8;
+      --purple: #c77dff;
+      --soft-purple: #e8d5ff;
+      --yellow: #ffe066;
+      --bg: #fff0f5;
+      --text: #3d2c4e;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── PAGES ── */
+    .page {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1.4rem 3rem;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .page.active {
+      display: flex;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    h1 {
+      font-family: 'Pacifico', cursive;
+      color: var(--pink);
+      font-size: clamp(2rem, 8vw, 3rem);
+      margin-bottom: .5rem;
+      text-shadow: 2px 3px 0 var(--soft-pink);
+    }
+
+    h2 {
+      font-family: 'Pacifico', cursive;
+      color: var(--purple);
+      font-size: clamp(1.5rem, 6vw, 2.2rem);
+      margin-bottom: .5rem;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 4vw, 1.25rem);
+      font-weight: 600;
+      color: #7b5ea7;
+      margin-bottom: 1.5rem;
+      max-width: 340px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(199, 125, 255, .18);
+      padding: 1.6rem 1.4rem;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 1.6rem;
+    }
+
+    /* ── GIF / IMAGE SLOT ── */
+    .gif-slot {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      background: var(--soft-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
+      max-height: 280px;
+    }
+
+    .gif-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gif-slot .placeholder {
+      font-size: 4rem;
+      padding: 2rem;
+    }
+
+    /* ── STICKER ROW ── */
+    .stickers {
+      display: flex;
+      justify-content: center;
+      gap: .8rem;
+      font-size: 2.2rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .sticker {
+      animation: bounce 1.6s ease-in-out infinite;
+    }
+
+    .sticker:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .sticker:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    .sticker:nth-child(4) {
+      animation-delay: .6s;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* ── REASON LIST ── */
+    .reasons {
+      list-style: none;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+    }
+
+    .reasons li::before {
+      content: '💜 ';
+    }
+
+    /* ── BIG QUESTION ── */
+    .big-question {
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(1.6rem, 7vw, 2.4rem);
+      color: var(--pink);
+      line-height: 1.3;
+      margin: 1rem 0 1.8rem;
+      text-shadow: 2px 3px 0 var(--soft-pink);
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-block;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: .85rem 2.2rem;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active {
+      transform: scale(.95);
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      font-size: 1.4rem;
+      padding: 1rem 3rem;
+      box-shadow: 0 6px 20px rgba(255, 107, 157, .4);
+      margin-bottom: 1rem;
+    }
+
+    .btn-yes:hover {
+      transform: scale(1.06);
+      box-shadow: 0 10px 28px rgba(255, 107, 157, .5);
+    }
+
+    .btn-no {
+      background: white;
+      color: #aaa;
+      border: 2px solid #ddd;
+      font-size: .95rem;
+      padding: .6rem 1.6rem;
+      position: relative;
+      transition: transform .1s;
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, var(--purple), #9b5de5);
+      color: white;
+      box-shadow: 0 6px 20px rgba(199, 125, 255, .4);
+    }
+
+    .btn-next:hover {
+      transform: scale(1.04);
+    }
+
+    /* ── NO-BUTTON WRAPPER ── */
+    #no-area {
+      position: relative;
+      height: 60px;
+      width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    #btn-no {
+      position: absolute;
+    }
+
+    /* ── NO COUNTER ── */
+    #no-count-msg {
+      font-size: .9rem;
+      color: #bbb;
+      margin-top: .5rem;
+      min-height: 1.2em;
+      font-style: italic;
+    }
+
+    /* ── YES SCREEN ── */
+    #page-yes {
+      background: linear-gradient(160deg, #fff0f5 0%, #f0e6ff 100%);
+    }
+
+    .confetti-area {
+      font-size: 2.5rem;
+      line-height: 1.6;
+      letter-spacing: .2rem;
+      margin: 1rem 0;
+    }
+
+    .yes-msg {
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(1.8rem, 8vw, 2.8rem);
+      color: var(--pink);
+      text-shadow: 2px 3px 0 var(--soft-pink);
+      margin-bottom: 1rem;
+    }
+
+    .yes-sub {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #7b5ea7;
+      max-width: 300px;
+      text-align: center;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── PHOTO GRID (page 1) ── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .7rem;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 1.4rem;
+    }
+
+    .photo-grid .gif-slot {
+      margin-bottom: 0;
+      aspect-ratio: 1;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 60px;
+      height: 4px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      margin: 1rem auto;
+    }
+
+    /* ── CELEBRATION HEARTS ── */
+    .cel-heart {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.8rem;
+      animation: fall linear forwards;
+      z-index: 999;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* ── SCROLL HINT ── */
+    .scroll-hint {
+      font-size: .85rem;
+      color: #c0a8d8;
+      margin-top: auto;
+      padding-top: 1.5rem;
+      font-weight: 600;
+    }
+
+    /* ── Theme toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: .9rem;
+      right: .9rem;
+      z-index: 300;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 14px rgba(199,125,255,.3);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, background .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .theme-toggle:active { transform: scale(.88); }
+
+    /* ── Dark mode */
+    [data-theme="dark"] {
+      --bg: #120c1e;
+      --text: #eddeff;
+      --soft-purple: #2e1f4a;
+      --soft-pink: #3a1a2e;
+    }
+    [data-theme="dark"] .subtitle,
+    [data-theme="dark"] .yes-sub { color: #b088cc; }
+    [data-theme="dark"] .card,
+    [data-theme="dark"] .theme-toggle { background: #1e1332; }
+    [data-theme="dark"] .btn-no { background: #1e1332; color: #9070b8; border-color: #2e1f4a; }
+    [data-theme="dark"] #page-yes { background: linear-gradient(160deg, #120c1e 0%, #1a0d30 100%); }
+  </style>
+</head>
+
+<body>
+
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
+  <!-- ═══════════════ PAGE 1 — intro ═══════════════ -->
+  <div class="page active" id="page-1">
+    <h1>Hey you 👋</h1>
+    <p class="subtitle">I made this page just for you.<br>I hope it makes you smile 🥺</p>
+
+    <div class="card">
+      <div class="gif-slot">
+        <img src="img/cic.jpg" alt="" />
+      </div>
+      <p style="font-size:1.05rem; font-weight:700; color:#7b5ea7; margin-top:.8rem;">
+        There's something I've been wanting to ask you…
+      </p>
+    </div>
+
+    <div class="stickers">
+      <span class="sticker">💗</span>
+      <span class="sticker">✨</span>
+      <span class="sticker">🦋</span>
+      <span class="sticker">💫</span>
+    </div>
+
+    <button class="btn btn-next" onclick="goTo('page-2')">Show me 👀</button>
+  </div>
+
+  <!-- ═══════════════ PAGE 2 — reasons ═══════════════ -->
+  <div class="page" id="page-2">
+    <h2>Here's the thing…</h2>
+    <div class="divider"></div>
+
+    <div class="card">
+      <ul class="reasons">
+        <li>You make everything more fun</li>
+        <li>Your smile literally ruins me</li>
+        <li>I can be weird around you and I love it</li>
+        <li>I think about you way too often</li>
+        <li>Everything is just better with you</li>
+      </ul>
+    </div>
+
+    <div class="card" style="padding:0; overflow:hidden; margin-bottom:1.4rem;">
+      <img src="img/cic2.jpg" alt="" style="width:100%; height:auto; display:block; border-radius:24px;" />
+    </div>
+
+    <button class="btn btn-next" onclick="goTo('page-3')">Okay… and? 🤔</button>
+  </div>
+
+  <!-- ═══════════════ PAGE 3 — THE QUESTION ═══════════════ -->
+  <div class="page" id="page-3">
+    <p class="big-question">So… will you be<br>my hehe?💕<br>I mean, will you be my Girl?<br></p>
+
+    <div class="card" style="padding:0; overflow:hidden; margin-bottom:1.4rem;">
+      <div class="gif-slot" style="margin:0; aspect-ratio:unset; max-height:unset;">
+        <img src="img/hehe2.jpg" alt="" style="object-fit:contain; height:auto;" />
+      </div>
+    </div>
+
+    <button class="btn btn-yes" onclick="handleYes()">Yes!! 💖</button>
+
+    <div id="no-area">
+      <button class="btn btn-no" id="btn-no" onmouseenter="runAway()" ontouchstart="runAway()">
+        No…
+      </button>
+    </div>
+    <p id="no-count-msg"></p>
+  </div>
+
+  <!-- ═══════════════ PAGE YES ═══════════════ -->
+  <div class="page" id="page-yes">
+    <div class="confetti-area">🎉💕🎊💜🎈💗✨</div>
+    <p class="yes-msg">YAY!! 🥳</p>
+    <div class="divider"></div>
+
+    <div class="card" style="padding:0; overflow:hidden; margin-bottom:1.4rem;">
+      <img src="img/gym.jpg" alt=""
+        style="width:100%; height:auto; display:block; border-radius:24px; transform:scale(1.08); transform-origin:center center;" />
+    </div>
+    <div class="card">
+      <p class="yes-sub">
+        Best decision you ever made 😤💕<br><br>
+        I promise to make it worth it every single day.<br>
+        Puszi Puszi!!!
+      </p>
+    </div>
+
+    <div class="stickers">
+      <span class="sticker">💑</span>
+      <span class="sticker">💕</span>
+      <span class="sticker">🌸</span>
+    </div>
+  </div>
+
+  <script>
+    // ── Service worker
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+
+    // ── Theme toggle
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+      const m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = theme === 'dark' ? '#120c1e' : '#ff6b9d';
+    }
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('baba-theme', next);
+      applyTheme(next);
+    }
+    applyTheme(localStorage.getItem('baba-theme') || 'light');
+
+    // ── Page navigation
+    function goTo(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // ── No button runs away
+    let noCount = 0;
+    const noMsgs = [
+      "Are you sure? 🥺",
+      "Think again… 👀",
+      "That can't be right 😭",
+      "Please reconsider 🙏",
+      "Wrong button!! 😤",
+      "Last chance… 👉👈",
+      "The Yes button misses you 💔",
+    ];
+    function runAway() {
+      noCount++;
+      const btn = document.getElementById('btn-no');
+      const area = document.getElementById('no-area');
+      const aW = area.offsetWidth - btn.offsetWidth;
+      const aH = area.offsetHeight - btn.offsetHeight;
+      btn.style.left = Math.random() * aW + 'px';
+      btn.style.top = Math.random() * aH + 'px';
+      // on mobile, jump to random spot anywhere in viewport
+      if (window.innerWidth < 500) {
+        btn.style.position = 'fixed';
+        btn.style.left = (10 + Math.random() * 60) + 'vw';
+        btn.style.top = (20 + Math.random() * 55) + 'vh';
+        btn.style.zIndex = 100;
+      }
+      const msg = document.getElementById('no-count-msg');
+      msg.textContent = noMsgs[Math.min(noCount - 1, noMsgs.length - 1)];
+    }
+
+    // ── Yes!
+    function handleYes() {
+      spawnCelebration();
+      setTimeout(() => goTo('page-yes'), 600);
+    }
+
+    function spawnCelebration() {
+      const picks = ['💗', '💜', '💕', '🎉', '✨', '🌸', '💖', '🎊', '💫'];
+      for (let i = 0; i < 40; i++) {
+        setTimeout(() => {
+          const el = document.createElement('span');
+          el.className = 'cel-heart';
+          el.textContent = picks[Math.floor(Math.random() * picks.length)];
+          el.style.cssText = `
+          left: ${Math.random() * 100}vw;
+          top: ${Math.random() * 30}vh;
+          font-size: ${1.2 + Math.random() * 1.5}rem;
+          animation-duration: ${1.5 + Math.random() * 2}s;
+        `;
+          document.body.appendChild(el);
+          el.addEventListener('animationend', () => el.remove());
+        }, i * 40);
+      }
+    }
+  </script>
+</body>
+
+</html>
