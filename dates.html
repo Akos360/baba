@@ -2294,6 +2294,7 @@
         </div>
         <span class="progress-label" id="movieProgressLabel">… / …</span>
       </div>
+      <img id="homeMovieImg" src="img/cat_home_movie.png" alt="" style="width:100%; border-radius:16px; margin-bottom:.8rem;" />
       <img id="cinemaCatImg" src="img/cat_popcorn.png" alt="" style="display:none; width:100%; border-radius:16px; margin-bottom:.8rem;" />
       <button class="dice-btn" id="movieDiceBtn" onclick="rollMovieDice()">🎲 fuck it we ball</button>
       <div id="movie-list">
@@ -2828,6 +2829,7 @@
       document.getElementById('sub-tab-home').classList.toggle('active', sub === 'home');
       document.getElementById('sub-tab-cinema').classList.toggle('active', sub === 'cinema');
       document.getElementById('movieDiceBtn').style.display = sub === 'home' ? '' : 'none';
+      document.getElementById('homeMovieImg').style.display = sub === 'home' ? 'block' : 'none';
       document.getElementById('cinemaCatImg').style.display = sub === 'cinema' ? 'block' : 'none';
       loadMovies(sub);
     }
