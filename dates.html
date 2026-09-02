@@ -95,6 +95,16 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* main tab grid: 2 columns, with the last (odd) tab spanning the row */
+    #mainTabBar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    #mainTabBar .tab-btn:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+
     .tab-btn:active {
       transform: scale(.96);
     }
@@ -141,7 +151,9 @@
     }
 
     /* list */
-    #date-list {
+    #date-list,
+    #festival-list,
+    #trip-list {
       display: flex;
       flex-direction: column;
       gap: .7rem;
@@ -178,7 +190,9 @@
 
     /* only the reorderable lists hand touch handling over to JS */
     #date-list .date-row,
-    #movie-list .date-row {
+    #movie-list .date-row,
+    #festival-list .date-row,
+    #trip-list .date-row {
       touch-action: none;
     }
 
@@ -228,6 +242,22 @@
 
     .date-emoji:hover {
       background: var(--soft-purple);
+    }
+
+    .festival-year {
+      font-size: .85rem;
+      font-weight: 800;
+      color: var(--purple);
+      background: var(--soft-purple);
+      border-radius: 8px;
+      padding: .3rem .5rem;
+      flex-shrink: 0;
+      min-width: 2.8rem;
+      text-align: center;
+    }
+
+    [data-theme="dark"] .festival-year {
+      background: #2e1f4a;
     }
 
     .emoji-input {
@@ -427,6 +457,7 @@
 
     .add-wrap input {
       flex: 1;
+      min-width: 0;
       border: none;
       outline: none;
       font-family: 'Nunito', sans-serif;
@@ -441,7 +472,7 @@
       font-weight: 600;
     }
 
-    .emoji-add-input {
+    .add-wrap input.emoji-add-input {
       width: 2.4rem;
       font-size: 1.2rem;
       text-align: center;
@@ -449,7 +480,8 @@
       outline: none;
       background: transparent;
       font-family: inherit;
-      flex-shrink: 0;
+      flex: none;
+      min-width: 0;
     }
 
     .add-btn {
@@ -2272,6 +2304,8 @@
       <button class="tab-btn" id="main-tab-movies" onclick="switchMain('movies')">🎬 Movies</button>
       <button class="tab-btn" id="main-tab-colorwalk" onclick="switchMain('colorwalk')">🎨 Color Walk</button>
       <button class="tab-btn" id="main-tab-food" onclick="switchMain('food')">🍽️ Food</button>
+      <button class="tab-btn" id="main-tab-festivals" onclick="switchMain('festivals')">🎪 Festivals</button>
+      <button class="tab-btn" id="main-tab-trips" onclick="switchMain('trips')">🧳 Trips</button>
     </div>
 
     <!-- DATES PANEL -->
@@ -2287,7 +2321,7 @@
         <p class="loading">loading… 💕</p>
       </div>
       <div class="add-wrap">
-        <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="2" />
+        <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="8" />
         <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
         <button class="add-btn" onclick="addDate()">+</button>
       </div>
@@ -2364,8 +2398,8 @@
           <p class="loading">loading… 🍕</p>
         </div>
         <div class="add-wrap">
-          <input type="text" id="newFoodEmoji" class="emoji-input" placeholder="🍕" maxlength="2"
-            style="width:2.4rem;flex-shrink:0" />
+          <input type="text" id="newFoodEmoji" class="emoji-input" placeholder="🍕" maxlength="8"
+            style="width:2.4rem;flex:none" />
           <input type="text" id="newFoodInput" placeholder="Add a food…" maxlength="40" />
           <button class="add-btn" onclick="addFood()">+</button>
         </div>
@@ -2400,14 +2434,55 @@
         <button class="food-start-btn" id="foodNewRoundBtn" onclick="startFoodSession()">New round 🍽️</button>
         <div class="food-list-label" style="margin-top:.4rem">Add more foods</div>
         <div class="add-wrap">
-          <input type="text" id="newFoodEmojiResults" class="emoji-input" placeholder="🍕" maxlength="2"
-            style="width:2.4rem;flex-shrink:0" />
+          <input type="text" id="newFoodEmojiResults" class="emoji-input" placeholder="🍕" maxlength="8"
+            style="width:2.4rem;flex:none" />
           <input type="text" id="newFoodInputResults" placeholder="Add a food…" maxlength="40" />
           <button class="add-btn" onclick="addFoodFromResults()">+</button>
         </div>
         <button class="food-reset-btn" style="text-align:center" onclick="resetFoodSession()">↩ Back to lobby</button>
       </div>
 
+    </div>
+
+    <!-- FESTIVALS PANEL -->
+    <div id="panel-festivals" style="display:none">
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="festivalProgressFill"></div>
+        </div>
+        <span class="progress-label" id="festivalProgressLabel">… / …</span>
+      </div>
+      <div id="festival-list">
+        <p class="loading">loading… 🎪</p>
+      </div>
+      <div class="add-wrap">
+        <input type="text" id="newFestivalYear" placeholder="Year" maxlength="4" inputmode="numeric"
+          style="width:4rem;flex:none;text-align:center" />
+        <input type="text" id="newFestivalInput" placeholder="Add a festival…" maxlength="60" />
+        <button class="add-btn" onclick="addFestival()">+</button>
+      </div>
+      <div class="all-done" id="festivalsAllDone">been to them all!! 🎉 time to add more 😏</div>
+    </div>
+
+    <!-- TRIPS PANEL -->
+    <div id="panel-trips" style="display:none">
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="tripProgressFill"></div>
+        </div>
+        <span class="progress-label" id="tripProgressLabel">… / …</span>
+      </div>
+      <div id="trip-list">
+        <p class="loading">loading… 🧳</p>
+      </div>
+      <div class="add-wrap">
+        <input type="text" id="newTripYear" placeholder="Year" maxlength="4" inputmode="numeric"
+          style="width:3.4rem;flex:none;text-align:center" />
+        <input type="text" id="newTripEmoji" class="emoji-add-input" placeholder="🧳" maxlength="8" />
+        <input type="text" id="newTripInput" placeholder="Add a trip…" maxlength="60" />
+        <button class="add-btn" onclick="addTrip()">+</button>
+      </div>
+      <div class="all-done" id="tripsAllDone">been everywhere!! 🎉 time to add more 😏</div>
     </div>
   </div>
 
@@ -2477,6 +2552,8 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
     const dateCol = db.collection('dates');
+    const festivalsCol = db.collection('festivals');
+    const tripsCol = db.collection('trips');
     const galleryUnsubs = {};
 
     // ── Anniversary counter
@@ -2551,7 +2628,7 @@
 
     // ── main tab switch
     function switchMain(tab) {
-      ['dates', 'movies', 'colorwalk', 'food'].forEach(t => {
+      ['dates', 'movies', 'colorwalk', 'food', 'festivals', 'trips'].forEach(t => {
         document.getElementById('main-tab-' + t).classList.toggle('active', t === tab);
         document.getElementById('panel-' + t).style.display = t === tab ? 'block' : 'none';
       });
@@ -2599,7 +2676,7 @@
           e.stopPropagation();
           const inp = document.createElement('input');
           inp.className = 'emoji-input';
-          inp.maxLength = 2;
+          inp.maxLength = 8;
           inp.value = d.emoji;
           emojiSpan.replaceWith(inp);
           inp.focus();
@@ -2621,14 +2698,15 @@
         photoBtn.onclick = e => {
           e.stopPropagation();
           const isOpen = gallery.classList.contains('open');
+          const key = dateCol.id + ':' + doc.id;
           if (isOpen) {
             gallery.classList.remove('open');
             photoBtn.classList.remove('open');
-            if (galleryUnsubs[doc.id]) { galleryUnsubs[doc.id](); delete galleryUnsubs[doc.id]; }
+            if (galleryUnsubs[key]) { galleryUnsubs[key](); delete galleryUnsubs[key]; }
           } else {
             gallery.classList.add('open');
             photoBtn.classList.add('open');
-            loadGallery(doc.id, gallery, photoBtn);
+            loadGallery(dateCol, doc.id, gallery, photoBtn);
           }
         };
 
@@ -2642,7 +2720,7 @@
         if (openIds.has(doc.id)) {
           gallery.classList.add('open');
           photoBtn.classList.add('open');
-          loadGallery(doc.id, gallery, photoBtn);
+          loadGallery(dateCol, doc.id, gallery, photoBtn);
         }
       });
 
@@ -2653,9 +2731,10 @@
       document.getElementById('datesAllDone').style.display = (total && done === total) ? 'block' : 'none';
     });
 
-    function loadGallery(docId, galleryEl, photoBtn) {
-      if (galleryUnsubs[docId]) galleryUnsubs[docId]();
-      galleryUnsubs[docId] = dateCol.doc(docId).collection('photos').orderBy('ts').onSnapshot(snap => {
+    function loadGallery(colRef, docId, galleryEl, photoBtn) {
+      const key = colRef.id + ':' + docId;
+      if (galleryUnsubs[key]) galleryUnsubs[key]();
+      galleryUnsubs[key] = colRef.doc(docId).collection('photos').orderBy('ts').onSnapshot(snap => {
         galleryEl.innerHTML = '';
         const photos = []; // { id, url }
         snap.forEach(d => photos.push({ id: d.id, url: d.data().url }));
@@ -2676,7 +2755,7 @@
             const img = document.createElement('img');
             img.src = photo.url;
             img.loading = 'lazy';
-            img.onclick = e => { e.stopPropagation(); openLightbox(photos, i, docId); };
+            img.onclick = e => { e.stopPropagation(); openLightbox(photos, i, colRef, docId); };
             slide.appendChild(img);
             track.appendChild(slide);
           });
@@ -2720,7 +2799,7 @@
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
         fileInput.style.display = 'none';
-        fileInput.addEventListener('change', () => uploadPhoto(docId, fileInput, galleryEl, label));
+        fileInput.addEventListener('change', () => uploadPhoto(colRef, docId, fileInput, galleryEl, label));
         label.appendChild(fileInput);
         label.onclick = e => e.stopPropagation();
         actions.appendChild(label);
@@ -2731,12 +2810,14 @@
 
     let _lbPhotos = [];
     let _lbIdx = 0;
-    let _lbDateId = null;
+    let _lbCol = null;
+    let _lbDocId = null;
 
-    function openLightbox(photos, startIdx, dateDocId) {
+    function openLightbox(photos, startIdx, colRef, docId) {
       _lbPhotos = photos;
       _lbIdx = startIdx;
-      _lbDateId = dateDocId || null;
+      _lbCol = colRef || null;
+      _lbDocId = docId || null;
 
       const track = document.getElementById('lightboxTrack');
       const dotsEl = document.getElementById('lightboxDots');
@@ -2781,10 +2862,10 @@
 
     function deleteCurrentPhoto() {
       const p = _lbPhotos[_lbIdx];
-      if (!p || !_lbDateId) return;
+      if (!p || !_lbCol || !_lbDocId) return;
       askRemove(() => {
         if (p.url) storage.refFromURL(p.url).delete().catch(() => {});
-        dateCol.doc(_lbDateId).collection('photos').doc(p.id).delete();
+        _lbCol.doc(_lbDocId).collection('photos').doc(p.id).delete();
         closeLightbox();
       });
     }
@@ -2804,15 +2885,15 @@
       _pendingDelete = null;
     }
 
-    async function uploadPhoto(docId, input, galleryEl, label) {
+    async function uploadPhoto(colRef, docId, input, galleryEl, label) {
       const file = input.files[0];
       if (!file) return;
       label.innerHTML = '<span class="gallery-uploading">uploading… 💕</span>';
       try {
-        const ref = storage.ref(`dates/${docId}/${Date.now()}_${file.name}`);
+        const ref = storage.ref(`${colRef.id}/${docId}/${Date.now()}_${file.name}`);
         await ref.put(file);
         const url = await ref.getDownloadURL();
-        await dateCol.doc(docId).collection('photos').add({ url, ts: Date.now() });
+        await colRef.doc(docId).collection('photos').add({ url, ts: Date.now() });
       } catch (e) {
         console.error('Upload error:', e);
         label.innerHTML = '📷 Add photo';
@@ -2835,6 +2916,189 @@
       emojiInput.value = '';
     }
     document.getElementById('newDateInput').addEventListener('keydown', e => { if (e.key === 'Enter') addDate(); });
+
+    // ── festivals real-time listener
+    let isDraggingFestivals = false;
+
+    festivalsCol.orderBy('order').onSnapshot(snap => {
+      if (isDraggingFestivals) return;
+      const list = document.getElementById('festival-list');
+      const openIds = new Set();
+      list.querySelectorAll('.gallery.open').forEach(g => openIds.add(g.dataset.docid));
+      list.innerHTML = '';
+
+      snap.forEach(doc => {
+        const d = doc.data();
+        const card = document.createElement('div');
+        card.className = 'date-card' + (d.done ? ' done' : '');
+        card.dataset.docid = doc.id;
+
+        const row = document.createElement('div');
+        row.className = 'date-row';
+        row.innerHTML = `
+          <span class="check-box">✓</span>
+          <span class="festival-year">${esc(d.year || '')}</span>
+          <span class="date-text">${esc(d.text)}</span>
+          <button class="photo-btn" title="Photos">📷</button>
+          <button class="del-btn" title="Remove">✕</button>
+        `;
+
+        const gallery = document.createElement('div');
+        gallery.className = 'gallery';
+        gallery.dataset.docid = doc.id;
+
+        const photoBtn = row.querySelector('.photo-btn');
+        festivalsCol.doc(doc.id).collection('photos').get().then(ps => {
+          if (ps.size > 0) { photoBtn.innerHTML = `📷 ${ps.size}`; photoBtn.classList.add('has-photos'); }
+        });
+        photoBtn.onclick = e => {
+          e.stopPropagation();
+          const isOpen = gallery.classList.contains('open');
+          const key = festivalsCol.id + ':' + doc.id;
+          if (isOpen) {
+            gallery.classList.remove('open');
+            photoBtn.classList.remove('open');
+            if (galleryUnsubs[key]) { galleryUnsubs[key](); delete galleryUnsubs[key]; }
+          } else {
+            gallery.classList.add('open');
+            photoBtn.classList.add('open');
+            loadGallery(festivalsCol, doc.id, gallery, photoBtn);
+          }
+        };
+
+        row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); askRemove(() => festivalsCol.doc(doc.id).delete()); };
+        row.querySelector('.check-box').onclick = e => { e.stopPropagation(); festivalsCol.doc(doc.id).update({ done: !d.done }); };
+
+        card.appendChild(row);
+        card.appendChild(gallery);
+        list.appendChild(card);
+
+        if (openIds.has(doc.id)) {
+          gallery.classList.add('open');
+          photoBtn.classList.add('open');
+          loadGallery(festivalsCol, doc.id, gallery, photoBtn);
+        }
+      });
+
+      let total = 0, done = 0;
+      snap.forEach(doc => { total++; if (doc.data().done) done++; });
+      document.getElementById('festivalProgressFill').style.width = total ? (done / total * 100) + '%' : '0%';
+      document.getElementById('festivalProgressLabel').textContent = done + ' / ' + total;
+      document.getElementById('festivalsAllDone').style.display = (total && done === total) ? 'block' : 'none';
+    });
+
+    function addFestival() {
+      const yearInput = document.getElementById('newFestivalYear');
+      const input = document.getElementById('newFestivalInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const year = yearInput.value.trim();
+      festivalsCol.get().then(snap => festivalsCol.add({ text, year, done: false, order: snap.size }));
+      input.value = '';
+      yearInput.value = '';
+    }
+    document.getElementById('newFestivalInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFestival(); });
+
+    // ── trips real-time listener
+    let isDraggingTrips = false;
+
+    tripsCol.orderBy('order').onSnapshot(snap => {
+      if (isDraggingTrips) return;
+      const list = document.getElementById('trip-list');
+      const openIds = new Set();
+      list.querySelectorAll('.gallery.open').forEach(g => openIds.add(g.dataset.docid));
+      list.innerHTML = '';
+
+      snap.forEach(doc => {
+        const d = doc.data();
+        const card = document.createElement('div');
+        card.className = 'date-card' + (d.done ? ' done' : '');
+        card.dataset.docid = doc.id;
+
+        const row = document.createElement('div');
+        row.className = 'date-row';
+        row.innerHTML = `
+          <span class="check-box">✓</span>
+          <span class="festival-year">${esc(d.year || '')}</span>
+          <span class="date-text">${esc(d.text)}</span>
+          <span class="date-emoji">${d.emoji || '🧳'}</span>
+          <button class="photo-btn" title="Photos">📷</button>
+          <button class="del-btn" title="Remove">✕</button>
+        `;
+
+        // emoji edit on tap
+        const emojiSpan = row.querySelector('.date-emoji');
+        emojiSpan.onclick = e => {
+          e.stopPropagation();
+          const inp = document.createElement('input');
+          inp.className = 'emoji-input';
+          inp.maxLength = 8;
+          inp.value = d.emoji || '🧳';
+          emojiSpan.replaceWith(inp);
+          inp.focus();
+          const save = () => tripsCol.doc(doc.id).update({ emoji: inp.value.trim() || d.emoji || '🧳' });
+          inp.addEventListener('blur', save);
+          inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { save(); inp.blur(); } ev.stopPropagation(); });
+        };
+
+        const gallery = document.createElement('div');
+        gallery.className = 'gallery';
+        gallery.dataset.docid = doc.id;
+
+        const photoBtn = row.querySelector('.photo-btn');
+        tripsCol.doc(doc.id).collection('photos').get().then(ps => {
+          if (ps.size > 0) { photoBtn.innerHTML = `📷 ${ps.size}`; photoBtn.classList.add('has-photos'); }
+        });
+        photoBtn.onclick = e => {
+          e.stopPropagation();
+          const isOpen = gallery.classList.contains('open');
+          const key = tripsCol.id + ':' + doc.id;
+          if (isOpen) {
+            gallery.classList.remove('open');
+            photoBtn.classList.remove('open');
+            if (galleryUnsubs[key]) { galleryUnsubs[key](); delete galleryUnsubs[key]; }
+          } else {
+            gallery.classList.add('open');
+            photoBtn.classList.add('open');
+            loadGallery(tripsCol, doc.id, gallery, photoBtn);
+          }
+        };
+
+        row.querySelector('.del-btn').onclick = e => { e.stopPropagation(); askRemove(() => tripsCol.doc(doc.id).delete()); };
+        row.querySelector('.check-box').onclick = e => { e.stopPropagation(); tripsCol.doc(doc.id).update({ done: !d.done }); };
+
+        card.appendChild(row);
+        card.appendChild(gallery);
+        list.appendChild(card);
+
+        if (openIds.has(doc.id)) {
+          gallery.classList.add('open');
+          photoBtn.classList.add('open');
+          loadGallery(tripsCol, doc.id, gallery, photoBtn);
+        }
+      });
+
+      let total = 0, done = 0;
+      snap.forEach(doc => { total++; if (doc.data().done) done++; });
+      document.getElementById('tripProgressFill').style.width = total ? (done / total * 100) + '%' : '0%';
+      document.getElementById('tripProgressLabel').textContent = done + ' / ' + total;
+      document.getElementById('tripsAllDone').style.display = (total && done === total) ? 'block' : 'none';
+    });
+
+    function addTrip() {
+      const yearInput = document.getElementById('newTripYear');
+      const emojiInput = document.getElementById('newTripEmoji');
+      const input = document.getElementById('newTripInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const year = yearInput.value.trim();
+      const emoji = emojiInput.value.trim() || '🧳';
+      tripsCol.get().then(snap => tripsCol.add({ text, year, emoji, done: false, order: snap.size }));
+      input.value = '';
+      yearInput.value = '';
+      emojiInput.value = '';
+    }
+    document.getElementById('newTripInput').addEventListener('keydown', e => { if (e.key === 'Enter') addTrip(); });
 
     // ── movies
     let activeSub = 'home';
@@ -3258,6 +3522,20 @@
       v => { isDraggingMovies = v; }
     );
 
+    enableDragReorder(
+      document.getElementById('festival-list'),
+      '.date-card',
+      ids => persistOrder(festivalsCol, ids),
+      v => { isDraggingFestivals = v; }
+    );
+
+    enableDragReorder(
+      document.getElementById('trip-list'),
+      '.date-card',
+      ids => persistOrder(tripsCol, ids),
+      v => { isDraggingTrips = v; }
+    );
+
     // ── Download photo
     async function downloadPhoto(url) {
       try {
@@ -3521,7 +3799,7 @@
           e.stopPropagation();
           const inp = document.createElement('input');
           inp.className = 'emoji-input';
-          inp.maxLength = 2;
+          inp.maxLength = 8;
           inp.value = food.emoji || '🍽️';
           em.replaceWith(inp);
           inp.focus();
