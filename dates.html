@@ -1469,6 +1469,93 @@
       transform: scale(.88);
     }
 
+    .profile-btn {
+      right: 3.7rem;
+      overflow: hidden;
+      padding: 0;
+      color: var(--purple);
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .profile-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-avatar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 3px dashed var(--soft-purple);
+      background: var(--soft-purple);
+      color: var(--purple);
+      font-weight: 800;
+      font-size: 1.9rem;
+      overflow: hidden;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .profile-avatar-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-avatar-static {
+      border-style: solid;
+      cursor: default;
+    }
+
+    .profile-name-display {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.15rem;
+      color: var(--pink);
+      text-shadow: 1px 2px 0 var(--soft-pink);
+      margin-top: .7rem;
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+
+    .profile-pair {
+      display: flex;
+      gap: .9rem;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .profile-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .profile-name-edit-wrap {
+      margin-top: .7rem;
+      width: 100%;
+      padding: .55rem .7rem;
+    }
+
+    .profile-name-edit-wrap input {
+      text-align: center;
+      font-size: .9rem;
+    }
+
+    .profile-edit-btn {
+      margin-top: .7rem;
+      width: 100%;
+      padding: .55rem;
+      font-size: .85rem;
+    }
+
     /* ── Dark mode */
     [data-theme="dark"] {
       --bg: #120c1e;
@@ -2275,6 +2362,7 @@
 <body>
 
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+  <button class="theme-toggle profile-btn" id="profileBtn" onclick="openProfileModal()" title="Profile"></button>
 
   <div class="wrapper">
     <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
@@ -2343,6 +2431,10 @@
       <img id="homeMovieImg" src="img/cat_home_movie.png" alt="" style="width:100%; border-radius:16px; margin-bottom:.8rem;" />
       <img id="cinemaCatImg" src="img/cat_popcorn.png" alt="" style="display:none; width:100%; border-radius:16px; margin-bottom:.8rem;" />
       <button class="dice-btn" id="movieDiceBtn" onclick="rollMovieDice()">🎲 fuck it we ball</button>
+      <div class="tab-bar" id="movieCategoryTabBar">
+        <button class="tab-btn active" id="cat-tab-movie" onclick="switchMovieCategory('movie')">🎬 Movies</button>
+        <button class="tab-btn" id="cat-tab-series" onclick="switchMovieCategory('series')">📺 Series</button>
+      </div>
       <div id="movie-list">
         <p class="loading">loading… 💕</p>
       </div>
@@ -2510,6 +2602,29 @@
     </div>
   </div>
 
+  <div class="modal-backdrop" id="profileBackdrop" onclick="closeProfileModal()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width:340px;">
+      <div class="profile-pair">
+        <div class="profile-col">
+          <button type="button" id="profileAvatarBtn" class="profile-avatar-btn" title="Change photo"></button>
+          <input type="file" id="profilePhotoInput" accept="image/*" style="display:none">
+          <div class="profile-name-display" id="profileNameDisplay"></div>
+          <div class="add-wrap profile-name-edit-wrap" id="profileNameEditWrap" style="display:none;">
+            <input id="profileNameInput" placeholder="Your name" maxlength="30" />
+          </div>
+          <button class="modal-btn modal-cancel profile-edit-btn" id="profileEditBtn" onclick="toggleProfileEdit()">✏️ Edit</button>
+        </div>
+        <div class="profile-col">
+          <div class="profile-avatar-btn profile-avatar-static" id="partnerAvatarDisplay" title="Their profile"></div>
+          <div class="profile-name-display" id="partnerNameDisplay"></div>
+        </div>
+      </div>
+      <div class="modal-btns" style="margin-top:1.2rem">
+        <button class="modal-btn modal-cancel" onclick="closeProfileModal()" style="flex:1">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Picker modal -->
   <div class="picker-backdrop" id="pickerBackdrop" onclick="closePickerModal()">
     <div class="picker-card" onclick="event.stopPropagation()">
@@ -2555,6 +2670,110 @@
     const festivalsCol = db.collection('festivals');
     const tripsCol = db.collection('trips');
     const galleryUnsubs = {};
+
+    // ── Profile (device-based identity, no email/password — same pattern as the beer app)
+    function getMyUid() {
+      let uid = localStorage.getItem('baba-uid');
+      if (!uid) {
+        uid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('u-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+        localStorage.setItem('baba-uid', uid);
+      }
+      return uid;
+    }
+    const myUid = getMyUid();
+    const usersCol = db.collection('users');
+    let myProfile = {};
+    let partnerProfile = null;
+    let profileEditing = false;
+
+    function avatarInner(name, photoURL) {
+      if (photoURL) return `<img src="${esc(photoURL)}" alt="">`;
+      const letter = (name || '').trim().charAt(0).toUpperCase();
+      return letter ? esc(letter) : '💕';
+    }
+
+    usersCol.onSnapshot(snap => {
+      let mine = {};
+      let partner = null;
+      snap.forEach(doc => {
+        if (doc.id === myUid) mine = doc.data() || {};
+        else if (!partner) partner = doc.data() || {};
+      });
+      myProfile = mine;
+      partnerProfile = partner;
+      document.getElementById('profileBtn').innerHTML = avatarInner(myProfile.name, myProfile.photoURL);
+      if (document.getElementById('profileBackdrop').classList.contains('open') && !profileEditing) {
+        renderProfileModal();
+      }
+    });
+
+    function renderProfileModal() {
+      document.getElementById('profileAvatarBtn').innerHTML = avatarInner(myProfile.name, myProfile.photoURL);
+      document.getElementById('profileNameDisplay').textContent = myProfile.name || 'add your name 💕';
+      document.getElementById('profileNameDisplay').style.display = profileEditing ? 'none' : 'block';
+      document.getElementById('profileNameEditWrap').style.display = profileEditing ? 'flex' : 'none';
+      document.getElementById('profileNameInput').value = myProfile.name || '';
+      document.getElementById('profileEditBtn').textContent = profileEditing ? '💾 Save' : '✏️ Edit';
+      document.getElementById('profileAvatarBtn').style.cursor = profileEditing ? 'pointer' : 'default';
+      document.getElementById('partnerAvatarDisplay').innerHTML = partnerProfile ? avatarInner(partnerProfile.name, partnerProfile.photoURL) : '💌';
+      document.getElementById('partnerNameDisplay').textContent = partnerProfile ? (partnerProfile.name || 'no name yet') : 'waiting for them 💌';
+    }
+
+    function openProfileModal() {
+      profileEditing = false;
+      renderProfileModal();
+      document.getElementById('profileBackdrop').classList.add('open');
+    }
+    function closeProfileModal() {
+      document.getElementById('profileBackdrop').classList.remove('open');
+      profileEditing = false;
+    }
+
+    function toggleProfileEdit() {
+      if (!profileEditing) {
+        profileEditing = true;
+        renderProfileModal();
+        document.getElementById('profileNameInput').focus();
+      } else {
+        saveProfileEdit();
+      }
+    }
+
+    async function saveProfileEdit() {
+      const name = document.getElementById('profileNameInput').value.trim();
+      try {
+        await usersCol.doc(myUid).set({ name }, { merge: true });
+        profileEditing = false;
+        renderProfileModal();
+        showToast('Saved! 💕');
+      } catch (err) {
+        showToast('Save failed: ' + err.message);
+      }
+    }
+
+    document.getElementById('profileAvatarBtn').onclick = () => {
+      if (profileEditing) document.getElementById('profilePhotoInput').click();
+    };
+
+    document.getElementById('profilePhotoInput').onchange = async () => {
+      const input = document.getElementById('profilePhotoInput');
+      const file = input.files[0];
+      input.value = '';
+      if (!file) return;
+      try {
+        const path = `users/${myUid}/${Date.now()}_${file.name}`;
+        const ref = storage.ref(path);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        const oldPath = myProfile.photoPath;
+        await usersCol.doc(myUid).set({ photoURL: url, photoPath: path }, { merge: true });
+        if (oldPath) { try { await storage.ref(oldPath).delete(); } catch (e) { } }
+        document.getElementById('profileAvatarBtn').innerHTML = avatarInner(myProfile.name, url);
+        showToast('Photo updated 💕');
+      } catch (err) {
+        showToast('Photo upload failed: ' + err.message);
+      }
+    };
 
     // ── Anniversary counter
     let _anniversaryDate = null;
@@ -3102,6 +3321,7 @@
 
     // ── movies
     let activeSub = 'home';
+    let activeMovieCategory = 'movie';
     let movieUnsub = null;
 
     function switchSub(sub) {
@@ -3111,7 +3331,15 @@
       document.getElementById('movieDiceBtn').style.display = sub === 'home' ? '' : 'none';
       document.getElementById('homeMovieImg').style.display = sub === 'home' ? 'block' : 'none';
       document.getElementById('cinemaCatImg').style.display = sub === 'cinema' ? 'block' : 'none';
+      document.getElementById('movieCategoryTabBar').style.display = sub === 'home' ? '' : 'none';
       loadMovies(sub);
+    }
+
+    function switchMovieCategory(cat) {
+      activeMovieCategory = cat;
+      document.getElementById('cat-tab-movie').classList.toggle('active', cat === 'movie');
+      document.getElementById('cat-tab-series').classList.toggle('active', cat === 'series');
+      loadMovies(activeSub);
     }
 
 
@@ -3132,13 +3360,16 @@
       movieUnsub = mcol.onSnapshot(snap => {
         if (isDraggingMovies) return;
         list.innerHTML = '';
-        if (snap.empty) {
-          list.innerHTML = '<p class="loading">no movies yet — add one! 🍿</p>';
+        let docs = [];
+        snap.forEach(doc => docs.push({ _id: doc.id, ...doc.data() }));
+        if (sub === 'home') docs = docs.filter(d => (d.category || 'movie') === activeMovieCategory);
+        if (!docs.length) {
+          list.innerHTML = sub === 'home'
+            ? `<p class="loading">no ${activeMovieCategory === 'movie' ? 'movies' : 'series'} yet — add one! 🍿</p>`
+            : '<p class="loading">no movies yet — add one! 🍿</p>';
           updateMovieProgress([]);
           return;
         }
-        const docs = [];
-        snap.forEach(doc => docs.push({ _id: doc.id, ...doc.data() }));
         docs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
         docs.forEach(d => {
           const txt = d.text || d.title || '';
@@ -3171,6 +3402,16 @@
           titleEl.className = 'date-text';
           titleEl.textContent = txt;
           row.appendChild(titleEl);
+
+          if (sub === 'home') {
+            const curCat = d.category || 'movie';
+            const moveBtn = document.createElement('button');
+            moveBtn.className = 'del-btn';
+            moveBtn.title = curCat === 'movie' ? 'Move to Series' : 'Move to Movies';
+            moveBtn.textContent = curCat === 'movie' ? '📺' : '🎬';
+            moveBtn.onclick = e => { e.stopPropagation(); mcol.doc(d._id).update({ category: curCat === 'movie' ? 'series' : 'movie' }); };
+            row.appendChild(moveBtn);
+          }
 
           const delBtn = document.createElement('button');
           delBtn.className = 'del-btn';
@@ -3299,6 +3540,7 @@
         poster,
         tmdbId: r.id,
         mediaType: r.media_type,
+        ...(activeSub === 'home' ? { category: activeMovieCategory } : {}),
         done: false,
         order: snap.size,
       });
@@ -3310,7 +3552,8 @@
       const text = input.value.trim();
       if (!text) return;
       const mcol = db.collection('movies_' + activeSub);
-      mcol.get().then(snap => mcol.add({ text, done: false, order: snap.size }));
+      const data = { text, done: false, ...(activeSub === 'home' ? { category: activeMovieCategory } : {}) };
+      mcol.get().then(snap => mcol.add({ ...data, order: snap.size }));
       input.value = '';
     }
 
