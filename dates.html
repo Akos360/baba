@@ -105,6 +105,15 @@
       grid-column: 1 / -1;
     }
 
+    #movieCategoryTabBar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    #movieCategoryTabBar .tab-btn {
+      flex: none;
+    }
+
     .tab-btn:active {
       transform: scale(.96);
     }
@@ -188,12 +197,15 @@
       user-select: none;
     }
 
-    /* only the reorderable lists hand touch handling over to JS */
+    /* Only vertical panning is claimed here — normal scrolling stays fully
+       native (smooth, GPU-composited) the whole time; a long press only
+       takes over once the finger has stayed still long enough that no
+       native scroll gesture has actually started (see enableDragReorder). */
     #date-list .date-row,
     #movie-list .date-row,
     #festival-list .date-row,
     #trip-list .date-row {
-      touch-action: none;
+      touch-action: pan-y;
     }
 
     .check-box {
@@ -215,6 +227,52 @@
       background: linear-gradient(135deg, var(--pink), var(--purple));
       border-color: transparent;
       color: white;
+    }
+
+    .anime-watch-group {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .anime-watch-circle {
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
+      border-radius: 50%;
+      border: 2.5px solid var(--soft-purple);
+      background: white;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      font-weight: 800;
+      color: #b088cc;
+      opacity: .45;
+      filter: grayscale(1);
+      cursor: pointer;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity .2s, filter .2s, border-color .2s, transform .15s;
+    }
+
+    .anime-watch-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .anime-watch-circle.watched {
+      opacity: 1;
+      filter: none;
+      border-color: var(--pink);
+      transform: scale(1.08);
+    }
+
+    .anime-watch-circle:disabled {
+      cursor: default;
+      opacity: .35;
     }
 
     .date-text {
@@ -317,6 +375,16 @@
     .del-btn:active {
       color: var(--pink);
       background: #fff0f5;
+    }
+
+    /* Just labels which category the item is in — not a control, so no
+       cursor/hover affordance (it used to cycle through categories on tap,
+       which read as items randomly jumping between tabs). */
+    .category-icon {
+      font-size: 1.1rem;
+      padding: .2rem .3rem;
+      line-height: 1;
+      flex-shrink: 0;
     }
 
     /* ── GALLERY ── */
@@ -508,6 +576,66 @@
       opacity: .55;
       cursor: default;
       transform: none;
+    }
+
+    /* ── Floating add button + popup (dates/movies/trips/festivals) ── */
+    .fab-add-btn {
+      position: fixed;
+      right: 1.1rem;
+      bottom: 1.3rem;
+      z-index: 300;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(199, 125, 255, .5);
+      transition: transform .18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .fab-add-btn.showing {
+      display: flex;
+    }
+
+    .fab-add-btn:active {
+      transform: scale(.9);
+    }
+
+    .fab-add-btn.open {
+      transform: rotate(45deg);
+    }
+
+    .add-popup {
+      position: fixed;
+      right: 1.1rem;
+      bottom: 5.5rem;
+      z-index: 299;
+      width: min(320px, calc(100vw - 2.2rem));
+      max-height: 60vh;
+      overflow-y: auto;
+      opacity: 0;
+      transform: translateY(14px) scale(.95);
+      pointer-events: none;
+      transition: opacity .16s, transform .16s;
+    }
+
+    .add-popup.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .add-popup .add-wrap {
+      margin-top: 0;
     }
 
     .all-done {
@@ -1141,6 +1269,23 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .picker-header-right {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-shrink: 0;
+    }
+
+    .anime-detail-total {
+      font-weight: 700;
+      font-size: .78rem;
+      color: #b088cc;
+      background: var(--soft-purple);
+      padding: .25rem .7rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
     .picker-list {
       flex: 1;
       overflow-y: auto;
@@ -1521,6 +1666,252 @@
       margin-top: .7rem;
       max-width: 100%;
       overflow-wrap: break-word;
+    }
+
+    .restore-profile-row {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      width: 100%;
+      background: var(--soft-purple);
+      border: none;
+      border-radius: 14px;
+      padding: .7rem .9rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .restore-profile-row:active {
+      transform: scale(.97);
+    }
+
+    .restore-profile-avatar {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-weight: 800;
+      color: var(--purple);
+    }
+
+    .restore-profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ── Anime episode tracker ── */
+    .anime-detail-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 0 1.2rem .8rem;
+      font-weight: 800;
+      font-size: .85rem;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .anime-legend-dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: .35rem;
+      vertical-align: -1px;
+    }
+
+    .anime-add-movies-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
+      gap: .3rem;
+      margin: 0 0 .8rem;
+      padding: .45rem 1rem;
+      border: none;
+      border-radius: 999px;
+      background: var(--soft-purple);
+      color: #7a4fa8;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .8rem;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .anime-add-movies-btn:active {
+      transform: scale(.96);
+    }
+
+    [data-theme="dark"] .anime-add-movies-btn {
+      background: #2e1f4a;
+      color: #e8d5ff;
+    }
+
+    .anime-season-block {
+      margin-bottom: 1.4rem;
+    }
+
+    .anime-season-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      font-weight: 800;
+      font-size: .92rem;
+      color: var(--text);
+      margin-bottom: .6rem;
+    }
+
+    .anime-season-meta {
+      flex-shrink: 0;
+      font-weight: 700;
+      font-size: .72rem;
+      color: #b088cc;
+      background: var(--soft-purple);
+      padding: .2rem .65rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* The poster sits beside a fixed 5-column grid of episode buttons (sized
+       to roughly the poster's 3-row height); once a season has more than 15
+       episodes+tick, the rest wrap onto a second, full-width 7-column grid
+       below. Both grids get explicit column counts instead of letting
+       buttons reflow organically, so every season lines up the same way
+       regardless of its episode count or how much horizontal space the
+       popup happens to have. */
+    .anime-season-media {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: .7rem;
+    }
+
+    .anime-season-poster,
+    .anime-season-poster-ph {
+      flex: 0 0 96px;
+      width: 96px;
+      height: 144px;
+      border-radius: 10px;
+    }
+
+    .anime-season-poster {
+      object-fit: cover;
+      background: var(--soft-purple);
+    }
+
+    .anime-season-poster-ph {
+      background: var(--soft-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .anime-episode-top {
+      flex: 1 1 160px;
+      min-width: 160px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      align-content: start;
+    }
+
+    .anime-episode-bottom {
+      flex: 0 0 100%;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .anime-episode-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 40px;
+      border-radius: 10px;
+      border: 2px solid var(--soft-purple);
+      background: white;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .8rem;
+      color: var(--text);
+      cursor: pointer;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .anime-episode-tick {
+      font-size: 1.05rem;
+    }
+
+    .anime-episode-btn:active {
+      transform: scale(.9);
+    }
+
+    /* Must come before the colored states below: it and .mine/.partner/.both
+       share the same specificity, so whichever is later in the stylesheet
+       wins — this dark-mode override is only meant for the plain
+       (not-yet-reached) episodes, and needs to lose that tie-break, or a
+       filled episode would render as if it were only bordered in dark mode. */
+    [data-theme="dark"] .anime-episode-btn {
+      background: #1e1332;
+    }
+
+    .anime-episode-btn.mine {
+      background: var(--pink);
+      border-color: var(--pink);
+      color: white;
+    }
+
+    .anime-episode-btn.partner {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: white;
+    }
+
+    .anime-episode-btn.both {
+      /* 45deg puts the hard-stop split exactly on the top-left-to-bottom-right
+         diagonal (the perpendicular to a 45deg gradient axis), splitting the
+         square into a top-right triangle and a bottom-left one. The border
+         is colored to match: the top+right edges border the top-right
+         (purple) triangle, the left+bottom edges border the bottom-left
+         (pink) one — a single flat border color would cut across both
+         triangles and look mismatched at the corners. */
+      background: linear-gradient(45deg, var(--pink) 50%, var(--purple) 50%);
+      border-top-color: var(--purple);
+      border-right-color: var(--purple);
+      border-bottom-color: var(--pink);
+      border-left-color: var(--pink);
+      color: white;
+    }
+
+    /* The exact episode you're currently on: a colored ring, not a solid
+       fill — visually distinct from episodes already fully behind you. */
+    .anime-episode-btn.current-mine {
+      box-shadow: 0 0 0 3px var(--pink) inset;
+      border-color: var(--pink);
+    }
+
+    .anime-episode-btn.current-partner {
+      box-shadow: 0 0 0 3px var(--purple) inset;
+      border-color: var(--purple);
+    }
+
+    .anime-episode-btn.current-mine.current-partner {
+      box-shadow: 0 0 0 3px var(--pink) inset, 0 0 0 6px var(--purple) inset;
     }
 
     .profile-pair {
@@ -2363,6 +2754,7 @@
 
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
   <button class="theme-toggle profile-btn" id="profileBtn" onclick="openProfileModal()" title="Profile"></button>
+  <button class="fab-add-btn showing" id="fabAddBtn" onclick="toggleAddPopup()">+</button>
 
   <div class="wrapper">
     <img src="img/yippe.jpg" alt="" style="width:100%; border-radius:20px; display:block; margin-bottom:1.2rem;" />
@@ -2408,10 +2800,12 @@
       <div id="date-list">
         <p class="loading">loading… 💕</p>
       </div>
-      <div class="add-wrap">
-        <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="8" />
-        <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
-        <button class="add-btn" onclick="addDate()">+</button>
+      <div class="add-popup" id="addPopup-dates">
+        <div class="add-wrap">
+          <input type="text" id="newDateEmoji" class="emoji-add-input" placeholder="💕" maxlength="8" />
+          <input type="text" id="newDateInput" placeholder="Add a new date idea…" maxlength="60" />
+          <button class="add-btn" onclick="addDate()">+</button>
+        </div>
       </div>
       <div class="all-done" id="datesAllDone">we did everything!! 🎉 time to add more 😏</div>
     </div>
@@ -2428,21 +2822,27 @@
         </div>
         <span class="progress-label" id="movieProgressLabel">… / …</span>
       </div>
-      <img id="homeMovieImg" src="img/cat_home_movie.png" alt="" style="width:100%; border-radius:16px; margin-bottom:.8rem;" />
-      <img id="cinemaCatImg" src="img/cat_popcorn.png" alt="" style="display:none; width:100%; border-radius:16px; margin-bottom:.8rem;" />
       <button class="dice-btn" id="movieDiceBtn" onclick="rollMovieDice()">🎲 fuck it we ball</button>
       <div class="tab-bar" id="movieCategoryTabBar">
         <button class="tab-btn active" id="cat-tab-movie" onclick="switchMovieCategory('movie')">🎬 Movies</button>
+        <button class="tab-btn" id="cat-tab-cartoon" onclick="switchMovieCategory('cartoon')">🧸 Cartoons</button>
         <button class="tab-btn" id="cat-tab-series" onclick="switchMovieCategory('series')">📺 Series</button>
+        <button class="tab-btn" id="cat-tab-anime" onclick="switchMovieCategory('anime')">🍥 Anime</button>
       </div>
       <div id="movie-list">
         <p class="loading">loading… 💕</p>
       </div>
-      <div class="add-wrap" id="movieAddWrap">
-        <input type="text" id="newMovieInput" placeholder="Search a movie to add…" maxlength="80" autocomplete="off" />
-        <button class="add-btn" id="movieAddBtn" onclick="addMovie()">+</button>
+      <img id="homeMovieImg" src="img/cat_home_movie.png" alt="" style="width:100%; border-radius:16px; margin-top:.8rem;" />
+      <img id="seriesCatImg" src="img/cat_cartoon.png" alt="" style="display:none; width:100%; border-radius:16px; margin-top:.8rem;" />
+      <img id="animeCatImg" src="img/cat_anime.png" alt="" style="display:none; width:100%; border-radius:16px; margin-top:.8rem;" />
+      <img id="cinemaCatImg" src="img/cat_popcorn.png" alt="" style="display:none; width:100%; border-radius:16px; margin-top:.8rem;" />
+      <div class="add-popup" id="addPopup-movies">
+        <div class="add-wrap" id="movieAddWrap">
+          <input type="text" id="newMovieInput" placeholder="Search a movie to add…" maxlength="80" autocomplete="off" />
+          <button class="add-btn" id="movieAddBtn" onclick="addMovie()">+</button>
+        </div>
+        <div class="suggestions-box" id="movieSuggestions"></div>
       </div>
-      <div class="suggestions-box" id="movieSuggestions"></div>
       <div class="all-done" id="movieAllDone">all watched!! 🎉 time to add more 😏</div>
     </div>
 
@@ -2547,11 +2947,13 @@
       <div id="festival-list">
         <p class="loading">loading… 🎪</p>
       </div>
-      <div class="add-wrap">
-        <input type="text" id="newFestivalYear" placeholder="Year" maxlength="4" inputmode="numeric"
-          style="width:4rem;flex:none;text-align:center" />
-        <input type="text" id="newFestivalInput" placeholder="Add a festival…" maxlength="60" />
-        <button class="add-btn" onclick="addFestival()">+</button>
+      <div class="add-popup" id="addPopup-festivals">
+        <div class="add-wrap">
+          <input type="text" id="newFestivalYear" placeholder="Year" maxlength="4" inputmode="numeric"
+            style="width:4rem;flex:none;text-align:center" />
+          <input type="text" id="newFestivalInput" placeholder="Add a festival…" maxlength="60" />
+          <button class="add-btn" onclick="addFestival()">+</button>
+        </div>
       </div>
       <div class="all-done" id="festivalsAllDone">been to them all!! 🎉 time to add more 😏</div>
     </div>
@@ -2567,12 +2969,14 @@
       <div id="trip-list">
         <p class="loading">loading… 🧳</p>
       </div>
-      <div class="add-wrap">
-        <input type="text" id="newTripYear" placeholder="Year" maxlength="4" inputmode="numeric"
-          style="width:3.4rem;flex:none;text-align:center" />
-        <input type="text" id="newTripEmoji" class="emoji-add-input" placeholder="🧳" maxlength="8" />
-        <input type="text" id="newTripInput" placeholder="Add a trip…" maxlength="60" />
-        <button class="add-btn" onclick="addTrip()">+</button>
+      <div class="add-popup" id="addPopup-trips">
+        <div class="add-wrap">
+          <input type="text" id="newTripYear" placeholder="Year" maxlength="4" inputmode="numeric"
+            style="width:3.4rem;flex:none;text-align:center" />
+          <input type="text" id="newTripEmoji" class="emoji-add-input" placeholder="🧳" maxlength="8" />
+          <input type="text" id="newTripInput" placeholder="Add a trip…" maxlength="60" />
+          <button class="add-btn" onclick="addTrip()">+</button>
+        </div>
       </div>
       <div class="all-done" id="tripsAllDone">been everywhere!! 🎉 time to add more 😏</div>
     </div>
@@ -2619,8 +3023,20 @@
           <div class="profile-name-display" id="partnerNameDisplay"></div>
         </div>
       </div>
+      <button type="button" id="restoreProfileLink" style="display:none; margin:.9rem auto 0; background:none; border:none; color:#b088cc; font-family:'Nunito',sans-serif; font-weight:700; font-size:.85rem; text-decoration:underline; cursor:pointer;" onclick="openRestoreProfileModal()">Is this device yours already? Restore your profile</button>
       <div class="modal-btns" style="margin-top:1.2rem">
         <button class="modal-btn modal-cancel" onclick="closeProfileModal()" style="flex:1">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restore-profile picker: recovers your identity if a reinstall gave the device a fresh, empty profile -->
+  <div class="modal-backdrop" id="restoreProfileBackdrop" onclick="closeRestoreProfileModal()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width:340px;">
+      <div style="font-weight:800; margin-bottom:.9rem; text-align:center;">Restore your profile</div>
+      <div id="restoreProfileList" style="display:flex; flex-direction:column; gap:.6rem;"></div>
+      <div class="modal-btns" style="margin-top:1.2rem">
+        <button class="modal-btn modal-cancel" onclick="closeRestoreProfileModal()" style="flex:1">Cancel</button>
       </div>
     </div>
   </div>
@@ -2643,6 +3059,38 @@
       </div>
       <div class="picker-go-wrap" id="pickerGoWrap">
         <button class="picker-go-btn" onclick="pickerGo(false)">LLLETSSS GOOO 🎲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anime episode tracker -->
+  <div class="picker-backdrop" id="animeDetailBackdrop" onclick="closeAnimeDetail()">
+    <div class="picker-card" onclick="event.stopPropagation()">
+      <div class="picker-header">
+        <span class="picker-title" id="animeDetailTitle">Anime</span>
+        <div class="picker-header-right">
+          <span class="anime-detail-total" id="animeDetailTotalEps"></span>
+          <button class="picker-close" onclick="closeAnimeDetail()">✕</button>
+        </div>
+      </div>
+      <div class="anime-detail-legend" id="animeDetailLegend"></div>
+      <button type="button" class="anime-add-movies-btn" id="animeAddMoviesBtn" onclick="offerMoviesForOpenAnime()" style="display:none;">🎬 Find movies for this</button>
+      <div class="picker-list" id="animeDetailBody"></div>
+    </div>
+  </div>
+
+  <!-- Confirm which related movies to attach to an anime (new or existing) -->
+  <div class="picker-backdrop" id="animeMovieConfirmBackdrop" onclick="closeAnimeMovieConfirm()">
+    <div class="picker-card" onclick="event.stopPropagation()">
+      <div class="picker-header">
+        <span class="picker-title">Add its movies too? 🍥</span>
+        <button class="picker-close" onclick="closeAnimeMovieConfirm()">✕</button>
+      </div>
+      <p style="padding:0 1.2rem .6rem; font-size:.8rem; color:#b088cc; font-weight:600;">Tick any that actually belong — some of these might not.</p>
+      <div class="picker-list" id="animeMovieConfirmList"></div>
+      <div class="modal-btns" style="padding:.8rem 1.2rem 1.2rem;">
+        <button class="modal-btn modal-cancel" onclick="closeAnimeMovieConfirm()" style="flex:1">Skip</button>
+        <button class="modal-btn modal-confirm" onclick="confirmAnimeMovieSelection()" style="flex:1">Add selected</button>
       </div>
     </div>
   </div>
@@ -2673,6 +3121,20 @@
 
     // ── Profile (device-based identity, no email/password — same pattern as the beer app)
     function getMyUid() {
+      // Removing and re-adding the Home Screen icon on iOS can hand the app
+      // a brand-new, isolated storage container, silently losing track of
+      // which identity was yours — opening a link with ?claim=<old-uid>
+      // restores it instead of starting over as a new profile.
+      try {
+        const params = new URLSearchParams(location.search);
+        const claim = params.get('claim');
+        if (claim) {
+          localStorage.setItem('baba-uid', claim);
+          params.delete('claim');
+          const clean = location.pathname + (params.toString() ? '?' + params.toString() : '') + location.hash;
+          history.replaceState(null, '', clean);
+        }
+      } catch (e) { /* ignore */ }
       let uid = localStorage.getItem('baba-uid');
       if (!uid) {
         uid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('u-' + Date.now() + '-' + Math.random().toString(36).slice(2));
@@ -2684,6 +3146,7 @@
     const usersCol = db.collection('users');
     let myProfile = {};
     let partnerProfile = null;
+    let partnerUid = null;
     let profileEditing = false;
 
     function avatarInner(name, photoURL) {
@@ -2695,12 +3158,14 @@
     usersCol.onSnapshot(snap => {
       let mine = {};
       let partner = null;
+      let partnerId = null;
       snap.forEach(doc => {
         if (doc.id === myUid) mine = doc.data() || {};
-        else if (!partner) partner = doc.data() || {};
+        else if (!partner) { partner = doc.data() || {}; partnerId = doc.id; }
       });
       myProfile = mine;
       partnerProfile = partner;
+      partnerUid = partnerId;
       document.getElementById('profileBtn').innerHTML = avatarInner(myProfile.name, myProfile.photoURL);
       if (document.getElementById('profileBackdrop').classList.contains('open') && !profileEditing) {
         renderProfileModal();
@@ -2717,6 +3182,41 @@
       document.getElementById('profileAvatarBtn').style.cursor = profileEditing ? 'pointer' : 'default';
       document.getElementById('partnerAvatarDisplay').innerHTML = partnerProfile ? avatarInner(partnerProfile.name, partnerProfile.photoURL) : '💌';
       document.getElementById('partnerNameDisplay').textContent = partnerProfile ? (partnerProfile.name || 'no name yet') : 'waiting for them 💌';
+      // A reinstall on iOS can hand this device a brand-new, empty profile
+      // even though your real one already exists — offer a way to reclaim
+      // it instead of quietly setting up a duplicate. Only shown while this
+      // device's own profile is still unclaimed (no name set yet).
+      document.getElementById('restoreProfileLink').style.display = (!profileEditing && !myProfile.name) ? 'block' : 'none';
+    }
+
+    function openRestoreProfileModal() {
+      const list = document.getElementById('restoreProfileList');
+      list.innerHTML = '<p style="text-align:center;color:#b088cc;">loading… 💕</p>';
+      document.getElementById('restoreProfileBackdrop').classList.add('open');
+      usersCol.get().then(snap => {
+        list.innerHTML = '';
+        snap.forEach(doc => {
+          if (doc.id === myUid) return;
+          const d = doc.data();
+          const row = document.createElement('button');
+          row.type = 'button';
+          row.className = 'restore-profile-row';
+          row.innerHTML = `<span class="restore-profile-avatar">${avatarInner(d.name, d.photoURL)}</span><span>${esc(d.name || 'Unnamed profile')}</span>`;
+          row.onclick = () => claimProfile(doc.id, d.name || 'this profile');
+          list.appendChild(row);
+        });
+        if (!list.children.length) list.innerHTML = '<p style="text-align:center;color:#b088cc;">No other profiles found yet.</p>';
+      });
+    }
+
+    function closeRestoreProfileModal() {
+      document.getElementById('restoreProfileBackdrop').classList.remove('open');
+    }
+
+    function claimProfile(uid, name) {
+      if (!confirm(`Restore "${name}"'s profile on this device? You'll appear as ${name} here instead of a new profile.`)) return;
+      localStorage.setItem('baba-uid', uid);
+      location.reload();
     }
 
     function openProfileModal() {
@@ -2851,7 +3351,39 @@
         document.getElementById('main-tab-' + t).classList.toggle('active', t === tab);
         document.getElementById('panel-' + t).style.display = t === tab ? 'block' : 'none';
       });
+      closeAddPopup();
+      document.getElementById('fabAddBtn').classList.toggle('showing', ADD_POPUP_TABS.includes(tab));
     }
+
+    // ── Floating add button (dates/movies/trips/festivals) ──
+    const ADD_POPUP_TABS = ['dates', 'movies', 'trips', 'festivals'];
+    let addPopupOpenTab = null;
+    function toggleAddPopup() {
+      if (addPopupOpenTab) closeAddPopup();
+      else openAddPopup();
+    }
+    function openAddPopup() {
+      const tab = ['dates', 'movies', 'trips', 'festivals'].find(t => document.getElementById('main-tab-' + t).classList.contains('active'));
+      if (!tab) return;
+      addPopupOpenTab = tab;
+      document.getElementById('addPopup-' + tab).classList.add('show');
+      document.getElementById('fabAddBtn').classList.add('open');
+      const firstInput = document.getElementById('addPopup-' + tab).querySelector('input');
+      if (firstInput) setTimeout(() => firstInput.focus(), 150);
+    }
+    function closeAddPopup() {
+      if (!addPopupOpenTab) return;
+      document.getElementById('addPopup-' + addPopupOpenTab).classList.remove('show');
+      document.getElementById('fabAddBtn').classList.remove('open');
+      if (addPopupOpenTab === 'movies' && typeof hideMovieSuggestions === 'function') hideMovieSuggestions();
+      addPopupOpenTab = null;
+    }
+    document.addEventListener('click', e => {
+      if (!addPopupOpenTab) return;
+      const popup = document.getElementById('addPopup-' + addPopupOpenTab);
+      if (popup.contains(e.target) || e.target.id === 'fabAddBtn') return;
+      closeAddPopup();
+    });
 
     let isDraggingDates = false;
     let isDraggingMovies = false;
@@ -3133,6 +3665,7 @@
       dateCol.get().then(snap => dateCol.add({ text, emoji, done: false, order: snap.size }));
       input.value = '';
       emojiInput.value = '';
+      closeAddPopup();
     }
     document.getElementById('newDateInput').addEventListener('keydown', e => { if (e.key === 'Enter') addDate(); });
 
@@ -3215,6 +3748,7 @@
       festivalsCol.get().then(snap => festivalsCol.add({ text, year, done: false, order: snap.size }));
       input.value = '';
       yearInput.value = '';
+      closeAddPopup();
     }
     document.getElementById('newFestivalInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFestival(); });
 
@@ -3316,6 +3850,7 @@
       input.value = '';
       yearInput.value = '';
       emojiInput.value = '';
+      closeAddPopup();
     }
     document.getElementById('newTripInput').addEventListener('keydown', e => { if (e.key === 'Enter') addTrip(); });
 
@@ -3323,29 +3858,95 @@
     let activeSub = 'home';
     let activeMovieCategory = 'movie';
     let movieUnsub = null;
+    // Full, unfiltered-by-category doc list for whichever collection
+    // (movies_home / movies_cinema) is currently active — kept in sync by
+    // loadMovies' onSnapshot listener, used to keep already-added titles out
+    // of the search suggestions.
+    let currentSubDocs = [];
+
+    function tmdbKey(id, mediaType) {
+      return `${mediaType}:${id}`;
+    }
+
+    function getAddedTmdbKeys() {
+      const keys = new Set();
+      currentSubDocs.forEach(d => {
+        if (d.tmdbId && d.mediaType) keys.add(tmdbKey(d.tmdbId, d.mediaType));
+        if (Array.isArray(d.animeLinks)) {
+          d.animeLinks.forEach(l => { if (l.tmdbId && l.mediaType) keys.add(tmdbKey(l.tmdbId, l.mediaType)); });
+        }
+      });
+      return keys;
+    }
+
+    function updateMovieHomeImages() {
+      const onHome = activeSub === 'home';
+      // Cartoons are treated just like plain movies (no dedicated image).
+      document.getElementById('homeMovieImg').style.display = (onHome && (activeMovieCategory === 'movie' || activeMovieCategory === 'cartoon')) ? 'block' : 'none';
+      document.getElementById('seriesCatImg').style.display = (onHome && activeMovieCategory === 'series') ? 'block' : 'none';
+      document.getElementById('animeCatImg').style.display = (onHome && activeMovieCategory === 'anime') ? 'block' : 'none';
+      document.getElementById('cinemaCatImg').style.display = activeSub === 'cinema' ? 'block' : 'none';
+    }
 
     function switchSub(sub) {
       activeSub = sub;
       document.getElementById('sub-tab-home').classList.toggle('active', sub === 'home');
       document.getElementById('sub-tab-cinema').classList.toggle('active', sub === 'cinema');
       document.getElementById('movieDiceBtn').style.display = sub === 'home' ? '' : 'none';
-      document.getElementById('homeMovieImg').style.display = sub === 'home' ? 'block' : 'none';
-      document.getElementById('cinemaCatImg').style.display = sub === 'cinema' ? 'block' : 'none';
       document.getElementById('movieCategoryTabBar').style.display = sub === 'home' ? '' : 'none';
+      updateMovieHomeImages();
       loadMovies(sub);
     }
 
     function switchMovieCategory(cat) {
       activeMovieCategory = cat;
       document.getElementById('cat-tab-movie').classList.toggle('active', cat === 'movie');
+      document.getElementById('cat-tab-cartoon').classList.toggle('active', cat === 'cartoon');
       document.getElementById('cat-tab-series').classList.toggle('active', cat === 'series');
+      document.getElementById('cat-tab-anime').classList.toggle('active', cat === 'anime');
+      updateMovieHomeImages();
       loadMovies(activeSub);
     }
 
 
+    function animeBothWatched(d) {
+      const w = d.watched || {};
+      return !!(w[myUid] && partnerUid && w[partnerUid]);
+    }
+    function movieEffectiveDone(d) {
+      return (d.category === 'anime') ? animeBothWatched(d) : !!d.done;
+    }
+    function movieCategoryLabel(cat) {
+      return cat === 'movie' ? 'movies' : (cat === 'cartoon' ? 'cartoons' : (cat === 'series' ? 'series' : 'anime'));
+    }
+    function categoryDisplayIcon(cat) {
+      return cat === 'movie' ? '🎬' : (cat === 'cartoon' ? '🧸' : (cat === 'series' ? '📺' : '🍥'));
+    }
+    function makeAnimeWatchCircle(mcol, d, uid, profile) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'anime-watch-circle';
+      if (!uid) {
+        // Partner hasn't opened the app yet, so there's no uid to attribute a mark to.
+        btn.innerHTML = '💌';
+        btn.title = "waiting for them to join";
+        btn.disabled = true;
+        return btn;
+      }
+      const watched = !!(d.watched && d.watched[uid]);
+      btn.classList.toggle('watched', watched);
+      btn.innerHTML = avatarInner(profile ? profile.name : '', profile ? profile.photoURL : '');
+      const who = uid === myUid ? 'You' : (profile && profile.name ? profile.name : 'Them');
+      btn.title = `${who} ${watched ? 'watched it' : "hasn't watched it"}`;
+      btn.onclick = e => {
+        e.stopPropagation();
+        mcol.doc(d._id).update({ [`watched.${uid}`]: !watched });
+      };
+      return btn;
+    }
     function updateMovieProgress(docs) {
       const total = docs.length;
-      const done = docs.filter(d => d.done).length;
+      const done = docs.filter(d => movieEffectiveDone(d)).length;
       document.getElementById('movieProgressFill').style.width = total ? (done / total * 100) + '%' : '0%';
       document.getElementById('movieProgressLabel').textContent = done + ' / ' + total;
       document.getElementById('movieAllDone').style.display = (total && done === total) ? 'block' : 'none';
@@ -3353,6 +3954,7 @@
 
     function loadMovies(sub) {
       if (movieUnsub) movieUnsub();
+      currentSubDocs = [];
       const mcol = db.collection('movies_' + sub);
       const emoji = sub === 'home' ? '🍿' : '🎟️';
       const list = document.getElementById('movie-list');
@@ -3362,10 +3964,11 @@
         list.innerHTML = '';
         let docs = [];
         snap.forEach(doc => docs.push({ _id: doc.id, ...doc.data() }));
+        currentSubDocs = docs;
         if (sub === 'home') docs = docs.filter(d => (d.category || 'movie') === activeMovieCategory);
         if (!docs.length) {
           list.innerHTML = sub === 'home'
-            ? `<p class="loading">no ${activeMovieCategory === 'movie' ? 'movies' : 'series'} yet — add one! 🍿</p>`
+            ? `<p class="loading">no ${movieCategoryLabel(activeMovieCategory)} yet — add one! 🍿</p>`
             : '<p class="loading">no movies yet — add one! 🍿</p>';
           updateMovieProgress([]);
           return;
@@ -3374,18 +3977,36 @@
         docs.forEach(d => {
           const txt = d.text || d.title || '';
           const card = document.createElement('div');
-          card.className = 'date-card' + (d.done ? ' done' : '');
+          card.className = 'date-card' + (movieEffectiveDone(d) ? ' done' : '');
           card.dataset.docid = d._id;
           card.dataset.poster = d.poster || '';
           card.dataset.title = txt;
           const row = document.createElement('div');
           row.className = 'date-row';
 
-          const cb = document.createElement('span');
-          cb.className = 'check-box';
-          cb.textContent = '✓';
-          cb.onclick = e => { e.stopPropagation(); mcol.doc(d._id).update({ done: !d.done }); };
-          row.appendChild(cb);
+          if ((d.category || 'movie') === 'anime') {
+            const group = document.createElement('div');
+            group.className = 'anime-watch-group';
+            group.appendChild(makeAnimeWatchCircle(mcol, d, myUid, myProfile));
+            group.appendChild(makeAnimeWatchCircle(mcol, d, partnerUid, partnerProfile));
+            row.appendChild(group);
+            row.style.cursor = 'pointer';
+            row.onclick = () => openAnimeDetail(mcol, d._id);
+          } else {
+            const cb = document.createElement('span');
+            cb.className = 'check-box';
+            cb.textContent = '✓';
+            cb.onclick = e => { e.stopPropagation(); mcol.doc(d._id).update({ done: !d.done }); };
+            row.appendChild(cb);
+            // Series, movies and cartoons all get the same season/part
+            // tracker as anime, just with shared (not per-person) progress —
+            // a movie/cartoon's tracker only ever shows something once it's
+            // linked to a franchise, but the row still opens it uniformly.
+            // This one plain checkbox stays instead of the two-avatar-circle
+            // watched indicator anime uses.
+            row.style.cursor = 'pointer';
+            row.onclick = () => openAnimeDetail(mcol, d._id);
+          }
 
           if (d.poster) {
             const img = document.createElement('img');
@@ -3405,12 +4026,11 @@
 
           if (sub === 'home') {
             const curCat = d.category || 'movie';
-            const moveBtn = document.createElement('button');
-            moveBtn.className = 'del-btn';
-            moveBtn.title = curCat === 'movie' ? 'Move to Series' : 'Move to Movies';
-            moveBtn.textContent = curCat === 'movie' ? '📺' : '🎬';
-            moveBtn.onclick = e => { e.stopPropagation(); mcol.doc(d._id).update({ category: curCat === 'movie' ? 'series' : 'movie' }); };
-            row.appendChild(moveBtn);
+            const catIcon = document.createElement('span');
+            catIcon.className = 'category-icon';
+            catIcon.title = movieCategoryLabel(curCat);
+            catIcon.textContent = categoryDisplayIcon(curCat);
+            row.appendChild(catIcon);
           }
 
           const delBtn = document.createElement('button');
@@ -3462,8 +4082,10 @@
         if (!res.ok) { hideMovieSuggestions(); return; }
         const data = await res.json();
         if (data.results && data.results.length) {
+          const addedKeys = getAddedTmdbKeys();
           _movieSuggestResults = data.results
             .filter(r => r.media_type === 'movie' || r.media_type === 'tv')
+            .filter(r => !addedKeys.has(tmdbKey(r.id, r.media_type)))
             .slice(0, 6);
           if (_movieSuggestResults.length) renderMovieSuggestions(_movieSuggestResults);
           else hideMovieSuggestions();
@@ -3530,10 +4152,27 @@
       document.getElementById('newMovieInput').value = '';
       const mcol = db.collection('movies_' + activeSub);
       const snap = await mcol.get();
+      // Re-check against a fresh fetch (not just the cached suggestion-list
+      // filter) so a duplicate can never slip in — the item already exists,
+      // don't add it again.
+      const dupKey = tmdbKey(r.id, r.media_type);
+      const alreadyAdded = snap.docs.some(doc => {
+        const d = doc.data();
+        if (d.tmdbId && d.mediaType && tmdbKey(d.tmdbId, d.mediaType) === dupKey) return true;
+        return Array.isArray(d.animeLinks) && d.animeLinks.some(l => l.tmdbId && l.mediaType && tmdbKey(l.tmdbId, l.mediaType) === dupKey);
+      });
+      if (alreadyAdded) return;
       const title = r.title || r.name;
       const year = (r.release_date || r.first_air_date || '').slice(0, 4);
       const poster = r.poster_path ? `https://image.tmdb.org/t/p/w500${r.poster_path}` : '';
-      await mcol.add({
+      // Series get the same season/episode tracker + movie-finder as anime,
+      // just with shared (not per-person) progress.
+      const isTrackedShow = activeSub === 'home' && (activeMovieCategory === 'anime' || activeMovieCategory === 'series') && r.media_type === 'tv';
+      // Movies/cartoons get the same tracker treatment when they're part of
+      // a TMDB collection (a franchise like Fast & Furious) — each part
+      // becomes its own tickable block, same as a season or linked movie.
+      const isFranchiseCandidate = activeSub === 'home' && (activeMovieCategory === 'movie' || activeMovieCategory === 'cartoon') && r.media_type === 'movie';
+      const ref = await mcol.add({
         text: title,
         title,
         year,
@@ -3541,9 +4180,13 @@
         tmdbId: r.id,
         mediaType: r.media_type,
         ...(activeSub === 'home' ? { category: activeMovieCategory } : {}),
+        ...(isTrackedShow ? { animeLinks: [{ tmdbId: r.id, mediaType: 'tv', title, poster }] } : {}),
         done: false,
         order: snap.size,
       });
+      closeAddPopup();
+      if (isTrackedShow) offerRelatedAnimeMovies(mcol, ref.id, title);
+      if (isFranchiseCandidate) enrichMovieAndOfferFranchise(mcol, ref.id, r.id, title, poster, r.release_date || '');
     }
 
     function addMovie() {
@@ -3555,15 +4198,488 @@
       const data = { text, done: false, ...(activeSub === 'home' ? { category: activeMovieCategory } : {}) };
       mcol.get().then(snap => mcol.add({ ...data, order: snap.size }));
       input.value = '';
+      closeAddPopup();
+    }
+
+    // ── Auto-offer related movies when adding an anime ──
+    // TMDB has no reliable "this TV show's movies" relation, so a plain
+    // title search pulls in a lot of noise (stage plays, unrelated films
+    // sharing a word, recap movies that just re-cut a season already being
+    // tracked). Rather than auto-attaching all of it, we show a short
+    // tick-list so the user can pick out the ones that actually belong.
+    let _animeMovieConfirmCol = null;
+    let _animeMovieConfirmDocId = null;
+    let _animeMovieCandidates = [];
+
+    function animeMovieBaseName(showTitle) {
+      return showTitle.split(/[:\-–]/)[0].trim();
+    }
+
+    async function findRelatedAnimeMovies(showTitle) {
+      const base = animeMovieBaseName(showTitle);
+      if (base.length < 3) return [];
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(base)}`);
+        const data = await res.json();
+        const baseLower = base.toLowerCase();
+        return (data.results || []).filter(m => (m.title || '').toLowerCase().includes(baseLower)).slice(0, 10);
+      } catch (e) { return []; }
+    }
+
+    function showMovieConfirmList(mcol, docId, candidates, noneFoundMsg) {
+      if (!candidates.length) {
+        if (noneFoundMsg) showToast(noneFoundMsg);
+        return;
+      }
+      _animeMovieConfirmCol = mcol;
+      _animeMovieConfirmDocId = docId;
+      _animeMovieCandidates = candidates.map(m => ({ movie: m, selected: false }));
+      renderAnimeMovieConfirmList();
+      document.getElementById('animeMovieConfirmBackdrop').classList.add('open');
+    }
+
+    async function offerRelatedAnimeMovies(mcol, docId, showTitle, noneFoundMsg) {
+      const candidates = await findRelatedAnimeMovies(showTitle);
+      showMovieConfirmList(mcol, docId, candidates, noneFoundMsg);
+    }
+
+    // A movie's TMDB collection (e.g. "The Fast and the Furious Collection")
+    // is a curated, precise relation — unlike the fuzzy title search used
+    // for anime/series movies, so this doesn't need the same noise-filtering.
+    async function fetchMovieFranchiseInfo(movieId) {
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_KEY}`);
+        const full = await res.json();
+        let siblings = [];
+        if (full.belongs_to_collection) {
+          const colRes = await fetch(`https://api.themoviedb.org/3/collection/${full.belongs_to_collection.id}?api_key=${TMDB_KEY}`);
+          const col = await colRes.json();
+          siblings = (col.parts || []).filter(p => p.id !== movieId && p.release_date);
+        }
+        return { runtimeMinutes: full.runtime || null, siblings };
+      } catch (e) { return { runtimeMinutes: null, siblings: [] }; }
+    }
+
+    async function enrichMovieAndOfferFranchise(mcol, docId, movieId, title, poster, releaseDate) {
+      const info = await fetchMovieFranchiseInfo(movieId);
+      // Always seed animeLinks with the movie's own runtime + release date,
+      // even when it isn't part of any franchise — so its tracker shows
+      // "year · duration" instead of falling back to a plain "movie" tag.
+      await mcol.doc(docId).set({
+        animeLinks: [{ tmdbId: movieId, mediaType: 'movie', title, poster, runtimeMinutes: info.runtimeMinutes, releaseDate: releaseDate || null }],
+      }, { merge: true });
+      if (info.siblings.length) showMovieConfirmList(mcol, docId, info.siblings);
+    }
+
+    function renderAnimeMovieConfirmList() {
+      const list = document.getElementById('animeMovieConfirmList');
+      list.innerHTML = '';
+      _animeMovieCandidates.forEach(entry => {
+        const m = entry.movie;
+        const year = (m.release_date || '').slice(0, 4);
+        const el = document.createElement('div');
+        el.className = 'picker-item' + (entry.selected ? ' selected' : '');
+        if (m.poster_path) {
+          const img = document.createElement('img');
+          img.className = 'suggestion-thumb';
+          img.src = `https://image.tmdb.org/t/p/w92${m.poster_path}`;
+          img.alt = m.title;
+          img.onerror = () => img.replaceWith(makeMovieSuggPh());
+          el.appendChild(img);
+        } else {
+          el.appendChild(makeMovieSuggPh());
+        }
+        const text = document.createElement('span');
+        text.className = 'picker-item-text';
+        text.textContent = m.title + (year ? ` (${year})` : '');
+        el.appendChild(text);
+        const check = document.createElement('span');
+        check.className = 'picker-item-check';
+        check.textContent = '✓';
+        el.appendChild(check);
+        el.onclick = () => {
+          entry.selected = !entry.selected;
+          el.classList.toggle('selected', entry.selected);
+        };
+        list.appendChild(el);
+      });
+    }
+
+    function closeAnimeMovieConfirm() {
+      document.getElementById('animeMovieConfirmBackdrop').classList.remove('open');
+      _animeMovieConfirmCol = null;
+      _animeMovieConfirmDocId = null;
+      _animeMovieCandidates = [];
+    }
+
+    async function confirmAnimeMovieSelection() {
+      const chosen = _animeMovieCandidates.filter(e => e.selected).map(e => e.movie);
+      const col = _animeMovieConfirmCol, docId = _animeMovieConfirmDocId;
+      closeAnimeMovieConfirm();
+      if (!chosen.length || !col || !docId) return;
+      const entries = [];
+      for (const m of chosen) {
+        let runtimeMinutes = null;
+        try {
+          const res = await fetch(`https://api.themoviedb.org/3/movie/${m.id}?api_key=${TMDB_KEY}`);
+          const full = await res.json();
+          runtimeMinutes = full.runtime || null;
+        } catch (e) { /* leave duration unknown */ }
+        entries.push({
+          tmdbId: m.id,
+          mediaType: 'movie',
+          title: m.title,
+          poster: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : null,
+          runtimeMinutes,
+          releaseDate: m.release_date || null,
+        });
+      }
+      await col.doc(docId).update({ animeLinks: firebase.firestore.FieldValue.arrayUnion(...entries) });
+      // If this anime's detail popup happens to already be open (attaching
+      // movies to an anime you added a while ago, not just a fresh one),
+      // refresh it in place so the new movie blocks show up immediately.
+      if (animeDetailDocId === docId && animeDetailCol === col) {
+        const doc = await col.doc(docId).get();
+        const data = doc.data() || {};
+        await renderAnimeDetailBody(data.animeLinks || [], data.animeProgress || {});
+      }
+    }
+
+    function formatRuntime(minutes) {
+      if (!minutes) return 'movie';
+      const h = Math.floor(minutes / 60), m = minutes % 60;
+      return h ? `${h}h ${m}m` : `${m}m`;
+    }
+
+    function formatMovieMeta(b) {
+      const year = b.releaseDate ? b.releaseDate.slice(0, 4) : '';
+      if (b.runtimeMinutes) return year ? `${year} · ${formatRuntime(b.runtimeMinutes)}` : formatRuntime(b.runtimeMinutes);
+      return year || 'movie';
+    }
+
+    function formatSeasonMeta(b) {
+      const year = b.releaseDate ? b.releaseDate.slice(0, 4) : '';
+      return year ? `${year} · ${b.episodeCount} eps` : `${b.episodeCount} eps`;
+    }
+
+    // ── Anime / series episode tracker ──
+    // For anime, progress is a per-user watermark per season/movie: episode N
+    // and every episode before it counts as watched once you tap N, so
+    // tapping where you currently are highlights everything up through that
+    // point in your color, and any episode both of you have reached shows
+    // both colors. Series use the same tracker but watch it together, so
+    // there's just one shared watermark (stored under a "shared" bucket
+    // instead of your own uid) and no second color at all.
+    let animeDetailDocId = null;
+    let animeDetailCol = null;
+    let animeDetailShowTitle = null;
+    let animeDetailShared = false;
+    let animeDetailPrimaryTmdbId = null;
+    let animeDetailPrimaryMediaType = null;
+
+    function animeSeasonKey(link, seasonNumber) {
+      return link.mediaType === 'movie' ? `movie:${link.tmdbId}` : `tv:${link.tmdbId}:${seasonNumber}`;
+    }
+
+    async function openAnimeDetail(mcol, docId) {
+      animeDetailDocId = docId;
+      animeDetailCol = mcol;
+      document.getElementById('animeDetailBackdrop').classList.add('open');
+      document.getElementById('animeDetailBody').innerHTML = '<p class="loading">loading… 🍥</p>';
+      document.getElementById('animeDetailTotalEps').textContent = '';
+      document.getElementById('animeAddMoviesBtn').style.display = 'none';
+      const doc = await mcol.doc(docId).get();
+      const data = doc.data() || {};
+      animeDetailShowTitle = data.text || data.title || 'Anime';
+      // Only anime tracks who-watched-what separately — series, movies and
+      // cartoons all just share one tick/watermark.
+      animeDetailShared = (data.category || 'movie') !== 'anime';
+      animeDetailPrimaryTmdbId = data.tmdbId || null;
+      animeDetailPrimaryMediaType = data.mediaType || null;
+      document.getElementById('animeDetailTitle').textContent = animeDetailShowTitle;
+      const legend = document.getElementById('animeDetailLegend');
+      if (animeDetailShared) {
+        legend.style.display = 'none';
+      } else {
+        legend.style.display = '';
+        legend.innerHTML =
+          `<span><span class="anime-legend-dot" style="background:var(--pink)"></span>You</span>` +
+          `<span><span class="anime-legend-dot" style="background:var(--purple)"></span>${esc(partnerProfile && partnerProfile.name || 'Them')}</span>`;
+      }
+
+      // Migrate a legacy single-TMDB-pick doc (from the original add flow, or
+      // any movie added before its runtime got fetched) into the multi-title
+      // links array, once — fetching the movie's own runtime here too so it
+      // shows "year · duration" instead of a bare "movie" tag.
+      let links = data.animeLinks;
+      if (!links) {
+        if (data.tmdbId && data.mediaType) {
+          let runtimeMinutes = null;
+          if (data.mediaType === 'movie') {
+            try {
+              const res = await fetch(`https://api.themoviedb.org/3/movie/${data.tmdbId}?api_key=${TMDB_KEY}`);
+              const full = await res.json();
+              runtimeMinutes = full.runtime || null;
+            } catch (e) { /* leave duration unknown */ }
+          }
+          links = [{
+            tmdbId: data.tmdbId, mediaType: data.mediaType, title: data.text || data.title, poster: data.poster || null,
+            releaseDate: data.year ? `${data.year}-01-01` : null,
+            ...(data.mediaType === 'movie' ? { runtimeMinutes } : {}),
+          }];
+        } else {
+          links = [];
+        }
+        await mcol.doc(docId).set({ animeLinks: links }, { merge: true });
+      }
+      // Worth offering "find more" when there's a TV show to search sibling
+      // movies for, or a movie that might belong to a franchise collection.
+      const findBtn = document.getElementById('animeAddMoviesBtn');
+      if (links.some(l => l.mediaType === 'tv')) {
+        findBtn.textContent = '🎬 Find movies for this';
+        findBtn.style.display = 'inline-flex';
+      } else if (animeDetailPrimaryMediaType === 'movie' && animeDetailPrimaryTmdbId) {
+        findBtn.textContent = '🎬 Find franchise parts';
+        findBtn.style.display = 'inline-flex';
+      } else {
+        findBtn.style.display = 'none';
+      }
+      await renderAnimeDetailBody(links, data.animeProgress || {});
+    }
+
+    function offerMoviesForOpenAnime() {
+      if (!animeDetailDocId || !animeDetailCol) return;
+      if (animeDetailPrimaryMediaType === 'movie' && animeDetailPrimaryTmdbId) {
+        fetchMovieFranchiseInfo(animeDetailPrimaryTmdbId).then(info =>
+          showMovieConfirmList(animeDetailCol, animeDetailDocId, info.siblings, "Couldn't find any other parts for this one 🥺")
+        );
+      } else if (animeDetailShowTitle) {
+        offerRelatedAnimeMovies(animeDetailCol, animeDetailDocId, animeDetailShowTitle, "Couldn't find any related movies 🥺");
+      }
+    }
+
+    function closeAnimeDetail() {
+      document.getElementById('animeDetailBackdrop').classList.remove('open');
+      animeDetailDocId = null;
+      animeDetailCol = null;
+      animeDetailShowTitle = null;
+      animeDetailShared = false;
+      animeDetailPrimaryTmdbId = null;
+      animeDetailPrimaryMediaType = null;
+    }
+
+    // Season blocks and per-user progress for whichever anime popup is
+    // currently open. Kept around so a single episode tap can patch just
+    // that season's buttons in place instead of wiping and rebuilding the
+    // whole popup body (which used to reset scroll to the top and re-fetch
+    // every season from TMDB again on every single click).
+    let animeDetailBlocksByKey = new Map();
+    let animeDetailProgress = {};
+
+    function setAnimeDetailTotal(blocks) {
+      // Specials (season 0) don't count toward the total — only real seasons
+      // and any linked movies.
+      const total = blocks.reduce((sum, b) => sum + (b.seasonNumber === 0 ? 0 : b.episodeCount), 0);
+      document.getElementById('animeDetailTotalEps').textContent = total ? `${total} eps` : '';
+    }
+
+    async function renderAnimeDetailBody(links, progress) {
+      const body = document.getElementById('animeDetailBody');
+      animeDetailBlocksByKey = new Map();
+      animeDetailProgress = progress || {};
+      if (!links.length) {
+        body.innerHTML = '<p class="loading">No season info for this one yet 🍥</p>';
+        setAnimeDetailTotal([]);
+        return;
+      }
+      body.innerHTML = '<p class="loading">loading seasons… 🍥</p>';
+      const seasonBlocks = [];
+      const movieBlocks = [];
+      for (const link of links) {
+        if (link.mediaType === 'movie') {
+          movieBlocks.push({
+            link, seasonNumber: null, title: link.title, episodeCount: 1,
+            poster: link.poster || null, runtimeMinutes: link.runtimeMinutes || null,
+            releaseDate: link.releaseDate || '',
+          });
+          continue;
+        }
+        try {
+          const res = await fetch(`https://api.themoviedb.org/3/tv/${link.tmdbId}?api_key=${TMDB_KEY}`);
+          const tv = await res.json();
+          const tvBlocks = [];
+          (tv.seasons || []).forEach(s => {
+            if (s.episode_count > 0) {
+              const posterPath = s.poster_path || tv.poster_path;
+              tvBlocks.push({
+                link, seasonNumber: s.season_number, title: `${link.title} — ${s.name}`,
+                episodeCount: s.episode_count,
+                poster: posterPath ? `https://image.tmdb.org/t/p/w200${posterPath}` : (link.poster || null),
+                releaseDate: s.air_date || null,
+              });
+            }
+          });
+          // TMDB lists "Specials" as season 0, first in the array — push it
+          // to the end instead so real season 1 always leads.
+          tvBlocks.sort((a, c) => (a.seasonNumber || Infinity) - (c.seasonNumber || Infinity));
+          seasonBlocks.push(...tvBlocks);
+        } catch (e) { /* skip this title if TMDB is unreachable */ }
+      }
+      // Linked movies go after every season (and its Specials), oldest
+      // release first — the same left-to-right order the seasons use.
+      movieBlocks.sort((a, c) => (a.releaseDate || '9999').localeCompare(c.releaseDate || '9999'));
+      const blocks = [...seasonBlocks, ...movieBlocks];
+      body.innerHTML = '';
+      if (!blocks.length) {
+        body.innerHTML = '<p class="loading">Couldn\'t load season info — try again later 🥺</p>';
+        setAnimeDetailTotal([]);
+        return;
+      }
+      setAnimeDetailTotal(blocks);
+      blocks.forEach(b => {
+        const key = animeSeasonKey(b.link, b.seasonNumber);
+        const { wrap, media } = renderAnimeSeasonBlock(b, animeDetailProgress);
+        animeDetailBlocksByKey.set(key, { b, media });
+        body.appendChild(wrap);
+      });
+    }
+
+    function makeAnimeSeasonPosterPh() {
+      const ph = document.createElement('div');
+      ph.className = 'anime-season-poster-ph';
+      ph.textContent = '🍥';
+      return ph;
+    }
+
+    // Episodes strictly before your current mark are already fully watched
+    // (a solid fill); the exact episode you're on gets a ring instead of a
+    // fill, so "done" and "you are here" read differently. A season-complete
+    // tick sits after the last episode as one more slot in the same
+    // sequence — tapping it jumps your mark past the final episode (or back
+    // to 0 if the whole season was already marked watched).
+    const ANIME_TOP_SLOTS = 15; // 3 rows x 5 columns, beside the poster
+
+    function makeAnimeEpisodeBtn(n, key, myMark, partnerMark) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'anime-episode-btn';
+      const mineDone = n < myMark, theirsDone = n < partnerMark;
+      if (mineDone && theirsDone) btn.classList.add('both');
+      else if (mineDone) btn.classList.add('mine');
+      else if (theirsDone) btn.classList.add('partner');
+      if (n === myMark) btn.classList.add('current-mine');
+      if (partnerMark && n === partnerMark) btn.classList.add('current-partner');
+      btn.textContent = n;
+      btn.onclick = () => setAnimeProgress(key, n);
+      return btn;
+    }
+
+    function makeAnimeSeasonTickBtn(b, key, myMark, partnerMark) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'anime-episode-btn anime-episode-tick';
+      btn.title = 'Mark whole season as watched';
+      const mineAll = myMark > b.episodeCount;
+      const partnerAll = partnerMark > b.episodeCount;
+      if (mineAll && partnerAll) btn.classList.add('both');
+      else if (mineAll) btn.classList.add('mine');
+      else if (partnerAll) btn.classList.add('partner');
+      btn.textContent = '✓';
+      btn.onclick = () => setAnimeProgress(key, mineAll ? 0 : b.episodeCount + 1);
+      return btn;
+    }
+
+    function paintEpisodeButtons(media, b, progress) {
+      const key = animeSeasonKey(b.link, b.seasonNumber);
+      // Series share one watermark (no partner color at all); anime keeps
+      // the per-person watermarks compared against each other.
+      const myMark = animeDetailShared
+        ? (progress.shared && progress.shared[key]) || 0
+        : (progress[myUid] && progress[myUid][key]) || 0;
+      const partnerMark = animeDetailShared
+        ? 0
+        : (partnerUid && progress[partnerUid] && progress[partnerUid][key]) || 0;
+
+      const items = [];
+      for (let n = 1; n <= b.episodeCount; n++) items.push(makeAnimeEpisodeBtn(n, key, myMark, partnerMark));
+      items.push(makeAnimeSeasonTickBtn(b, key, myMark, partnerMark));
+
+      const top = media.querySelector('.anime-episode-top');
+      const bottom = media.querySelector('.anime-episode-bottom');
+      top.innerHTML = '';
+      bottom.innerHTML = '';
+      items.slice(0, ANIME_TOP_SLOTS).forEach(el => top.appendChild(el));
+      const rest = items.slice(ANIME_TOP_SLOTS);
+      bottom.style.display = rest.length ? 'grid' : 'none';
+      rest.forEach(el => bottom.appendChild(el));
+    }
+
+    function renderAnimeSeasonBlock(b, progress) {
+      const wrap = document.createElement('div');
+      wrap.className = 'anime-season-block';
+
+      const title = document.createElement('div');
+      title.className = 'anime-season-title';
+      title.textContent = b.title;
+      const meta = document.createElement('span');
+      meta.className = 'anime-season-meta';
+      meta.textContent = b.episodeCount > 1 ? formatSeasonMeta(b) : formatMovieMeta(b);
+      title.appendChild(meta);
+      wrap.appendChild(title);
+
+      const media = document.createElement('div');
+      media.className = 'anime-season-media';
+
+      if (b.poster) {
+        const img = document.createElement('img');
+        img.className = 'anime-season-poster';
+        img.src = b.poster;
+        img.alt = b.title;
+        img.onerror = () => img.replaceWith(makeAnimeSeasonPosterPh());
+        media.appendChild(img);
+      } else {
+        media.appendChild(makeAnimeSeasonPosterPh());
+      }
+
+      const top = document.createElement('div');
+      top.className = 'anime-episode-top';
+      media.appendChild(top);
+
+      const bottom = document.createElement('div');
+      bottom.className = 'anime-episode-bottom';
+      media.appendChild(bottom);
+
+      paintEpisodeButtons(media, b, progress);
+      wrap.appendChild(media);
+      return { wrap, media };
+    }
+
+    // Updates local state + just the tapped season's buttons immediately
+    // (no scroll jump, no re-render of the other seasons), then persists to
+    // Firestore in the background. Rapid repeated taps each just repaint
+    // one season block rather than racing full-popup rebuilds.
+    function setAnimeProgress(seasonKey, episodeNum) {
+      if (!animeDetailDocId || !animeDetailCol) return;
+      const bucket = animeDetailShared ? 'shared' : myUid;
+      if (!animeDetailProgress[bucket]) animeDetailProgress[bucket] = {};
+      animeDetailProgress[bucket][seasonKey] = episodeNum;
+      const entry = animeDetailBlocksByKey.get(seasonKey);
+      if (entry) paintEpisodeButtons(entry.media, entry.b, animeDetailProgress);
+      animeDetailCol.doc(animeDetailDocId)
+        .update({ [`animeProgress.${bucket}.${seasonKey}`]: episodeNum })
+        .catch(e => console.error('failed to save anime progress', e));
     }
 
     loadMovies('home');
 
     // ── Long-press drag reorder ──
-    // Rows have touch-action:none (see CSS), so the browser never hijacks the
-    // gesture into a native scroll mid-press. Before the long-press fires we
-    // replicate scrolling manually in JS; once it fires, the same finger
-    // movement repositions the popped card instead, with edge auto-scroll.
+    // Rows keep touch-action:pan-y (see CSS), so a normal swipe scrolls the
+    // list entirely natively the whole time — this code never touches it and
+    // never calls preventDefault while just watching a pending press. A long
+    // press only takes over once the finger has held still past LONG_PRESS_MS
+    // with no native scroll gesture underway to interrupt; from that instant
+    // on, pointer capture + preventDefault keep the same finger movement
+    // repositioning the popped card instead, with edge auto-scroll.
     //
     // The dragged card never actually moves in the DOM until you let go —
     // only its transform changes, and siblings are shifted with a transform
@@ -3571,13 +4687,13 @@
     // active pointer capture on the dragged node is what was causing random
     // pointercancel drops on some Android builds.
     function enableDragReorder(container, itemSelector, onDrop, setDragging) {
-      const LONG_PRESS_MS = 380;
+      const LONG_PRESS_MS = 450;
       const MOVE_CANCEL_PX = 10;
 
-      let state = 'idle'; // idle | pending | scrolling | dragging
+      let state = 'idle'; // idle | pending | dragging
       let item = null;
       let pointerId = null;
-      let startX = 0, startY = 0, lastY = 0;
+      let startX = 0, startY = 0;
       let pressTimer = null;
       let autoScrollRAF = null;
 
@@ -3693,22 +4809,27 @@
         siblings = [];
       }
 
+      function cancelPending() {
+        document.removeEventListener('pointermove', onDocMove);
+        document.removeEventListener('pointerup', onDocUp);
+        document.removeEventListener('pointercancel', onDocUp);
+        clearPressTimer();
+        state = 'idle';
+        item = null;
+        pointerId = null;
+      }
+
       function onDocMove(e) {
         if (e.pointerId !== pointerId) return;
         if (state === 'pending') {
           const dx = Math.abs(e.clientX - startX);
-          const dy = e.clientY - startY;
-          if (Math.abs(dy) > MOVE_CANCEL_PX || dx > MOVE_CANCEL_PX) {
-            clearPressTimer();
-            state = 'scrolling';
-            lastY = e.clientY;
+          const dy = Math.abs(e.clientY - startY);
+          if (dy > MOVE_CANCEL_PX || dx > MOVE_CANCEL_PX) {
+            // This reads as a scroll, not a long press — the browser's own
+            // touch-action:pan-y scrolling is already handling it natively,
+            // so just stop watching this gesture instead of taking it over.
+            cancelPending();
           }
-          return;
-        }
-        if (state === 'scrolling') {
-          e.preventDefault();
-          window.scrollBy(0, -(e.clientY - lastY));
-          lastY = e.clientY;
           return;
         }
         if (state === 'dragging') {
@@ -3731,7 +4852,7 @@
 
         item = el;
         pointerId = e.pointerId;
-        startX = e.clientX; startY = e.clientY; lastY = e.clientY;
+        startX = e.clientX; startY = e.clientY;
         state = 'pending';
 
         pressTimer = setTimeout(() => {
