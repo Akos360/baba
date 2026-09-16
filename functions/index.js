@@ -74,3 +74,9 @@ exports.onMovieCinemaDone = onDocumentUpdated('movies_cinema/{id}', event => {
     return notify(after.text || after.title || 'A movie', 'done Hehe 💕');
   return null;
 });
+
+exports.onFoodSessionStarted = onDocumentCreated('food_sessions/{id}', event => {
+  const s = event.data.data();
+  if (s.status !== 'active') return null;
+  return notify('Food round started! 🍽️', 'Go swipe so we can find something to eat');
+});

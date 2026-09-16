@@ -377,14 +377,24 @@
       background: #fff0f5;
     }
 
-    /* Just labels which category the item is in — not a control, so no
-       cursor/hover affordance (it used to cycle through categories on tap,
-       which read as items randomly jumping between tabs). */
+    /* Labels which category the item is in, and doubles as the "currently
+       watching" toggle — tapping it marks/unmarks this one item as the
+       single in-progress one for its category (see .current below). */
     .category-icon {
       font-size: 1.1rem;
       padding: .2rem .3rem;
       line-height: 1;
       flex-shrink: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .15s, transform .15s;
+    }
+
+    .category-icon.current {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      box-shadow: 0 0 0 2px var(--pink);
+      transform: scale(1.15);
     }
 
     /* ── GALLERY ── */
@@ -2270,6 +2280,28 @@
       line-height: 1.5;
     }
 
+    .food-waiting-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      font-weight: 800;
+      font-size: 1.9rem;
+      border: 3px solid var(--pink);
+      flex-shrink: 0;
+    }
+
+    .food-waiting-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     /* results */
     .food-results-title {
       font-family: 'Pacifico', cursive;
@@ -2911,8 +2943,8 @@
       <!-- State: Waiting -->
       <div id="food-state-waiting"
         style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:3rem 1rem;text-align:center">
-        <div style="font-size:4rem">🥺</div>
-        <div class="food-waiting-text">Waiting for the other one to finish…</div>
+        <div class="food-waiting-avatar" id="foodWaitingAvatar"></div>
+        <div class="food-waiting-text" id="foodWaitingText">Waiting for them to finish…</div>
         <p class="food-start-hint">Results appear automatically when they're done</p>
         <button class="food-reset-btn" onclick="resetFoodSession()">↩ Reset</button>
       </div>
@@ -3353,6 +3385,11 @@
       });
       closeAddPopup();
       document.getElementById('fabAddBtn').classList.toggle('showing', ADD_POPUP_TABS.includes(tab));
+      // Tapping into Food re-checks the session fresh instead of trusting
+      // whatever the live listener last delivered — the live listener can go
+      // stale after the tab/app sits backgrounded for a while (common on
+      // iOS), which is what used to force a manual page reload.
+      if (tab === 'food') refreshFoodSessionState();
     }
 
     // ── Floating add button (dates/movies/trips/festivals) ──
@@ -3916,6 +3953,24 @@
     function movieEffectiveDone(d) {
       return (d.category === 'anime') ? animeBothWatched(d) : !!d.done;
     }
+    // Only one item per category can be "currently watching" — turning one
+    // on clears whichever other item in that same category had it.
+    async function toggleCurrentlyWatching(mcol, docId, category, isCurrentlyOn) {
+      if (isCurrentlyOn) {
+        await mcol.doc(docId).update({ currentlyWatching: false });
+        return;
+      }
+      const snap = await mcol.get();
+      const batch = db.batch();
+      snap.forEach(doc => {
+        const data = doc.data();
+        if (doc.id !== docId && (data.category || 'movie') === category && data.currentlyWatching) {
+          batch.update(doc.ref, { currentlyWatching: false });
+        }
+      });
+      batch.update(mcol.doc(docId), { currentlyWatching: true });
+      await batch.commit();
+    }
     function movieCategoryLabel(cat) {
       return cat === 'movie' ? 'movies' : (cat === 'cartoon' ? 'cartoons' : (cat === 'series' ? 'series' : 'anime'));
     }
@@ -3940,7 +3995,17 @@
       btn.title = `${who} ${watched ? 'watched it' : "hasn't watched it"}`;
       btn.onclick = e => {
         e.stopPropagation();
-        mcol.doc(d._id).update({ [`watched.${uid}`]: !watched });
+        const newWatched = !watched;
+        const otherUid = uid === myUid ? partnerUid : myUid;
+        const otherWatched = !!(d.watched && otherUid && d.watched[otherUid]);
+        const update = { [`watched.${uid}`]: newWatched };
+        // Both of you just finished it — record when, and it's no longer
+        // "currently watching" since it's now fully checked out.
+        if (newWatched && otherWatched) {
+          update.doneAt = Date.now();
+          update.currentlyWatching = false;
+        }
+        mcol.doc(d._id).update(update);
       };
       return btn;
     }
@@ -3973,7 +4038,20 @@
           updateMovieProgress([]);
           return;
         }
-        docs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        if (sub === 'home') {
+          // Within a category: done items first (oldest completion first),
+          // then the one "currently watching" item (if any), then the rest
+          // in manual order.
+          const tierOf = d => movieEffectiveDone(d) ? 0 : (d.currentlyWatching ? 1 : 2);
+          docs.sort((a, b) => {
+            const ta = tierOf(a), tb = tierOf(b);
+            if (ta !== tb) return ta - tb;
+            if (ta === 0) return (a.doneAt ?? 0) - (b.doneAt ?? 0);
+            return (a.order ?? 0) - (b.order ?? 0);
+          });
+        } else {
+          docs.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        }
         docs.forEach(d => {
           const txt = d.text || d.title || '';
           const card = document.createElement('div');
@@ -3996,7 +4074,16 @@
             const cb = document.createElement('span');
             cb.className = 'check-box';
             cb.textContent = '✓';
-            cb.onclick = e => { e.stopPropagation(); mcol.doc(d._id).update({ done: !d.done }); };
+            cb.onclick = e => {
+              e.stopPropagation();
+              const newDone = !d.done;
+              mcol.doc(d._id).update({
+                done: newDone,
+                // Checking it off finishes it — it's no longer "currently
+                // watching", and this is when it moves to the done list.
+                ...(newDone ? { doneAt: Date.now(), currentlyWatching: false } : {}),
+              });
+            };
             row.appendChild(cb);
             // Series, movies and cartoons all get the same season/part
             // tracker as anime, just with shared (not per-person) progress —
@@ -4026,10 +4113,17 @@
 
           if (sub === 'home') {
             const curCat = d.category || 'movie';
+            const isCurrent = !!d.currentlyWatching;
             const catIcon = document.createElement('span');
-            catIcon.className = 'category-icon';
-            catIcon.title = movieCategoryLabel(curCat);
+            catIcon.className = 'category-icon' + (isCurrent ? ' current' : '');
+            catIcon.title = isCurrent
+              ? `Currently watching this ${movieCategoryLabel(curCat)} — tap to unmark`
+              : `Tap to mark as the one you're currently watching`;
             catIcon.textContent = categoryDisplayIcon(curCat);
+            catIcon.onclick = e => {
+              e.stopPropagation();
+              toggleCurrentlyWatching(mcol, d._id, curCat, isCurrent);
+            };
             row.appendChild(catIcon);
           }
 
@@ -4222,7 +4316,11 @@
         const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(base)}`);
         const data = await res.json();
         const baseLower = base.toLowerCase();
-        return (data.results || []).filter(m => (m.title || '').toLowerCase().includes(baseLower)).slice(0, 10);
+        const addedKeys = getAddedTmdbKeys();
+        return (data.results || [])
+          .filter(m => (m.title || '').toLowerCase().includes(baseLower))
+          .filter(m => !addedKeys.has(tmdbKey(m.id, 'movie')))
+          .slice(0, 10);
       } catch (e) { return []; }
     }
 
@@ -4254,7 +4352,10 @@
         if (full.belongs_to_collection) {
           const colRes = await fetch(`https://api.themoviedb.org/3/collection/${full.belongs_to_collection.id}?api_key=${TMDB_KEY}`);
           const col = await colRes.json();
-          siblings = (col.parts || []).filter(p => p.id !== movieId && p.release_date);
+          const addedKeys = getAddedTmdbKeys();
+          siblings = (col.parts || [])
+            .filter(p => p.id !== movieId && p.release_date)
+            .filter(p => !addedKeys.has(tmdbKey(p.id, 'movie')));
         }
         return { runtimeMinutes: full.runtime || null, siblings };
       } catch (e) { return { runtimeMinutes: null, siblings: [] }; }
@@ -5199,30 +5300,57 @@
     document.getElementById('newFoodInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFood(); });
 
     // ── Session listener
-    sessionsCol.orderBy('startedAt', 'desc').limit(1).onSnapshot(snap => {
-      if (snap.empty) { setFoodState('lobby'); return; }
-      const doc = snap.docs[0];
+    // Shared by the live onSnapshot below and by refreshFoodSessionState() —
+    // the same "which state should we be in" logic, just triggered either by
+    // a push from Firestore or by a manual one-time re-check.
+    function applyFoodSessionDoc(doc) {
       const data = doc.data();
       _sessionId = doc.id;
 
       if (data.status === 'cancelled') {
         if (_swipesUnsub2) { _swipesUnsub2(); _swipesUnsub2 = null; }
         setFoodState('lobby');
+        return Promise.resolve();
       } else if (data.status === 'done') {
         setFoodState('results');
         renderFoodResults(data.matches || []);
+        return Promise.resolve();
       } else if (data.status === 'active') {
-        db.collection('food_sessions').doc(doc.id).collection('swipes').doc(myDeviceId)
+        return db.collection('food_sessions').doc(doc.id).collection('swipes').doc(myDeviceId)
           .get().then(myDoc => {
             if (myDoc.exists && myDoc.data().done) {
               setFoodState('waiting');
+              listenForFoodCompletion(doc.id);
+            } else if (_sessionId === doc.id && document.getElementById('food-state-swiping').style.display === 'flex') {
+              // Already mid-swipe on this exact session — just make sure the
+              // completion listener is alive, never rebuild the swipe queue
+              // (that would silently wipe progress and reshuffle the order).
               listenForFoodCompletion(doc.id);
             } else {
               beginSwiping(doc.id, data.foodFilter || null);
             }
           });
       }
+      return Promise.resolve();
+    }
+    sessionsCol.orderBy('startedAt', 'desc').limit(1).onSnapshot(snap => {
+      if (snap.empty) { setFoodState('lobby'); return; }
+      applyFoodSessionDoc(snap.docs[0]);
     });
+    // A manual, one-time re-check of the current food session — run whenever
+    // the Food tab is opened or the app comes back to the foreground, so a
+    // live listener that went stale while backgrounded (iOS in particular
+    // can freeze/kill a page's realtime connection while it's not visible)
+    // gets caught up immediately instead of requiring a manual page reload.
+    async function refreshFoodSessionState() {
+      try {
+        const snap = await sessionsCol.orderBy('startedAt', 'desc').limit(1).get();
+        if (snap.empty) { setFoodState('lobby'); return; }
+        await applyFoodSessionDoc(snap.docs[0]);
+      } catch (e) { /* best effort — the live listener will still catch up once reconnected */ }
+    }
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshFoodSessionState(); });
+    window.addEventListener('focus', refreshFoodSessionState);
 
     function startFoodSession() {
       if (!_foodsList.length) { showToast('Add some foods first! 🍕'); return; }
@@ -5434,11 +5562,21 @@
       });
     }
 
+    function renderFoodWaitingFor() {
+      const name = (partnerProfile && partnerProfile.name) || 'them';
+      document.getElementById('foodWaitingAvatar').innerHTML = partnerUid
+        ? avatarInner(partnerProfile ? partnerProfile.name : '', partnerProfile ? partnerProfile.photoURL : '')
+        : '💌';
+      document.getElementById('foodWaitingText').textContent = partnerUid
+        ? `Waiting for ${name} to finish…`
+        : 'Waiting for your partner to join…';
+    }
     function setFoodState(state) {
       ['lobby', 'swiping', 'waiting', 'results'].forEach(s =>
         document.getElementById('food-state-' + s).style.display = 'none'
       );
       document.getElementById('food-state-' + state).style.display = 'flex';
+      if (state === 'waiting') renderFoodWaitingFor();
     }
 
     // ── COLOR WALK
